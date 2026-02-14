@@ -12,12 +12,12 @@
     "https://www.instagram.com/*"
   ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "src/popup.html",
     "default_title": "P.A.T.C.H Worker Assist"
   },
-  "options_page": "options.html",
+  "options_page": "src/options.html",
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/background.js"
   },
   "content_scripts": [
     {
@@ -25,10 +25,10 @@
         "https://www.instagram.com/*"
       ],
       "js": [
-        "content.js"
+        "src/content.js"
       ],
       "css": [
-        "content.css"
+        "src/content.css"
       ]
     }
   ]

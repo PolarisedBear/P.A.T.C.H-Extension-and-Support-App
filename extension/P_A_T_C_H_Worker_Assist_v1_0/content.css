@@ -1,0 +1,107 @@
+#patch-scan-btn {
+  position: fixed;
+  bottom: 60px;
+  right: 20px;
+  z-index: 9999;
+  padding: 12px 20px;
+  border-radius: 25px;
+  border: none;
+  background: #21808D;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.patch-badge {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  background: #F59E0B;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  z-index: 10;
+  font-weight: bold;
+}
+
+.patch-inline-btn {
+  background: none;
+  border: 1px solid #21808D;
+  color: #21808D;
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+#patch-drawer {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 350px;
+  height: 100%;
+  background: #FCFCF9;
+  z-index: 10000;
+  box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+  transition: right 0.3s ease-out;
+  font-family: system-ui, sans-serif;
+  color: #13343B;
+}
+
+#patch-drawer.open { right: 0; }
+
+.patch-drawer-content { padding: 20px; }
+.patch-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  font-weight: bold;
+  font-size: 18px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+#patch-close { cursor: pointer; }
+
+.risk-banner {
+  padding: 10px;
+  color: white;
+  text-align: center;
+  border-radius: 8px;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.patch-primary-btn {
+  background: #21808D;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.patch-secondary-btn {
+  background: #eee;
+  color: #333;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 5px;
+}
+
+.patch-story-btn {
+  background: rgba(33, 128, 141, 0.8);
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-left: 10px;
+}

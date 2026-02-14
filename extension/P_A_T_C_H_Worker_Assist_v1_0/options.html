@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>P.A.T.C.H Settings</title>
+  <style>
+    body { font-family: sans-serif; max-width: 500px; margin: 20px auto; padding: 20px; }
+    .field { margin-bottom: 15px; }
+    label { display: block; margin-bottom: 5px; font-weight: bold; }
+    input[type="text"] { width: 100%; padding: 8px; box-sizing: border-box; }
+    .hint { font-size: 12px; color: #666; margin-top: 5px; }
+    button { background: #21808D; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <h1>Extension Settings</h1>
+  <div class="field">
+    <label>Analysis API Endpoint</label>
+    <input type="text" id="api-endpoint" placeholder="https://your-api.com/analyze">
+  </div>
+  <div class="field">
+    <label>OCR API Endpoint (Stories)</label>
+    <input type="text" id="ocr-endpoint" placeholder="https://your-api.com/ocr">
+  </div>
+  <div class="field">
+    <label>API Key</label>
+    <input type="text" id="api-key">
+  </div>
+  <div class="field">
+    <p class="hint">Hardcoded Limits: 1 scan / 10s. Max 20 scans / hour.</p>
+  </div>
+  <button id="save-btn">Save Configuration</button>
+  <script src="options.js"></script>
+</body>
+</html>

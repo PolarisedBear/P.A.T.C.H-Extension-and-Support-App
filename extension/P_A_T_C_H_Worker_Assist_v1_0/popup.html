@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { width: 300px; font-family: sans-serif; padding: 15px; background: #FCFCF9; color: #13343B; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+    .header h2 { margin: 0; font-size: 16px; }
+    .stats { font-size: 12px; color: #666; background: #eee; padding: 8px; border-radius: 5px; margin-bottom: 15px; }
+    .item { border-bottom: 1px solid #eee; padding: 10px 0; font-size: 13px; }
+    .badge { float: right; padding: 2px 6px; border-radius: 4px; color: white; font-size: 11px; }
+    .btn-link { color: #21808D; text-decoration: none; font-size: 12px; margin-top: 5px; display: inline-block; }
+    #settings-btn { cursor: pointer; font-size: 20px; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h2>P.A.T.C.H Assist</h2>
+    <span id="settings-btn">⚙️</span>
+  </div>
+  <div class="stats" id="stat-line">Session: 0/20 scans used</div>
+  <h3>Review Queue</h3>
+  <div id="queue-list">No flagged posts yet.</div>
+  <script src="popup.js"></script>
+</body>
+</html>

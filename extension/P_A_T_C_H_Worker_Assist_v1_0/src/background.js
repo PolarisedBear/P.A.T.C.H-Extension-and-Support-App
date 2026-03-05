@@ -1,108 +1,112 @@
+// src/background.js
+
 import * as ort from 'onnxruntime-web';
+import { encodeText } from './tokenizer.js';
 
-const RATE_LIMIT_HOUR = 200;
-const MIN_INTERVAL_MS = 10000;
+let sessionPromise = null;
 
-let session = null;
+async function initSession() {
+  if (sessionPromise) return sessionPromise;
 
-// configure ONNX Runtime session on extension load
-ort.env.wasm.wasmPaths = {
-  'ort-wasm.wasm': chrome.runtime.getURL('onnx-wasm/ort-wasm.wasm'),
-  'ort-wasm.mjs': chrome.runtime.getURL('onnx-wasm/ort-wasm.mjs')
+  ort.env.wasm.wasmPaths = {
+    'ort-wasm-simd-threaded.wasm': chrome.runtime.getURL('onnx-wasm/ort-wasm-simd-threaded.wasm')
+  };
+
+  ort.env.wasm.numThreads = 1;
+  ort.env.wasm.simd = true;
+
+  const modelUrl = chrome.runtime.getURL('models/mental-health-bert-finetuned-onnx/model_optimized.onnx');
+  sessionPromise = ort.InferenceSession.create(modelUrl, {
+    executionProviders: ['wasm'],
+  });
+
+  sessionPromise
+    .then(() => console.log('[P.A.T.C.H] ONNX session ready (mental-health-bert)'))
+    .catch(err => console.error('[P.A.T.C.H] ONNX session init failed:', err));
+
+  return sessionPromise;
 }
-
-ort.env.wasm.numThreads = 1;
-ort.env.wasm.simd = true;
-
-async function initModel() {
-  if (session) return;
-  try {
-    const modelUrl = chrome.runtime.getURL('models/distress-model.onnx'); //placeholder
-    session = await ort.InferenceSession.create(modelUrl, {
-      executionProviders: ['wasm']
-    });
-    console.log('ONNX model loaded successfully');
-  } catch (error) { 
-    console.error('Failed to load ONNX model:', error);
-  }
-}
-
-chrome.runtime.onInstalled.addListener(() => {
-  initModel();
-});
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.type === 'ANALYZE_TEXT' || request.type === 'ANALYZE_STORY') {
-    handleAnalysis(request, sendResponse);
+  if (request.type === 'ANALYZE_TEXT') {
+    handleAnalyzeText(request.text)
+      .then(sendResponse)
+      .catch(err => {
+        console.error('[P.A.T.C.H] Inference error:', err);
+        sendResponse({ error: err.message || 'Inference failed' });
+      });
     return true;
   }
 });
 
-async function handleAnalysis(request, sendResponse) {
-  const storage = await chrome.storage.local.get(['config', 'stats', 'queue']);
-  const config = storage.config || {};
-  const stats = storage.stats || { hourlyCount: 0, lastResetHour: new Date().getHours(), lastScanTime: 0 };
-  
-  const now = Date.now();
-  const currentHour = new Date().getHours();
+/**
+ * Labels for ourafla/mental-health-bert-finetuned:
+ *   0: Anxiety
+ *   1: Depression
+ *   2: Normal
+ *   3: Suicidal
+ */
+const LABELS = ['Anxiety', 'Depression', 'Normal', 'Suicidal'];
 
-  // Rate limit checks
-  if (currentHour !== stats.lastResetHour) {
-    stats.hourlyCount = 0;
-    stats.lastResetHour = currentHour;
-  }
+async function handleAnalyzeText(text) {
+  const session = await initSession();
+  const maxLen = 128;
 
-  if (now - stats.lastScanTime < MIN_INTERVAL_MS) {
-    sendResponse({ error: 'Please wait 10 seconds between scans.' });
-    return;
-  }
+  const { inputIds, attentionMask } = await encodeText(text, maxLen);
 
-  if (stats.hourlyCount >= RATE_LIMIT_HOUR) {
-    sendResponse({ error: `Hourly scan limit ${RATE_LIMIT_HOUR} reached.` });
-    return;
-  }
+  const inputs = {
+    input_ids: new ort.Tensor('int64', inputIds, [1, maxLen]),
+    attention_mask: new ort.Tensor('int64', attentionMask, [1, maxLen]),
+  };
 
-  try {
-    /*
-    let result;
-    if (request.type === 'ANALYZE_STORY') {
-      const dataUrl = await chrome.tabs.captureVisibleTab(null, { format: 'jpeg' });
-      result = await callApi(config.ocrEndpoint, { image: dataUrl, type: 'story' }, config.apiKey);
-    } else {
-      result = await callApi(config.apiEndpoint, { text: request.text, type: 'post' }, config.apiKey);
-    }
+  const outputMap = await session.run(inputs);
+  const logitsTensor = outputMap.logits || Object.values(outputMap)[0];
+  const logits = Array.from(logitsTensor.data);
+  const probs = softmax(logits); // length 4
 
-    stats.hourlyCount++;
-    stats.lastScanTime = now;
-    await chrome.storage.local.set({ stats });
+  const suicidalProb = probs[3];                 // Suicidal
+  const distressProb = probs[0] + probs[1];      // Anxiety + Depression
+  const normalProb = probs[2];                   // Normal
 
-    if (result.riskLevel !== 'Low') {
-      const queue = storage.queue || [];
-      queue.unshift({ ...result, url: request.url, timestamp: now });
-      await chrome.storage.local.set({ queue: queue.slice(0, 50) });
-    }
-    */
-    if (!session) { 
-      await initModel();
-    }
+  const riskLevel = toRiskLevel(suicidalProb, distressProb, normalProb);
 
-    const tokens = request.text.split(' ').slice(0, 512); // simple tokenization
-    const inputTensor = new ort.Tensor('int64', tokens, [1, tokens.length]);
+  // For debugging / UI, get top label
+  const topIdx = argMax(probs);
+  const topLabel = LABELS[topIdx];
 
-    const result = await session.run({ input_ids: inputTensor });
-    
-    sendResponse({ data: result });
-  } catch (err) {
-    sendResponse({ error: 'API Error: ' + err.message });
-  }
+  return {
+    riskLevel,            // 'Low' | 'Medium' | 'High'
+    suicidalProb,
+    distressProb,
+    normalProb,
+    probs,
+    logits,
+    topLabel,
+  };
 }
 
-async function callApi(endpoint, body, key) {
-  if (!endpoint) throw new Error('API Endpoint not configured in settings.');
-  const resp = await fetch(endpoint, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
-    body: JSON.stringify(body)
-  });
-  return resp.json();
+function softmax(arr) {
+  const max = Math.max(...arr);
+  const exps = arr.map(x => Math.exp(x - max));
+  const sum = exps.reduce((a, b) => a + b, 0);
+  return exps.map(e => e / sum);
+}
+
+function argMax(arr) {
+  return arr.reduce((bestIdx, x, i, a) => (x > a[bestIdx] ? i : bestIdx), 0);
+}
+
+/**
+ * Map suicidalProb + distressProb + normalProb into a triage level.
+ * Tune thresholds after you see real outputs.
+ */
+function toRiskLevel(suicidalProb, distressProb, normalProb) {
+  // Highest band: strong suicidal signal
+  if (suicidalProb >= 0.6) return 'High';
+
+  // Medium band: noticeable suicidal OR strong overall distress (A/D)
+  if (suicidalProb >= 0.35 || distressProb >= 0.6) return 'Medium';
+
+  // Everything else → Low
+  return 'Low';
 }

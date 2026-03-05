@@ -11,13 +11,29 @@
   "host_permissions": [
     "https://www.instagram.com/*"
   ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "models/mental-health-bert-finetuned-onnx/model.onnx",
+        "onnx-wasm/ort-wasm-simd-threaded.wasm.wasm",
+        "onnx-wasm/ort.wasm.min.js"
+      ],
+      "matches": [
+        "https://www.instagram.com/*"
+      ]
+    }
+  ],
   "action": {
     "default_popup": "src/popup.html",
     "default_title": "P.A.T.C.H Worker Assist"
   },
   "options_page": "src/options.html",
   "background": {
-    "service_worker": "src/background.js"
+    "service_worker": "src/background.js",
+    "type": "module"
   },
   "content_scripts": [
     {

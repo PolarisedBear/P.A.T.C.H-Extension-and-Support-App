@@ -1,6 +1,6 @@
 // src/background.js
 
-import * as ort from 'onnxruntime-web';
+import * as ort from '../onnx-wasm/ort.wasm.min.js';
 import { encodeText } from './tokenizer.js';
 
 let sessionPromise = null;
@@ -9,7 +9,9 @@ async function initSession() {
   if (sessionPromise) return sessionPromise;
 
   ort.env.wasm.wasmPaths = {
-    'ort-wasm-simd-threaded.wasm': chrome.runtime.getURL('onnx-wasm/ort-wasm-simd-threaded.wasm')
+    // Provide both common filenames in case the build produced a different name
+    'ort-wasm-simd-threaded.wasm': chrome.runtime.getURL('onnx-wasm/ort-wasm-simd-threaded.wasm'),
+    'ort-wasm-simd-threaded.wasm.wasm': chrome.runtime.getURL('onnx-wasm/ort-wasm-simd-threaded.wasm.wasm')
   };
 
   ort.env.wasm.numThreads = 1;
@@ -29,11 +31,15 @@ async function initSession() {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'ANALYZE_TEXT') {
+    console.debug('[P.A.T.C.H] received ANALYZE_TEXT request', (request.text||'').slice(0,120));
     handleAnalyzeText(request.text)
-      .then(sendResponse)
+      .then(result => {
+        console.debug('[P.A.T.C.H] sending analysis response', result && result.riskLevel);
+        sendResponse(result);
+      })
       .catch(err => {
         console.error('[P.A.T.C.H] Inference error:', err);
-        sendResponse({ error: err.message || 'Inference failed' });
+        try { sendResponse({ error: err.message || 'Inference failed' }); } catch (e) { console.error('[P.A.T.C.H] sendResponse failed', e); }
       });
     return true;
   }
@@ -110,3 +116,5 @@ function toRiskLevel(suicidalProb, distressProb, normalProb) {
   // Everything else → Low
   return 'Low';
 }
+
+initSession();

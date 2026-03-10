@@ -2,10 +2,9 @@
 // Tokenization for ourafla/mental-health-bert-finetuned using wink-tokenizer
 // NOTE: This is an approximation: whole-word lookup into BERT vocab + [UNK].
 // For exact WordPiece, you’d replace the mapping layer with a proper WordPiece segmenter.
-
-import winkTokenizer from 'wink-tokenizer';
-
-const wt = winkTokenizer();
+// Use the bundled minimal tokenizer implementation for browser/service-worker usage.
+import createTokenizer from './vendor/wink-tokenizer.mjs';
+const wt = createTokenizer();
 
 let vocab = null;
 let clsId = null;

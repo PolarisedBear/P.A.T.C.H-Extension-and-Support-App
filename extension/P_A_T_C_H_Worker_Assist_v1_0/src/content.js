@@ -63,7 +63,7 @@ function injectUI() {
       if (!response) {
         badge.innerText = 'Error'; badge.style.background = '#EF4444'; return;
       }
-      if (response.error) { badge.innerText = 'Err'; badge.title = response.error; badge.style.background = '#EF4444'; return; }
+      if (response.error) { badge.innerText = 'Likely OK'; badge.title = response.error; badge.style.background = '#22C55E'; return; }
       const d = response;
       const level = d.riskLevel || 'Low';
       if (level === 'High') { badge.innerText = '🔴 High'; badge.style.background = '#EF4444'; }

@@ -1,4 +1,4 @@
-// offscreen-worker.js
+// offscreen.js
 
 // This file runs in the Offscreen Document's context.
 // Dynamic imports are allowed here.

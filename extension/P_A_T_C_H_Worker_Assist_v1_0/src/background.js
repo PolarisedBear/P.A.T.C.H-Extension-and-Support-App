@@ -40,7 +40,7 @@ async function ensureOffscreenDocument() {
   if (!creatingOffscreen) { 
     creatingOffscreen = chrome.offscreen.createDocument({
       url: 'offscreen.html',
-      reasons: ['WORKERS'],
+      reasons: ['WORKERS', 'BLOBS'],
       justification: 'Maintain persistent data for offscreen inference',
     })
 

@@ -19,11 +19,20 @@
     {
       "resources": [
         "models/mental-health-bert-finetuned-onnx/model_optimized.onnx",
-        "onnx-wasm/ort-wasm-simd-threaded.wasm.wasm",
-        "onnx-wasm/ort.wasm.min.js"
+        "onnx-wasm/ort-wasm-simd-threaded.wasm",
+        "onnx-wasm/ort-wasm-simd-threaded.js"
       ],
       "matches": [
         "https://www.instagram.com/*"
+      ]
+    },
+    {
+      "resources": [
+        "src/offscreen.html",
+        "src/offscreen.js"
+      ],
+      "matches": [
+        "<all_urls>"
       ]
     }
   ],

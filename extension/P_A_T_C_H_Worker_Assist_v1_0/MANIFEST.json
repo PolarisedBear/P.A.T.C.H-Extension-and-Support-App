@@ -9,6 +9,7 @@
     "scripting",
     "offscreen"
   ],
+  "offscreen": true,
   "host_permissions": [
     "https://www.instagram.com/*"
   ],
@@ -19,6 +20,7 @@
     {
       "resources": [
         "models/mental-health-bert-finetuned-onnx/model_optimized.onnx",
+        "models/mental-health-bert-finetuned-onnx/vocab.txt",
         "onnx-wasm/ort-wasm-simd-threaded.wasm",
         "onnx-wasm/ort-wasm-simd-threaded.js"
       ],
@@ -28,7 +30,7 @@
     },
     {
       "resources": [
-        "src/offscreen.html",
+        "offscreen.html",
         "src/offscreen.js"
       ],
       "matches": [

@@ -2,7 +2,26 @@
 
 // This file runs in the Offscreen Document's context.
 // Dynamic imports are allowed here.
-import ort from '../onnx-wasm/ort.wasm.min.js';
+// Use the local ESM build shipped in the extension so module resolution
+// works within the offscreen document environment.
+
+await initSession();
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  if (request.type === 'ANALYZE_TEXT_OFFSCREEN') {
+    handleAnalyzeText(request.text)
+      .then(result => {
+        sendResponse(result);
+      })
+      .catch(err => {
+        console.error('[P.A.T.C.H] Offscreen Inference error:', err);
+        sendResponse({ error: err.message || 'Offscreen Inference failed' });
+      });
+    return true; // Indicate that sendResponse will be called asynchronously
+  }
+});
+
+
+import * as ort from './onnx-wasm/ort-wasm-simd-threaded.mjs';
 import { encodeText } from './tokenizer.js'; // Assuming tokenizer.js is compatible or also adapted
 
 if (!ort.env || Object.keys(ort.env).length === 0) { 
@@ -21,12 +40,16 @@ let sessionPromise = null;
 async function initSession() {
   if (sessionPromise) return sessionPromise;
 
-  if (!ort) {
-    throw new Error('ONNX runtime (ort) is not available in the offscreen document');
+  if (!ort || !ort.InferenceSession || !ort.InferenceSession.create) {
+    throw new Error('ONNX Runtime not fully initialized. ort.InferenceSession.create is undefined');
+  }
+
+  ort.env.wasm.wasmPaths = {
+    'ort-wasm-simd-threaded.wasm': chrome.runtime.getURL('onnx-wasm/ort-wasm-simd-threaded.wasm'),
   }
 
   const modelUrl = chrome.runtime.getURL('models/mental-health-bert-finetuned-onnx/model_optimized.onnx');
-  sessionPromise = ort.InferenceSession.create(modelUrl, {
+  sessionPromise = await ort.InferenceSession.create(modelUrl, {
     executionProviders: ['wasm'],
   });
 
@@ -93,19 +116,5 @@ function toRiskLevel(suicidalProb, distressProb, normalProb) {
 }
 
 // Listen for messages from the service worker
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.type === 'ANALYZE_TEXT_OFFSCREEN') {
-    handleAnalyzeText(request.text)
-      .then(result => {
-        sendResponse(result);
-      })
-      .catch(err => {
-        console.error('[P.A.T.C.H] Offscreen Inference error:', err);
-        sendResponse({ error: err.message || 'Offscreen Inference failed' });
-      });
-    return true; // Indicate that sendResponse will be called asynchronously
-  }
-});
 
-// Initialize the session as soon as the offscreen document loads
-initSession();
+

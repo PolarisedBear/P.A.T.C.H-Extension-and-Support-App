@@ -93,8 +93,8 @@ export async function encodeText(text, maxLen = 128) {
     ids = ids.concat(new Array(padCount).fill(padId));
   }
 
-  const inputIds = new Int32Array(ids);
-  const attentionMask = new Int32Array(attention);
+  const inputIds = new BigInt64Array(ids.map(id => BigInt(id)));
+  const attentionMask = new BigInt64Array(attention.map(val => BigInt(val)));
 
   return { inputIds, attentionMask };
 }

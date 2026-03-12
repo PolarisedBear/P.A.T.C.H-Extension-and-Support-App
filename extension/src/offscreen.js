@@ -24,17 +24,17 @@ import * as ort from 'onnxruntime-web';
 import { encodeText } from './tokenizer.js'; // Assuming tokenizer.js is compatible or also adapted
 
 
-if (!ort.env || Object.keys(ort.env).length === 0) { 
+// Init env variables before initializing session
 
-  ort.env.wasm = ort.env.wasm || {};
-  ort.env.wasm.logLevel = 'verbose';
-  ort.env.wasm.debug = true;
-  ort.env.wasm.wasmPaths = {
-    'ort-wasm-simd-threaded.wasm': chrome.runtime.getURL('onnx-wasm/ort-wasm-simd-threaded.wasm'),
-    }
-  ort.env.wasm.numThreads = 1;
-  ort.env.wasm.simd = true;
-}
+ort.env.wasm = ort.env.wasm || {};
+ort.env.wasm.logLevel = 'verbose';
+ort.env.wasm.debug = true;
+ort.env.wasm.wasmPaths = {
+  'ort-wasm-simd-threaded.wasm': chrome.runtime.getURL('onnx-wasm/ort-wasm-simd-threaded.wasm'),
+  }
+ort.env.wasm.numThreads = 1;
+ort.env.wasm.simd = true;
+
 
 let sessionPromise = null;
 
@@ -50,14 +50,18 @@ async function initSession() {
   }
 
   const modelUrl = chrome.runtime.getURL('models/mental-health-bert-finetuned-onnx/model_optimized.onnx');
-  sessionPromise = await ort.InferenceSession.create(modelUrl, {
+  sessionPromise = ort.InferenceSession.create(modelUrl, {
     executionProviders: ['wasm'],
   });
 
   sessionPromise
     .then(() => console.log('[P.A.T.C.H] ONNX session ready (mental-health-bert) in offscreen document'))
-    .catch(err => console.error('[P.A.T.C.H] ONNX session init failed in offscreen document:', err));
+    .catch(err => {
+      console.error('[P.A.T.C.H] ONNX session init failed in offscreen document:', err)
+      sessionPromise = null;
+    });
 
+  
   return sessionPromise;
 }
 

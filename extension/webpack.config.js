@@ -1,5 +1,7 @@
 // webpack.config.js  
 const path = require('path');  
+
+const isDev = process.env.NODE_ENV !== 'production';
  
 const babelRule = {
   test: /\.js$/,
@@ -12,36 +14,45 @@ const babelRule = {
   },
 };
 
+function makeConfig({ name, target, entry, filename, experiments = {} }) {
+  return {
+    name,
+    mode: isDev ? 'development' : 'production',
+    target,
+    entry,
+    output: {
+      filename,
+      path: path.resolve(__dirname, 'dist'),
+      devtoolModuleFilenameTemplate: 'webpack:///[absolute-resource-path]',
+      clean: false
+    },
+    devtool: isDev ? 'source-map' : false,
+    experiments,
+    module: {
+      rules: [babelRule],
+    },
+    optimization: {
+      minimize : !isDev
+    },
+    stats: 'errors-warnings'
+  }
+}
+
+
 module.exports = [
-  {
+  makeConfig({
     name: 'background',
-    mode: 'production',
     target: 'webworker',
     entry: './src/background.js',
-    output: {
-      filename: 'background.bundle.js',
-      path: path.resolve(__dirname, 'dist'),
-    },
-    devtool: false,
-    module: {
-      rules: [babelRule],
-    },
-  },
-  {
+    filename: 'background.bundle.js',
+  }),
+  makeConfig({
     name: 'offscreen',
-    mode: 'production',
     target: 'web',
     entry: './src/offscreen.js',
-    output: {
-      filename: 'offscreen.bundle.js',
-      path: path.resolve(__dirname, 'dist'),
-    },
-    devtool: false,
+    filename: 'offscreen.bundle.js',
     experiments: {
-      topLevelAwait: true,
-    },
-    module: {
-      rules: [babelRule],
-    },
-  },
+      toplevelAwait: true
+    } 
+  })
 ];

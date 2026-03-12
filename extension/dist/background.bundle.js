@@ -1,2 +1,112 @@
-/*! For license information please see background.bundle.js.LICENSE.txt */
-(()=>{function e(){var t,r,o="function"==typeof Symbol?Symbol:{},c=o.iterator||"@@iterator",i=o.toStringTag||"@@toStringTag";function u(e,o,c,i){var u=o&&o.prototype instanceof f?o:f,s=Object.create(u.prototype);return n(s,"_invoke",function(e,n,o){var c,i,u,f=0,s=o||[],l=!1,d={p:0,n:0,v:t,a:m,f:m.bind(t,4),d:function(e,n){return c=e,i=0,u=t,d.n=n,a}};function m(e,n){for(i=e,u=n,r=0;!l&&f&&!o&&r<s.length;r++){var o,c=s[r],m=d.p,p=c[2];e>3?(o=p===n)&&(u=c[(i=c[4])?5:(i=3,3)],c[4]=c[5]=t):c[0]<=m&&((o=e<2&&m<c[1])?(i=0,d.v=n,d.n=c[1]):m<p&&(o=e<3||c[0]>n||n>p)&&(c[4]=e,c[5]=n,d.n=p,i=0))}if(o||e>1)return a;throw l=!0,n}return function(o,s,p){if(f>1)throw TypeError("Generator is already running");for(l&&1===s&&m(s,p),i=s,u=p;(r=i<2?t:u)||!l;){c||(i?i<3?(i>1&&(d.n=-1),m(i,u)):d.n=u:d.v=u);try{if(f=2,c){if(i||(o="next"),r=c[o]){if(!(r=r.call(c,u)))throw TypeError("iterator result is not an object");if(!r.done)return r;u=r.value,i<2&&(i=0)}else 1===i&&(r=c.return)&&r.call(c),i<2&&(u=TypeError("The iterator does not provide a '"+o+"' method"),i=1);c=t}else if((r=(l=d.n<0)?u:e.call(n,d))!==a)break}catch(e){c=t,i=1,u=e}finally{f=1}}return{value:r,done:l}}}(e,c,i),!0),s}var a={};function f(){}function s(){}function l(){}r=Object.getPrototypeOf;var d=[][c]?r(r([][c]())):(n(r={},c,function(){return this}),r),m=l.prototype=f.prototype=Object.create(d);function p(e){return Object.setPrototypeOf?Object.setPrototypeOf(e,l):(e.__proto__=l,n(e,i,"GeneratorFunction")),e.prototype=Object.create(m),e}return s.prototype=l,n(m,"constructor",l),n(l,"constructor",s),s.displayName="GeneratorFunction",n(l,i,"GeneratorFunction"),n(m),n(m,i,"Generator"),n(m,c,function(){return this}),n(m,"toString",function(){return"[object Generator]"}),(e=function(){return{w:u,m:p}})()}function n(e,t,r,o){var c=Object.defineProperty;try{c({},"",{})}catch(e){c=0}n=function(e,t,r,o){function i(t,r){n(e,t,function(e){return this._invoke(t,r,e)})}t?c?c(e,t,{value:r,enumerable:!o,configurable:!o,writable:!o}):e[t]=r:(i("next",0),i("throw",1),i("return",2))},n(e,t,r,o)}function t(e,n,t,r,o,c,i){try{var u=e[c](i),a=u.value}catch(e){return void t(e)}u.done?n(a):Promise.resolve(a).then(r,o)}var r=null;function o(){return c.apply(this,arguments)}function c(){var n;return n=e().m(function n(){return e().w(function(e){for(;;)switch(e.n){case 0:if(!("getContexts"in chrome.runtime)){e.n=4;break}return e.n=1,chrome.runtime.getContexts({contextTypes:["OFFSCREEN_DOCUMENT"],documentUrls:[chrome.runtime.getURL("offscreen.html")]});case 1:if(!(e.v.length>0)){e.n=2;break}return console.log("[P.A.T.C.H] reusing existing offscreen document"),e.a(2);case 2:return e.n=3,self.clients.matchAll();case 3:if(!e.v.some(function(e){return e.url.includes(chrome.runtime.id)})){e.n=4;break}return e.a(2);case 4:if(r){e.n=6;break}return r=chrome.offscreen.createDocument({url:"offscreen.html",reasons:["WORKERS","BLOBS"],justification:"Maintain persistent data for offscreen inference"}),e.n=5,r;case 5:r=null,console.log("[P.A.T.C.H] offscreen document created"),e.n=7;break;case 6:return e.n=7,r;case 7:return e.a(2)}},n)}),c=function(){var e=this,r=arguments;return new Promise(function(o,c){var i=n.apply(e,r);function u(e){t(i,o,c,u,a,"next",e)}function a(e){t(i,o,c,u,a,"throw",e)}u(void 0)})},c.apply(this,arguments)}chrome.runtime.onInstalled.addListener(function(){o(),console.log("[P.A.T.C.H] installed, offscreen document ensured")}),chrome.runtime.onStartup.addListener(function(){o(),console.log("[P.A.T.C.H] startup, offscreen document ensured")}),chrome.runtime.onMessage.addListener(function(e,n,t){if("ANALYZE_TEXT"===e.type)return console.debug("[P.A.T.C.H] received ANALYZE_TEXT request",(e.text||"").slice(0,120)),o().then(function(){chrome.runtime.sendMessage({type:"ANALYZE_TEXT_OFFSCREEN",text:e.text}).then(function(e){console.debug("[P.A.T.C.H] received ANALYZE_TEXT_OFFSCREEN response",e&&e.riskLevel),t(e)}).catch(function(e){console.error("[P.A.T.C.H] Message to offscreen failed",e),t({error:e.message||"Offscreen communication failed"})})}).catch(function(e){console.error("[P.A.T.C.H] failed to setup offscreen document",e),t({error:e.message||"failed to setup offscreen document"})}),!0})})();
+/******/ (() => { // webpackBootstrap
+/*!***************************!*\
+  !*** ./src/background.js ***!
+  \***************************/
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
+function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
+// src/background.js
+
+var creatingOffscreen = null;
+function ensureOffscreenDocument() {
+  return _ensureOffscreenDocument.apply(this, arguments);
+}
+function _ensureOffscreenDocument() {
+  _ensureOffscreenDocument = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+    var existingContexts, clients;
+    return _regenerator().w(function (_context) {
+      while (1) switch (_context.n) {
+        case 0:
+          if (!('getContexts' in chrome.runtime)) {
+            _context.n = 4;
+            break;
+          }
+          _context.n = 1;
+          return chrome.runtime.getContexts({
+            contextTypes: ['OFFSCREEN_DOCUMENT'],
+            documentUrls: [chrome.runtime.getURL('offscreen.html')]
+          });
+        case 1:
+          existingContexts = _context.v;
+          if (!(existingContexts.length > 0)) {
+            _context.n = 2;
+            break;
+          }
+          console.log('[P.A.T.C.H] reusing existing offscreen document');
+          return _context.a(2);
+        case 2:
+          _context.n = 3;
+          return self.clients.matchAll();
+        case 3:
+          clients = _context.v;
+          if (!clients.some(function (client) {
+            return client.url.includes(chrome.runtime.id);
+          })) {
+            _context.n = 4;
+            break;
+          }
+          return _context.a(2);
+        case 4:
+          if (creatingOffscreen) {
+            _context.n = 6;
+            break;
+          }
+          creatingOffscreen = chrome.offscreen.createDocument({
+            url: 'offscreen.html',
+            reasons: ['WORKERS', 'BLOBS'],
+            justification: 'Maintain persistent data for offscreen inference'
+          });
+          _context.n = 5;
+          return creatingOffscreen;
+        case 5:
+          creatingOffscreen = null;
+          console.log('[P.A.T.C.H] offscreen document created');
+          _context.n = 7;
+          break;
+        case 6:
+          _context.n = 7;
+          return creatingOffscreen;
+        case 7:
+          return _context.a(2);
+      }
+    }, _callee);
+  }));
+  return _ensureOffscreenDocument.apply(this, arguments);
+}
+chrome.runtime.onInstalled.addListener(function () {
+  ensureOffscreenDocument();
+  console.log('[P.A.T.C.H] installed, offscreen document ensured');
+});
+chrome.runtime.onStartup.addListener(function () {
+  ensureOffscreenDocument();
+  console.log('[P.A.T.C.H] startup, offscreen document ensured');
+});
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.type === 'ANALYZE_TEXT') {
+    console.debug('[P.A.T.C.H] received ANALYZE_TEXT request', (request.text || '').slice(0, 120));
+    ensureOffscreenDocument().then(function () {
+      chrome.runtime.sendMessage({
+        type: 'ANALYZE_TEXT_OFFSCREEN',
+        text: request.text
+      }).then(function (response) {
+        console.debug('[P.A.T.C.H] received ANALYZE_TEXT_OFFSCREEN response', response && response.riskLevel);
+        sendResponse(response);
+      })["catch"](function (err) {
+        console.error('[P.A.T.C.H] Message to offscreen failed', err);
+        sendResponse({
+          error: err.message || 'Offscreen communication failed'
+        });
+      });
+    })["catch"](function (err) {
+      console.error('[P.A.T.C.H] failed to setup offscreen document', err);
+      sendResponse({
+        error: err.message || 'failed to setup offscreen document'
+      });
+    });
+    return true;
+  }
+});
+/******/ })()
+;
+//# sourceMappingURL=background.bundle.js.map

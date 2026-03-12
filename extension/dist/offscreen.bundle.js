@@ -56,6 +56,7 @@ onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.env.wasm.wasmPaths = {
 onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.env.wasm.numThreads = 1;
 onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.env.wasm.simd = true;
 var sessionPromise = null;
+var inferenceQueue = Promise.resolve();
 function initSession() {
   return _initSession.apply(this, arguments);
 }
@@ -96,55 +97,102 @@ function _initSession() {
   }));
   return _initSession.apply(this, arguments);
 }
+function resetSession(reason) {
+  console.warn('[P.A.T.C.H] Resetting ONNX session:', reason);
+  sessionPromise = null;
+}
+function queueInference(task) {
+  var queuedTask = inferenceQueue.then(task, task);
+  inferenceQueue = queuedTask["catch"](function () {
+    return undefined;
+  });
+  return queuedTask;
+}
+function isRetryableSessionError(err) {
+  var message = (err === null || err === void 0 ? void 0 : err.message) || '';
+  return message.includes('Session mismatch') || message.includes('Session already started');
+}
 var LABELS = ['Anxiety', 'Depression', 'Normal', 'Suicidal'];
 function handleAnalyzeText(_x) {
   return _handleAnalyzeText.apply(this, arguments);
 }
 function _handleAnalyzeText() {
-  _handleAnalyzeText = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(text) {
-    var session, maxLen, _yield$encodeText, inputIds, attentionMask, inputs, outputMap, logitsTensor, logits, probs, suicidalProb, distressProb, normalProb, riskLevel, topIdx, topLabel;
-    return _regenerator().w(function (_context2) {
-      while (1) switch (_context2.n) {
+  _handleAnalyzeText = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(text) {
+    return _regenerator().w(function (_context3) {
+      while (1) switch (_context3.n) {
         case 0:
-          _context2.n = 1;
-          return initSession();
-        case 1:
-          session = _context2.v;
-          maxLen = 128;
-          _context2.n = 2;
-          return (0,_tokenizer_js__WEBPACK_IMPORTED_MODULE_1__.encodeText)(text, maxLen);
-        case 2:
-          _yield$encodeText = _context2.v;
-          inputIds = _yield$encodeText.inputIds;
-          attentionMask = _yield$encodeText.attentionMask;
-          inputs = {
-            input_ids: new onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.Tensor('int64', inputIds, [1, maxLen]),
-            attention_mask: new onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.Tensor('int64', attentionMask, [1, maxLen])
-          };
-          _context2.n = 3;
-          return session.run(inputs);
-        case 3:
-          outputMap = _context2.v;
-          logitsTensor = outputMap.logits || Object.values(outputMap)[0];
-          logits = Array.from(logitsTensor.data);
-          probs = softmax(logits); // length 4
-          suicidalProb = probs[3]; // Suicidal
-          distressProb = probs[0] + probs[1]; // Anxiety + Depression
-          normalProb = probs[2]; // Normal
-          riskLevel = toRiskLevel(suicidalProb, distressProb, normalProb);
-          topIdx = argMax(probs);
-          topLabel = LABELS[topIdx];
-          return _context2.a(2, {
-            riskLevel: riskLevel,
-            suicidalProb: suicidalProb,
-            distressProb: distressProb,
-            normalProb: normalProb,
-            probs: probs,
-            logits: logits,
-            topLabel: topLabel
-          });
+          return _context3.a(2, queueInference(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+            var maxLen, _yield$encodeText, inputIds, attentionMask, tokenTypeIds, inputs, outputMap, session, _session, logitsTensor, logits, probs, suicidalProb, distressProb, normalProb, riskLevel, topIdx, topLabel, _t;
+            return _regenerator().w(function (_context2) {
+              while (1) switch (_context2.p = _context2.n) {
+                case 0:
+                  maxLen = 128;
+                  _context2.n = 1;
+                  return (0,_tokenizer_js__WEBPACK_IMPORTED_MODULE_1__.encodeText)(text, maxLen);
+                case 1:
+                  _yield$encodeText = _context2.v;
+                  inputIds = _yield$encodeText.inputIds;
+                  attentionMask = _yield$encodeText.attentionMask;
+                  tokenTypeIds = _yield$encodeText.tokenTypeIds;
+                  inputs = {
+                    input_ids: new onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.Tensor('int64', inputIds, [1, maxLen]),
+                    attention_mask: new onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.Tensor('int64', attentionMask, [1, maxLen]),
+                    token_type_ids: new onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.Tensor('int64', tokenTypeIds, [1, maxLen])
+                  };
+                  _context2.p = 2;
+                  _context2.n = 3;
+                  return initSession();
+                case 3:
+                  session = _context2.v;
+                  _context2.n = 4;
+                  return session.run(inputs);
+                case 4:
+                  outputMap = _context2.v;
+                  _context2.n = 9;
+                  break;
+                case 5:
+                  _context2.p = 5;
+                  _t = _context2.v;
+                  if (isRetryableSessionError(_t)) {
+                    _context2.n = 6;
+                    break;
+                  }
+                  throw _t;
+                case 6:
+                  console.warn('[P.A.T.C.H] Retrying inference after session state error:', _t.message);
+                  resetSession(_t.message);
+                  _context2.n = 7;
+                  return initSession();
+                case 7:
+                  _session = _context2.v;
+                  _context2.n = 8;
+                  return _session.run(inputs);
+                case 8:
+                  outputMap = _context2.v;
+                case 9:
+                  logitsTensor = outputMap.logits || Object.values(outputMap)[0];
+                  logits = Array.from(logitsTensor.data);
+                  probs = softmax(logits); // length 4
+                  suicidalProb = probs[3]; // Suicidal
+                  distressProb = probs[0] + probs[1]; // Anxiety + Depression
+                  normalProb = probs[2]; // Normal
+                  riskLevel = toRiskLevel(suicidalProb, distressProb, normalProb);
+                  topIdx = argMax(probs);
+                  topLabel = LABELS[topIdx];
+                  return _context2.a(2, {
+                    riskLevel: riskLevel,
+                    suicidalProb: suicidalProb,
+                    distressProb: distressProb,
+                    normalProb: normalProb,
+                    probs: probs,
+                    logits: logits,
+                    topLabel: topLabel
+                  });
+              }
+            }, _callee2, null, [[2, 5]]);
+          }))));
       }
-    }, _callee2);
+    }, _callee3);
   }));
   return _handleAnalyzeText.apply(this, arguments);
 }
@@ -207,6 +255,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
 
 var wt = (0,_vendor_wink_tokenizer_mjs__WEBPACK_IMPORTED_MODULE_0__["default"])();
 var vocab = null;
+var vocabLoadPromise = null;
 var clsId = null;
 var sepId = null;
 var padId = null;
@@ -215,60 +264,85 @@ function loadVocab() {
   return _loadVocab.apply(this, arguments);
 }
 /**
- * Encode text into input_ids and attention_mask approximating
- * the tokenizer for ourafla/mental-health-bert-finetuned.
+ * Encode text into input_ids and attention_mask.
  *
- * - Lowercases text
- * - Uses wink-tokenizer for basic word splitting
- * - Looks up whole words in vocab.txt, falls back to [UNK]
- * - Adds [CLS] and [SEP]
- * - Pads/truncates to maxLen
- *
- * @param {string} text
- * @param {number} maxLen
- * @returns {Promise<{ inputIds: Int32Array, attentionMask: Int32Array }>}
+ * Note: this is still an approximation, not full Hugging Face WordPiece.
  */
 function _loadVocab() {
-  _loadVocab = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-    var url, res, text, lines;
-    return _regenerator().w(function (_context) {
-      while (1) switch (_context.n) {
+  _loadVocab = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+    return _regenerator().w(function (_context2) {
+      while (1) switch (_context2.p = _context2.n) {
         case 0:
           if (!vocab) {
-            _context.n = 1;
+            _context2.n = 1;
             break;
           }
-          return _context.a(2);
+          return _context2.a(2);
         case 1:
-          vocab = new Map();
-          url = chrome.runtime.getURL('tokenizer/vocab.txt');
-          _context.n = 2;
-          return fetch(url);
-        case 2:
-          res = _context.v;
-          _context.n = 3;
-          return res.text();
-        case 3:
-          text = _context.v;
-          lines = text.split('\n');
-          lines.forEach(function (line, idx) {
-            var token = line.trim();
-            if (!token) return;
-            vocab.set(token, idx);
-          });
-
-          // Special tokens from ourafla/mental-health-bert-finetuned (bert-base-uncased style)
-          clsId = vocab.get('[CLS]');
-          sepId = vocab.get('[SEP]');
-          padId = vocab.get('[PAD]');
-          unkId = vocab.get('[UNK]');
-          if (clsId === undefined || sepId === undefined || padId === undefined || unkId === undefined) {
-            console.error('[P.A.T.C.H] Tokenizer error: missing [CLS]/[SEP]/[PAD]/[UNK] in vocab.txt');
+          if (!vocabLoadPromise) {
+            _context2.n = 2;
+            break;
           }
+          return _context2.a(2, vocabLoadPromise);
+        case 2:
+          vocabLoadPromise = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+            var nextVocab, url, res, text, lines, nextClsId, nextSepId, nextPadId, nextUnkId;
+            return _regenerator().w(function (_context) {
+              while (1) switch (_context.n) {
+                case 0:
+                  nextVocab = new Map();
+                  url = chrome.runtime.getURL('models/mental-health-bert-finetuned-onnx/vocab.txt');
+                  _context.n = 1;
+                  return fetch(url);
+                case 1:
+                  res = _context.v;
+                  if (res.ok) {
+                    _context.n = 2;
+                    break;
+                  }
+                  throw new Error("[P.A.T.C.H] Failed to load vocab.txt: ".concat(res.status, " ").concat(res.statusText));
+                case 2:
+                  _context.n = 3;
+                  return res.text();
+                case 3:
+                  text = _context.v;
+                  lines = text.split(/\r?\n/);
+                  lines.forEach(function (line, idx) {
+                    var token = line.trim();
+                    if (!token) return;
+                    nextVocab.set(token, idx);
+                  });
+                  nextClsId = nextVocab.get('[CLS]');
+                  nextSepId = nextVocab.get('[SEP]');
+                  nextPadId = nextVocab.get('[PAD]');
+                  nextUnkId = nextVocab.get('[UNK]');
+                  if (!(nextClsId == null || nextSepId == null || nextPadId == null || nextUnkId == null)) {
+                    _context.n = 4;
+                    break;
+                  }
+                  throw new Error('[P.A.T.C.H] Tokenizer error: missing [CLS]/[SEP]/[PAD]/[UNK] in vocab.txt');
+                case 4:
+                  vocab = nextVocab;
+                  clsId = nextClsId;
+                  sepId = nextSepId;
+                  padId = nextPadId;
+                  unkId = nextUnkId;
+                case 5:
+                  return _context.a(2);
+              }
+            }, _callee);
+          }))();
+          _context2.p = 3;
+          _context2.n = 4;
+          return vocabLoadPromise;
         case 4:
-          return _context.a(2);
+          _context2.p = 4;
+          vocabLoadPromise = null;
+          return _context2.f(4);
+        case 5:
+          return _context2.a(2);
       }
-    }, _callee);
+    }, _callee2, null, [[3,, 4, 5]]);
   }));
   return _loadVocab.apply(this, arguments);
 }
@@ -276,62 +350,65 @@ function encodeText(_x) {
   return _encodeText.apply(this, arguments);
 }
 function _encodeText() {
-  _encodeText = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2(text) {
+  _encodeText = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(text) {
     var maxLen,
       tokens,
       wordIds,
       ids,
       attention,
+      tokenTypes,
       realLen,
       i,
-      padCount,
       inputIds,
       attentionMask,
-      _args2 = arguments;
-    return _regenerator().w(function (_context2) {
-      while (1) switch (_context2.n) {
+      tokenTypeIds,
+      _args3 = arguments;
+    return _regenerator().w(function (_context3) {
+      while (1) switch (_context3.n) {
         case 0:
-          maxLen = _args2.length > 1 && _args2[1] !== undefined ? _args2[1] : 128;
-          _context2.n = 1;
+          maxLen = _args3.length > 1 && _args3[1] !== undefined ? _args3[1] : 128;
+          _context3.n = 1;
           return loadVocab();
         case 1:
-          tokens = wt.tokenize(text.toLowerCase()).filter(function (t) {
+          tokens = wt.tokenize((text || '').toLowerCase()).filter(function (t) {
             return t.tag === 'word' || t.tag === 'email' || t.tag === 'url';
           }).map(function (t) {
             return t.value;
           });
           wordIds = tokens.map(function (tok) {
-            if (vocab.has(tok)) return vocab.get(tok);
-            return unkId;
-          }); // Add [CLS] and [SEP]
-          ids = [clsId].concat(_toConsumableArray(wordIds), [sepId]); // Truncate
+            return vocab.has(tok) ? vocab.get(tok) : unkId;
+          });
+          ids = [clsId].concat(_toConsumableArray(wordIds), [sepId]);
           if (ids.length > maxLen) {
             ids = ids.slice(0, maxLen);
             ids[maxLen - 1] = sepId;
           }
-
-          // Attention mask: 1 for real tokens, 0 for padding
           attention = new Array(maxLen).fill(0);
+          tokenTypes = new Array(maxLen).fill(0);
           realLen = Math.min(ids.length, maxLen);
           for (i = 0; i < realLen; i++) attention[i] = 1;
-
-          // Pad with [PAD]
           if (ids.length < maxLen) {
-            padCount = maxLen - ids.length;
-            ids = ids.concat(new Array(padCount).fill(padId));
+            ids = ids.concat(new Array(maxLen - ids.length).fill(padId));
           }
-          inputIds = new BigInt64Array(ids.map(function (id) {
+          inputIds = new BigInt64Array(ids.map(function (id, index) {
+            if (id == null) {
+              throw new Error("[P.A.T.C.H] Null token id at input index ".concat(index));
+            }
             return BigInt(id);
           }));
           attentionMask = new BigInt64Array(attention.map(function (val) {
             return BigInt(val);
           }));
-          return _context2.a(2, {
+          tokenTypeIds = new BigInt64Array(tokenTypes.map(function (val) {
+            return BigInt(val);
+          }));
+          return _context3.a(2, {
             inputIds: inputIds,
-            attentionMask: attentionMask
+            attentionMask: attentionMask,
+            tokenTypeIds: tokenTypeIds
           });
       }
-    }, _callee2);
+    }, _callee3);
   }));
   return _encodeText.apply(this, arguments);
 }

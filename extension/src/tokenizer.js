@@ -7,6 +7,7 @@ import createTokenizer from './vendor/wink-tokenizer.mjs';
 const wt = createTokenizer();
 
 let vocab = null;
+let vocabLoadPromise = null;
 let clsId = null;
 let sepId = null;
 let padId = null;
@@ -14,87 +15,100 @@ let unkId = null;
 
 async function loadVocab() {
   if (vocab) return;
+  if (vocabLoadPromise) return vocabLoadPromise;
 
-  vocab = new Map();
+  vocabLoadPromise = (async () => {
+    const nextVocab = new Map();
 
-  const url = chrome.runtime.getURL('tokenizer/vocab.txt');
-  const res = await fetch(url);
-  const text = await res.text();
-
-  const lines = text.split('\n');
-  lines.forEach((line, idx) => {
-    const token = line.trim();
-    if (!token) return;
-    vocab.set(token, idx);
-  });
-
-  // Special tokens from ourafla/mental-health-bert-finetuned (bert-base-uncased style)
-  clsId = vocab.get('[CLS]');
-  sepId = vocab.get('[SEP]');
-  padId = vocab.get('[PAD]');
-  unkId = vocab.get('[UNK]');
-
-  if (
-    clsId === undefined ||
-    sepId === undefined ||
-    padId === undefined ||
-    unkId === undefined
-  ) {
-    console.error(
-      '[P.A.T.C.H] Tokenizer error: missing [CLS]/[SEP]/[PAD]/[UNK] in vocab.txt'
+    const url = chrome.runtime.getURL(
+      'models/mental-health-bert-finetuned-onnx/vocab.txt'
     );
+
+    const res = await fetch(url);
+    if (!res.ok) {
+      throw new Error(`[P.A.T.C.H] Failed to load vocab.txt: ${res.status} ${res.statusText}`);
+    }
+
+    const text = await res.text();
+    const lines = text.split(/\r?\n/);
+
+    lines.forEach((line, idx) => {
+      const token = line.trim();
+      if (!token) return;
+      nextVocab.set(token, idx);
+    });
+
+    const nextClsId = nextVocab.get('[CLS]');
+    const nextSepId = nextVocab.get('[SEP]');
+    const nextPadId = nextVocab.get('[PAD]');
+    const nextUnkId = nextVocab.get('[UNK]');
+
+    if (
+      nextClsId == null ||
+      nextSepId == null ||
+      nextPadId == null ||
+      nextUnkId == null
+    ) {
+      throw new Error(
+        '[P.A.T.C.H] Tokenizer error: missing [CLS]/[SEP]/[PAD]/[UNK] in vocab.txt'
+      );
+    }
+
+    vocab = nextVocab;
+    clsId = nextClsId;
+    sepId = nextSepId;
+    padId = nextPadId;
+    unkId = nextUnkId;
+  })();
+
+  try {
+    await vocabLoadPromise;
+  } finally {
+    vocabLoadPromise = null;
   }
 }
 
 /**
- * Encode text into input_ids and attention_mask approximating
- * the tokenizer for ourafla/mental-health-bert-finetuned.
+ * Encode text into input_ids and attention_mask.
  *
- * - Lowercases text
- * - Uses wink-tokenizer for basic word splitting
- * - Looks up whole words in vocab.txt, falls back to [UNK]
- * - Adds [CLS] and [SEP]
- * - Pads/truncates to maxLen
- *
- * @param {string} text
- * @param {number} maxLen
- * @returns {Promise<{ inputIds: Int32Array, attentionMask: Int32Array }>}
+ * Note: this is still an approximation, not full Hugging Face WordPiece.
  */
 export async function encodeText(text, maxLen = 128) {
   await loadVocab();
 
   const tokens = wt
-    .tokenize(text.toLowerCase())
+    .tokenize((text || '').toLowerCase())
     .filter(t => t.tag === 'word' || t.tag === 'email' || t.tag === 'url')
     .map(t => t.value);
 
-  const wordIds = tokens.map(tok => {
-    if (vocab.has(tok)) return vocab.get(tok);
-    return unkId;
-  });
+  const wordIds = tokens.map(tok => (vocab.has(tok) ? vocab.get(tok) : unkId));
 
-  // Add [CLS] and [SEP]
   let ids = [clsId, ...wordIds, sepId];
 
-  // Truncate
   if (ids.length > maxLen) {
     ids = ids.slice(0, maxLen);
     ids[maxLen - 1] = sepId;
   }
 
-  // Attention mask: 1 for real tokens, 0 for padding
   const attention = new Array(maxLen).fill(0);
+  const tokenTypes = new Array(maxLen).fill(0);
   const realLen = Math.min(ids.length, maxLen);
   for (let i = 0; i < realLen; i++) attention[i] = 1;
 
-  // Pad with [PAD]
   if (ids.length < maxLen) {
-    const padCount = maxLen - ids.length;
-    ids = ids.concat(new Array(padCount).fill(padId));
+    ids = ids.concat(new Array(maxLen - ids.length).fill(padId));
   }
 
-  const inputIds = new BigInt64Array(ids.map(id => BigInt(id)));
-  const attentionMask = new BigInt64Array(attention.map(val => BigInt(val)));
+  const inputIds = new BigInt64Array(
+    ids.map((id, index) => {
+      if (id == null) {
+        throw new Error(`[P.A.T.C.H] Null token id at input index ${index}`);
+      }
+      return BigInt(id);
+    })
+  );
 
-  return { inputIds, attentionMask };
+  const attentionMask = new BigInt64Array(attention.map(val => BigInt(val)));
+  const tokenTypeIds = new BigInt64Array(tokenTypes.map(val => BigInt(val)));
+  return { inputIds, attentionMask, tokenTypeIds};
 }

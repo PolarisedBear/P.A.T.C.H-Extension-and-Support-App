@@ -37,6 +37,7 @@ ort.env.wasm.simd = true;
 
 
 let sessionPromise = null;
+let inferenceQueue = Promise.resolve();
 
 async function initSession() {
   if (sessionPromise) return sessionPromise;
@@ -65,42 +66,75 @@ async function initSession() {
   return sessionPromise;
 }
 
+function resetSession(reason) {
+  console.warn('[P.A.T.C.H] Resetting ONNX session:', reason);
+  sessionPromise = null;
+}
+
+function queueInference(task) {
+  const queuedTask = inferenceQueue.then(task, task);
+  inferenceQueue = queuedTask.catch(() => undefined);
+  return queuedTask;
+}
+
+function isRetryableSessionError(err) {
+  const message = err?.message || '';
+  return message.includes('Session mismatch') || message.includes('Session already started');
+}
+
 const LABELS = ['Anxiety', 'Depression', 'Normal', 'Suicidal'];
 
 async function handleAnalyzeText(text) {
-  const session = await initSession();
-  const maxLen = 128;
+  return queueInference(async () => {
+    const maxLen = 128;
+    const { inputIds, attentionMask, tokenTypeIds } = await encodeText(text, maxLen);
 
-  const { inputIds, attentionMask } = await encodeText(text, maxLen);
+    const inputs = {
+      input_ids: new ort.Tensor('int64', inputIds, [1, maxLen]),
+      attention_mask: new ort.Tensor('int64', attentionMask, [1, maxLen]),
+      token_type_ids: new ort.Tensor('int64', tokenTypeIds, [1, maxLen])
+    };
 
-  const inputs = {
-    input_ids: new ort.Tensor('int64', inputIds, [1, maxLen]),
-    attention_mask: new ort.Tensor('int64', attentionMask, [1, maxLen]),
-  };
+    let outputMap;
 
-  const outputMap = await session.run(inputs);
-  const logitsTensor = outputMap.logits || Object.values(outputMap)[0];
-  const logits = Array.from(logitsTensor.data);
-  const probs = softmax(logits); // length 4
+    try {
+      const session = await initSession();
+      outputMap = await session.run(inputs);
+    } catch (err) {
+      if (!isRetryableSessionError(err)) {
+        throw err;
+      }
 
-  const suicidalProb = probs[3];                 // Suicidal
-  const distressProb = probs[0] + probs[1];      // Anxiety + Depression
-  const normalProb = probs[2];                   // Normal
+      console.warn('[P.A.T.C.H] Retrying inference after session state error:', err.message);
+      resetSession(err.message);
 
-  const riskLevel = toRiskLevel(suicidalProb, distressProb, normalProb);
+      const session = await initSession();
+      outputMap = await session.run(inputs);
+    }
 
-  const topIdx = argMax(probs);
-  const topLabel = LABELS[topIdx];
+    const logitsTensor = outputMap.logits || Object.values(outputMap)[0];
+    const logits = Array.from(logitsTensor.data);
+    const probs = softmax(logits); // length 4
 
-  return {
-    riskLevel,
-    suicidalProb,
-    distressProb,
-    normalProb,
-    probs,
-    logits,
-    topLabel,
-  };
+    const suicidalProb = probs[3];                 // Suicidal
+    const distressProb = probs[0] + probs[1];      // Anxiety + Depression
+    const normalProb = probs[2];                   // Normal
+
+    const riskLevel = toRiskLevel(suicidalProb, distressProb, normalProb);
+
+    const topIdx = argMax(probs);
+    const topLabel = LABELS[topIdx];
+
+    return {
+      riskLevel,
+      suicidalProb,
+      distressProb,
+      normalProb,
+      probs,
+      logits,
+      topLabel,
+    };
+  });
 }
 
 function softmax(arr) {

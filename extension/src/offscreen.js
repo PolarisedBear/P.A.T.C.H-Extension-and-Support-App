@@ -5,7 +5,6 @@
 // Use the local ESM build shipped in the extension so module resolution
 // works within the offscreen document environment.
 
-await initSession();
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'ANALYZE_TEXT_OFFSCREEN') {
     handleAnalyzeText(request.text)
@@ -21,18 +20,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 
-import * as ort from './onnx-wasm/ort-wasm-simd-threaded.mjs';
+import * as ort from '../onnx-wasm/ort-wasm-simd-threaded.mjs';
 import { encodeText } from './tokenizer.js'; // Assuming tokenizer.js is compatible or also adapted
 
+const env = ort.env;
+
 if (!ort.env || Object.keys(ort.env).length === 0) { 
-  ort.env = ort.env || {};
-  ort.env.wasm = ort.env.wasm || {};
-  ort.env.logLevel = 'verbose';
-  ort.env.wasm.wasmPaths = {
+
+  env.wasm = env.wasm || {};
+  env.logLevel = 'verbose';
+  env.debug = true;
+  env.wasm.wasmPaths = {
     'ort-wasm-simd-threaded.wasm': chrome.runtime.getURL('onnx-wasm/ort-wasm-simd-threaded.wasm'),
     }
-  ort.env.wasm.numThreads = 1;
-  ort.env.wasm.simd = true;
+  env.wasm.numThreads = 1;
+  env.wasm.simd = true;
 }
 
 let sessionPromise = null;
@@ -115,6 +117,6 @@ function toRiskLevel(suicidalProb, distressProb, normalProb) {
   return 'Low';
 }
 
-// Listen for messages from the service worker
-
+// init inference session
+await initSession();
 

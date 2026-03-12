@@ -20,7 +20,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 
-import * as ort from 'onnxruntime-web';
+const ort = require('onnxruntime-web');
 import { encodeText } from './tokenizer.js'; // Assuming tokenizer.js is compatible or also adapted
 
 const env = ort.env;

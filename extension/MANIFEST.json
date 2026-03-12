@@ -10,7 +10,8 @@
     "offscreen"
   ],
   "host_permissions": [
-    "https://www.instagram.com/*"
+    "https://www.instagram.com/*",
+    "file:///*"
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';",
@@ -30,7 +31,8 @@
         "onnx-wasm/ort-wasm-simd-threaded.mjs"
       ],
       "matches": [
-        "https://www.instagram.com/*"
+        "https://www.instagram.com/*",
+        "file:///*"
       ]
     },
     {
@@ -53,7 +55,8 @@
   "content_scripts": [
     {
       "matches": [
-        "https://www.instagram.com/*"
+        "https://www.instagram.com/*",
+        "file:///*"
       ],
       "js": [
         "src/content.js"

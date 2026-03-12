@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>P.A.T.C.H Instagram Sandbox</title>
+  <style>
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --border: #dbdbdb;
+      --text: #262626;
+      --muted: #737373;
+      --blue: #0095f6;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --safe: #22c55e;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    header[role="banner"] {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar {
+      max-width: 975px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .toolbar-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .toolbar-row button,
+    .toolbar-row select {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .toolbar-row button.primary {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .layout {
+      max-width: 975px;
+      margin: 24px auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 28px;
+      padding: 0 20px 60px;
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    aside {
+      position: sticky;
+      top: 84px;
+      align-self: start;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card,
+    article {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .card {
+      padding: 16px;
+    }
+
+    .feed {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .story-strip {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+
+    .story-bubble {
+      min-width: 72px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    .ring,
+    .avatar {
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .ring {
+      width: 66px;
+      height: 66px;
+      background: linear-gradient(135deg, #f9ce34, #ee2a7b, #6228d7);
+      padding: 2px;
+      margin: 0 auto 8px;
+    }
+
+    .avatar {
+      width: 100%;
+      height: 100%;
+      background: #fff;
+    }
+
+    .avatar img,
+    .profile-thumb img,
+    .media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .profile-thumb {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      overflow: hidden;
+      flex: 0 0 auto;
+    }
+
+    .identity {
+      min-width: 0;
+    }
+
+    .identity strong,
+    .identity span {
+      display: block;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .identity span {
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .more-btn,
+    .icon-btn {
+      border: 0;
+      background: transparent;
+      font: inherit;
+      cursor: pointer;
+      color: var(--text);
+    }
+
+    .media {
+      aspect-ratio: 4 / 5;
+      background: #ddd;
+    }
+
+    .post-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px 4px;
+    }
+
+    .post-actions div[role="toolbar"],
+    .post-actions div[role="group"] {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      padding: 6px 8px;
+      border-radius: 8px;
+    }
+
+    .icon-btn:hover {
+      background: #f4f4f5;
+    }
+
+    .post-body {
+      padding: 0 16px 16px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .likes {
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+
+    .caption-line,
+    .comment-preview,
+    .timestamp {
+      font-size: 0.93rem;
+      line-height: 1.45;
+    }
+
+    .caption-line p,
+    .caption-line h1,
+    .caption-line h2 {
+      margin: 0;
+      font-size: inherit;
+      line-height: inherit;
+      font-weight: 400;
+    }
+
+    .caption-line strong {
+      margin-right: 6px;
+    }
+
+    .comment-preview,
+    .timestamp {
+      color: var(--muted);
+    }
+
+    .label-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .pill {
+      font-size: 0.76rem;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #e5e7eb;
+    }
+
+    .pill.safe { color: #166534; background: #dcfce7; border-color: #bbf7d0; }
+    .pill.warning { color: #92400e; background: #fef3c7; border-color: #fde68a; }
+    .pill.danger { color: #991b1b; background: #fee2e2; border-color: #fecaca; }
+
+    [role="dialog"] {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 100;
+    }
+
+    .story-modal {
+      width: min(980px, 100%);
+      min-height: min(80vh, 720px);
+      background: #111827;
+      color: #fff;
+      border-radius: 18px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(320px, 1.15fr) minmax(280px, 0.85fr);
+    }
+
+    .story-media {
+      position: relative;
+      background: #000;
+      min-height: 420px;
+    }
+
+    .story-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .story-overlay-text {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 24px;
+      font-size: 1.1rem;
+      line-height: 1.5;
+      font-weight: 600;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.45);
+    }
+
+    .story-side {
+      display: flex;
+      flex-direction: column;
+      background: #111827;
+    }
+
+    .story-side header,
+    .story-side section,
+    .story-side footer {
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .story-side footer {
+      margin-top: auto;
+      border-bottom: 0;
+    }
+
+    .story-side button {
+      border: 1px solid rgba(255,255,255,0.14);
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    .help-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.93rem;
+    }
+
+    .small {
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: static;
+      }
+
+      .story-modal {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header role="banner">
+    <div class="topbar">
+      <div class="brand" aria-label="Instagram">Instagram</div>
+      <div class="toolbar-row">
+        <select id="preset-selector" aria-label="Caption preset">
+          <option value="mixed">Mixed synthetic captions</option>
+          <option value="safe">Mostly low-risk</option>
+          <option value="concern">Elevated concern</option>
+        </select>
+        <button id="apply-preset">Apply preset</button>
+        <button id="toggle-story" class="primary">Open Story Viewer</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <main>
+      <section class="story-strip" aria-label="Stories">
+        <div class="story-bubble">
+          <div class="ring">
+            <div class="avatar">
+              <img alt="mika profile" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23fde68a'/><circle cx='50' cy='38' r='20' fill='%2392410e'/><rect x='22' y='60' width='56' height='24' rx='12' fill='%23d97706'/></svg>">
+            </div>
+          </div>
+          mika.sun
+        </div>
+        <div class="story-bubble">
+          <div class="ring">
+            <div class="avatar">
+              <img alt="jay profile" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23bfdbfe'/><circle cx='50' cy='36' r='19' fill='%231d4ed8'/><rect x='22' y='58' width='56' height='26' rx='13' fill='%233b82f6'/></svg>">
+            </div>
+          </div>
+          jay.archive
+        </div>
+        <div class="story-bubble">
+          <div class="ring">
+            <div class="avatar">
+              <img alt="noa profile" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23ddd6fe'/><circle cx='50' cy='36' r='19' fill='%235b21b6'/><rect x='22' y='58' width='56' height='26' rx='13' fill='%237c3aed'/></svg>">
+            </div>
+          </div>
+          noa.notes
+        </div>
+      </section>
+
+      <section class="feed" aria-label="Instagram feed sandbox">
+        <article data-sandbox-risk="low">
+          <header class="post-header">
+            <div class="post-meta">
+              <div class="profile-thumb">
+                <img alt="mika.sun profile picture" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g1' x1='0' x2='1'><stop offset='0' stop-color='%23fdba74'/><stop offset='1' stop-color='%23fb7185'/></linearGradient></defs><rect width='100' height='100' fill='url(%23g1)'/><circle cx='50' cy='34' r='18' fill='%23fff'/><rect x='24' y='56' width='52' height='24' rx='12' fill='%23fff'/></svg>">
+              </div>
+              <div class="identity">
+                <strong>mika.sun</strong>
+                <span>Seattle, WA</span>
+              </div>
+            </div>
+            <button class="more-btn" aria-label="More options">•••</button>
+          </header>
+
+          <div>
+            <a href="https://www.instagram.com/p/C8PATCH01/" aria-label="Post by mika.sun">
+              <div class="media">
+                <img alt="sunlight coming through apartment window" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 1000'><rect width='800' height='1000' fill='%23fde68a'/><rect x='130' y='140' width='260' height='520' fill='%23fff7ed'/><rect x='430' y='180' width='220' height='480' fill='%23fef3c7'/><circle cx='610' cy='220' r='72' fill='%23f59e0b'/><path d='M0 840 C200 760 380 780 800 640 L800 1000 L0 1000 Z' fill='%23fca5a5'/></svg>">
+              </div>
+            </a>
+          </div>
+
+          <section class="post-actions">
+            <div role="toolbar" aria-label="Post actions">
+              <button class="icon-btn" aria-label="Like">♡</button>
+              <button class="icon-btn" aria-label="Comment">💬</button>
+              <button class="icon-btn" aria-label="Share">✈</button>
+              <button class="icon-btn" aria-label="Send">➤</button>
+            </div>
+            <div role="group" aria-label="Save actions">
+              <button class="icon-btn" aria-label="Save">🔖</button>
+            </div>
+          </section>
+
+          <div class="post-body">
+            <div class="likes">1,842 likes</div>
+            <div class="caption-line">
+              <h2><strong>mika.sun</strong><span class="caption-text"> Synthetic low-risk sample: finally catching up on sleep, tea, and sunlight after a long week.</span></h2>
+            </div>
+            <div class="label-row">
+              <span class="pill safe">synthetic</span>
+              <span class="pill safe">low-risk baseline</span>
+            </div>
+            <div class="comment-preview">View all 18 comments</div>
+            <div class="timestamp">2 HOURS AGO</div>
+          </div>
+        </article>
+
+        <article data-sandbox-risk="medium">
+          <header class="post-header">
+            <div class="post-meta">
+              <div class="profile-thumb">
+                <img alt="jay.archive profile picture" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23dbeafe'/><circle cx='50' cy='34' r='18' fill='%231d4ed8'/><rect x='24' y='56' width='52' height='24' rx='12' fill='%231d4ed8'/></svg>">
+              </div>
+              <div class="identity">
+                <strong>jay.archive</strong>
+                <span>Campus studio</span>
+              </div>
+            </div>
+            <button class="more-btn" aria-label="More options">•••</button>
+          </header>
+
+          <div>
+            <a href="https://www.instagram.com/p/C8PATCH02/" aria-label="Post by jay.archive">
+              <div class="media">
+                <img alt="messy desk with sketchbook and headphones" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 1000'><rect width='800' height='1000' fill='%23e0f2fe'/><rect x='90' y='610' width='620' height='180' rx='18' fill='%2394a3b8'/><rect x='190' y='240' width='360' height='270' rx='14' fill='%23fff'/><path d='M230 300 L500 300 L470 460 L270 430 Z' fill='%23bfdbfe'/><circle cx='620' cy='530' r='92' fill='%23334155'/><circle cx='620' cy='530' r='46' fill='%23e2e8f0'/></svg>">
+              </div>
+            </a>
+          </div>
+
+          <section class="post-actions">
+            <div role="toolbar" aria-label="Post actions">
+              <button class="icon-btn" aria-label="Like">♡</button>
+              <button class="icon-btn" aria-label="Comment">💬</button>
+              <button class="icon-btn" aria-label="Share">✈</button>
+            </div>
+            <div role="group" aria-label="Story controls">
+              <button class="icon-btn" aria-label="Send">➤</button>
+            </div>
+          </section>
+
+          <div class="post-body">
+            <div class="likes">693 likes</div>
+            <div class="caption-line">
+              <p><strong>jay.archive</strong><span class="caption-text"> Synthetic concern sample: I keep smiling for people, but lately everything feels heavy and I am exhausted all the time.</span></p>
+            </div>
+            <div class="label-row">
+              <span class="pill warning">synthetic</span>
+              <span class="pill warning">elevated concern</span>
+            </div>
+            <div class="comment-preview">View all 42 comments</div>
+            <div class="timestamp">5 HOURS AGO</div>
+          </div>
+        </article>
+
+        <article data-sandbox-risk="high">
+          <header class="post-header">
+            <div class="post-meta">
+              <div class="profile-thumb">
+                <img alt="noa.notes profile picture" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23ede9fe'/><circle cx='50' cy='34' r='18' fill='%236b21a8'/><rect x='24' y='56' width='52' height='24' rx='12' fill='%236b21a8'/></svg>">
+              </div>
+              <div class="identity">
+                <strong>noa.notes</strong>
+                <span>Private journal drop</span>
+              </div>
+            </div>
+            <button class="more-btn" aria-label="More options">•••</button>
+          </header>
+
+          <div>
+            <a href="https://www.instagram.com/p/C8PATCH03/" aria-label="Post by noa.notes">
+              <div class="media">
+                <img alt="night sky over quiet buildings" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 1000'><rect width='800' height='1000' fill='%230f172a'/><circle cx='620' cy='180' r='70' fill='%23e2e8f0'/><circle cx='170' cy='210' r='4' fill='%23fff'/><circle cx='240' cy='150' r='5' fill='%23fff'/><circle cx='320' cy='250' r='4' fill='%23fff'/><rect x='0' y='700' width='200' height='300' fill='%231e293b'/><rect x='180' y='620' width='200' height='380' fill='%23334155'/><rect x='360' y='680' width='200' height='320' fill='%231e293b'/><rect x='560' y='600' width='240' height='400' fill='%23334155'/></svg>">
+              </div>
+            </a>
+          </div>
+
+          <section class="post-actions">
+            <div role="toolbar" aria-label="Post actions">
+              <button class="icon-btn" aria-label="Like">♡</button>
+              <button class="icon-btn" aria-label="Comment">💬</button>
+              <button class="icon-btn" aria-label="Share">✈</button>
+              <button class="icon-btn" aria-label="Send">➤</button>
+            </div>
+            <div role="group" aria-label="Additional actions">
+              <button class="icon-btn" aria-label="Save">🔖</button>
+            </div>
+          </section>
+
+          <div class="post-body">
+            <div class="likes">311 likes</div>
+            <div class="caption-line">
+              <h1><strong>noa.notes</strong><span class="caption-text"> Synthetic high-concern sample: I feel isolated, numb, and like it is getting harder to imagine things improving.</span></h1>
+            </div>
+            <div class="label-row">
+              <span class="pill danger">synthetic</span>
+              <span class="pill danger">high concern</span>
+            </div>
+            <div class="comment-preview">View all 9 comments</div>
+            <div class="timestamp">8 HOURS AGO</div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <aside>
+      <div class="card">
+        <strong>Sandbox notes</strong>
+        <ul class="help-list">
+          <li>Every caption is synthetic and intended for testing only.</li>
+          <li>Each post includes an <span class="mono">article</span>, a real-looking <span class="mono">/p/</span> permalink, and action buttons with Instagram-style aria labels.</li>
+          <li>The story modal uses <span class="mono">role="dialog"</span> with image and button controls so the content script can discover it.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <strong>Selectors covered</strong>
+        <div class="label-row">
+          <span class="pill">article</span>
+          <span class="pill">a[href*="/p/"]</span>
+          <span class="pill">h1 / h2 / p / span</span>
+          <span class="pill">div[role="toolbar"]</span>
+          <span class="pill">div[role="group"]</span>
+          <span class="pill">div[role="dialog"]</span>
+          <span class="pill">button[aria-label]</span>
+        </div>
+        <p class="small">This mirrors the selectors currently used by the extension content script.</p>
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    const presets = {
+      mixed: [
+        'Synthetic low-risk sample: finally catching up on sleep, tea, and sunlight after a long week.',
+        'Synthetic concern sample: I keep smiling for people, but lately everything feels heavy and I am exhausted all the time.',
+        'Synthetic high-concern sample: I feel isolated, numb, and like it is getting harder to imagine things improving.'
+      ],
+      safe: [
+        'Synthetic low-risk sample: weekend reset, fresh air, and finishing my playlist.',
+        'Synthetic low-risk sample: small wins today, class is done, and I actually ate lunch on time.',
+        'Synthetic low-risk sample: trying a new routine and giving myself a little patience.'
+      ],
+      concern: [
+        'Synthetic concern sample: it is getting hard to act okay when I feel drained and disconnected most days.',
+        'Synthetic concern sample: I am worn out, pulling away from people, and not sure how long I can keep pretending I am fine.',
+        'Synthetic high-concern sample: tonight feels especially lonely and overwhelming, and I need support.'
+      ]
+    };
+
+    const storyTextByPreset = {
+      mixed: 'Synthetic story sample: some nights feel so loud in my head even when everything around me is quiet.',
+      safe: 'Synthetic story sample: making soup, cleaning my room, and letting today be simple.',
+      concern: 'Synthetic story sample: I have been shutting down more and more, and I wish someone noticed how tired I am.'
+    };
+
+    function applyPreset(name) {
+      const captions = presets[name] || presets.mixed;
+      document.querySelectorAll('.caption-text').forEach((node, index) => {
+        node.textContent = ' ' + (captions[index] || captions[captions.length - 1]);
+      });
+      const openStory = document.querySelector('[role="dialog"] .story-overlay-text');
+      if (openStory) openStory.textContent = storyTextByPreset[name] || storyTextByPreset.mixed;
+    }
+
+    function buildStoryDialog() {
+      const overlay = document.createElement('div');
+      overlay.setAttribute('role', 'dialog');
+      overlay.setAttribute('aria-modal', 'true');
+      overlay.setAttribute('aria-label', 'Story viewer');
+      overlay.innerHTML = `
+        <div class="story-modal">
+          <div class="story-media">
+            <img alt="story image with moody evening tones" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1400'><defs><linearGradient id='sky' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%231e3a8a'/><stop offset='1' stop-color='%230f172a'/></linearGradient></defs><rect width='900' height='1400' fill='url(%23sky)'/><circle cx='720' cy='230' r='90' fill='%23dbeafe'/><path d='M0 1120 C240 980 430 1000 900 900 L900 1400 L0 1400 Z' fill='%231f2937'/><path d='M0 1260 C300 1100 560 1120 900 1040 L900 1400 L0 1400 Z' fill='%23334155'/></svg>">
+            <div class="story-overlay-text">${storyTextByPreset[document.getElementById('preset-selector').value] || storyTextByPreset.mixed}</div>
+          </div>
+          <div class="story-side">
+            <header>
+              <div class="post-meta">
+                <div class="profile-thumb">
+                  <img alt="story profile picture" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23fecdd3'/><circle cx='50' cy='34' r='18' fill='%23be123c'/><rect x='24' y='56' width='52' height='24' rx='12' fill='%23be123c'/></svg>">
+                </div>
+                <div class="identity">
+                  <strong>story.checkpoint</strong>
+                  <span>now</span>
+                </div>
+              </div>
+            </header>
+            <section>
+              <p>This story viewer exists to trigger the extension's story detection path.</p>
+              <span class="small">It contains visible text, an image, and interactive buttons.</span>
+            </section>
+            <section>
+              <div role="group" aria-label="Story actions" class="toolbar-row">
+                <button aria-label="Like">Like</button>
+                <button aria-label="Send">Send</button>
+                <button aria-label="Comment">Reply</button>
+              </div>
+            </section>
+            <footer>
+              <button id="close-story" aria-label="Close">Close</button>
+            </footer>
+          </div>
+        </div>
+      `;
+      return overlay;
+    }
+
+    document.getElementById('apply-preset').addEventListener('click', () => {
+      applyPreset(document.getElementById('preset-selector').value);
+    });
+
+    document.getElementById('toggle-story').addEventListener('click', () => {
+      const existing = document.querySelector('[role="dialog"]');
+      if (existing) {
+        existing.remove();
+        return;
+      }
+      const dialog = buildStoryDialog();
+      document.body.appendChild(dialog);
+      dialog.querySelector('#close-story').addEventListener('click', () => dialog.remove());
+      dialog.addEventListener('click', (event) => {
+        if (event.target === dialog) dialog.remove();
+      });
+    });
+  </script>
+</body>
+</html>

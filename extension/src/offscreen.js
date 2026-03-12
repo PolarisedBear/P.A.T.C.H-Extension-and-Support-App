@@ -20,21 +20,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 
-const ort = require('onnxruntime-web');
+import * as ort from 'onnxruntime-web';
 import { encodeText } from './tokenizer.js'; // Assuming tokenizer.js is compatible or also adapted
 
-const env = ort.env;
 
 if (!ort.env || Object.keys(ort.env).length === 0) { 
 
-  env.wasm = env.wasm || {};
-  env.logLevel = 'verbose';
-  env.debug = true;
-  env.wasm.wasmPaths = {
+  ort.env.wasm = ort.env.wasm || {};
+  ort.env.wasm.logLevel = 'verbose';
+  ort.env.wasm.debug = true;
+  ort.env.wasm.wasmPaths = {
     'ort-wasm-simd-threaded.wasm': chrome.runtime.getURL('onnx-wasm/ort-wasm-simd-threaded.wasm'),
     }
-  env.wasm.numThreads = 1;
-  env.wasm.simd = true;
+  ort.env.wasm.numThreads = 1;
+  ort.env.wasm.simd = true;
 }
 
 let sessionPromise = null;

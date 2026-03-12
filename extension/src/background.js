@@ -1,7 +1,5 @@
 // src/background.js
 
-
-
 let creatingOffscreen = null;
 
 async function ensureOffscreenDocument() {

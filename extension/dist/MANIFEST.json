@@ -1,0 +1,67 @@
+{
+  "manifest_version": 3,
+  "name": "P.A.T.C.H Worker Assist",
+  "version": "1.0",
+  "description": "Local analysis tool for youth outreach workers.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting",
+    "offscreen"
+  ],
+  "host_permissions": [
+    "https://www.instagram.com/*",
+    "file://*/*"
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';",
+    "sandbox": "sandbox allow-scripts; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; object-src 'self';"
+  },
+  "sandbox": {
+    "pages": [
+      "sandbox.html"
+    ]
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "models/*",
+        "onnx-wasm/*"
+      ],
+      "matches": [
+        "https://www.instagram.com/*",
+        "file://*/*"
+      ]
+    },
+    {
+      "resources": [
+        "offscreen.html"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "P.A.T.C.H Worker Assist"
+  },
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.bundle.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.instagram.com/*",
+        "file://*/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "css": [
+        "content.css"
+      ]
+    }
+  ]
+}

@@ -51,7 +51,6 @@ module.exports = [
     target: 'webworker',
     entry: './src/background.js',
     filename: 'background.bundle.js',
-    clean: true,
     patterns: [
       {
         from: path.resolve(__dirname, 'onnx-wasm'),
@@ -70,8 +69,28 @@ module.exports = [
         to: 'offscreen.html'
       },
       {
+        from: path.resolve(__dirname, 'src/popup.js'),
+        to: 'popup.js'
+      },
+      {
         from: path.resolve(__dirname, 'src/popup.html'),
         to: 'popup.html'
+      },
+      {
+        from: path.resolve(__dirname, 'src/content.js'),
+        to: 'content.js'
+      },
+      {
+        from: path.resolve(__dirname, 'src/content.css'),
+        to: 'content.css'
+      },
+      {
+        from: path.resolve(__dirname, 'src/options.js'),
+        to: 'options.js'
+      },
+      {
+        from: path.resolve(__dirname, 'src/options.html'),
+        to: 'options.html'
       }
     ]
   }),
@@ -80,6 +99,7 @@ module.exports = [
     target: 'web',
     entry: './src/offscreen.js',
     filename: 'offscreen.bundle.js',
+    patterns: [],
     experiments: {
       topLevelAwait: true
     } 

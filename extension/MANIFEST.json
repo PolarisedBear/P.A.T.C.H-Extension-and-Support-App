@@ -11,7 +11,7 @@
   ],
   "host_permissions": [
     "https://www.instagram.com/*",
-    "file:///*"
+    "file://*/*"
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';",
@@ -25,14 +25,12 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "models/mental-health-bert-finetuned-onnx/model_optimized.onnx",
-        "models/mental-health-bert-finetuned-onnx/vocab.txt",
-        "onnx-wasm/ort-wasm-simd-threaded.wasm",
-        "onnx-wasm/ort-wasm-simd-threaded.mjs"
+        "models/*",
+        "onnx-wasm/*"
       ],
       "matches": [
         "https://www.instagram.com/*",
-        "file:///*"
+        "file://*/*"
       ]
     },
     {
@@ -56,7 +54,7 @@
     {
       "matches": [
         "https://www.instagram.com/*",
-        "file:///*"
+        "file://*/*"
       ],
       "js": [
         "src/content.js"

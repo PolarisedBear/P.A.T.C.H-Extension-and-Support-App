@@ -24,7 +24,7 @@ function makeConfig({ name, target, entry, filename, experiments = {} }) {
       filename,
       path: path.resolve(__dirname, 'dist'),
       devtoolModuleFilenameTemplate: 'webpack:///[absolute-resource-path]',
-      clean: false
+      clean: true
     },
     devtool: isDev ? 'source-map' : false,
     experiments,

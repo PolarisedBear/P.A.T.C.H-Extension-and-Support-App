@@ -142,6 +142,7 @@ function injectUI() {
     debounceTimer = setTimeout(() => {
       debounceTimer = null;
 
+      // inline action button - Currently unused but could be added in the future
       const actionSection = findActionSection();
       if (actionSection && !document.getElementById('patch-analyze-post')) {
         const btn = document.createElement('button');
@@ -152,6 +153,7 @@ function injectUI() {
         actionSection.appendChild(btn);
       }
 
+      // inline story button - currently unused but could be added in the future.
       const storyContainer = findStoryContainer();
       if (storyContainer && !document.getElementById('patch-story-btn')) {
         const sBtn = document.createElement('button');

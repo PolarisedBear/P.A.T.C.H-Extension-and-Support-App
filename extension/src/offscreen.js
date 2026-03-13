@@ -154,6 +154,6 @@ function toRiskLevel(suicidalProb, distressProb, normalProb) {
   return 'Low';
 }
 
-// init inference session
+// init inference session on startup to avoid first inference being slow
 await initSession();
 

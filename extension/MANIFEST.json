@@ -11,7 +11,11 @@
   ],
   "host_permissions": [
     "https://www.instagram.com/*",
-    "file://*/*"
+    "file:///*",
+    "http://localhost/*",
+    "https://localhost/*",
+    "http://127.0.0.1/*",
+    "https://127.0.0.1/*"
   ],
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';",
@@ -30,7 +34,11 @@
       ],
       "matches": [
         "https://www.instagram.com/*",
-        "file://*/*"
+        "file:///*",
+        "http://localhost/*",
+        "https://localhost/*",
+        "http://127.0.0.1/*",
+        "https://127.0.0.1/*"
       ]
     },
     {
@@ -54,7 +62,11 @@
     {
       "matches": [
         "https://www.instagram.com/*",
-        "file://*/*"
+        "file:///*",
+        "http://localhost/*",
+        "https://localhost/*",
+        "http://127.0.0.1/*",
+        "https://127.0.0.1/*"
       ],
       "js": [
         "content.js"

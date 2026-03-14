@@ -1,3 +1,62 @@
+function normalizeAnalysisResponse(response) {
+  if (!response || typeof response !== 'object') return null;
+
+  const normalized = {
+    ...response,
+    error: response.error || null,
+    topLabel: response.topLabel || response.top_label || response.label || '',
+    suicidalProb: Number(response.suicidalProb ?? response.suicidal_prob ?? 0),
+    distressProb: Number(response.distressProb ?? response.distress_prob ?? 0),
+    normalProb: Number(response.normalProb ?? response.normal_prob ?? 0),
+    riskLevel: response.riskLevel || response.risk_level || response.level || ''
+  };
+
+  const risk = String(normalized.riskLevel).trim().toLowerCase();
+  const label = String(normalized.topLabel).trim().toLowerCase();
+
+  if (risk.includes('high')) {
+    normalized.riskLevel = 'High';
+    return normalized;
+  }
+
+  if (risk.includes('medium') || risk.includes('moderate')) {
+    normalized.riskLevel = 'Medium';
+    return normalized;
+  }
+
+  if (risk.includes('low')) {
+    normalized.riskLevel = 'Low';
+    return normalized;
+  }
+
+  if (/(suicidal|self-harm|self harm)/i.test(label)) {
+    normalized.riskLevel = 'High';
+    return normalized;
+  }
+
+  if (/(distress|anxiety|depression|depress)/i.test(label)) {
+    normalized.riskLevel = 'Medium';
+    return normalized;
+  }
+
+  const scores = [
+    { key: 'suicidalProb', value: normalized.suicidalProb, risk: 'High', label: 'suicidal' },
+    { key: 'distressProb', value: normalized.distressProb, risk: 'Medium', label: 'distress' },
+    { key: 'normalProb', value: normalized.normalProb, risk: 'Low', label: 'normal' }
+  ].sort((a, b) => b.value - a.value);
+
+  const top = scores[0];
+
+  if (top && Number.isFinite(top.value) && top.value > 0) {
+    normalized.riskLevel = top.risk;
+    if (!normalized.topLabel) normalized.topLabel = top.label;
+    return normalized;
+  }
+
+  normalized.riskLevel = '';
+  return normalized;
+}
+
 function injectUI() {
   if (document.getElementById('patch-scan-btn')) return;
 
@@ -21,11 +80,7 @@ function injectUI() {
         parent.style.position = parent.style.position || 'relative';
         parent.appendChild(badge);
 
-        let caption = '';
-        try {
-          caption = parent.querySelector('h1, h2, p, span')?.innerText || '';
-          if (!caption) caption = post.getAttribute('aria-label') || post.innerText || '';
-        } catch (e) { caption = ''; }
+        const caption = extractPostText(parent);
 
         items.push({ badge, caption, url: post.href });
       }
@@ -50,7 +105,6 @@ function injectUI() {
         console.error('[P.A.T.C.H] sendMessage thrown:', e);
         resolve({ error: e.message });
       }
-      // safety timeout
       setTimeout(() => {
         if (!handled) {
           console.warn('[P.A.T.C.H] analysis request timed out');
@@ -60,20 +114,44 @@ function injectUI() {
     });
 
     const updateBadge = (badge, response) => {
-      if (!response) {
-        badge.innerText = 'Error'; badge.style.background = '#EF4444'; return;
+      if (response?.error) {
+        badge.innerText = '⚪ Error';
+        badge.title = response.error;
+        badge.style.background = '#6B7280';
+        return;
       }
-      if (response.error) { badge.innerText = 'Likely OK'; badge.title = response.error; badge.style.background = '#22C55E'; return; }
-      const d = response;
-      const level = d.riskLevel || 'Low';
-      if (level === 'High') { badge.innerText = '🔴 High'; badge.style.background = '#EF4444'; }
-      else if (level === 'Medium') { badge.innerText = '🟠 Medium'; badge.style.background = '#F59E0B'; }
-      else { badge.innerText = '🟢 Low'; badge.style.background = '#22C55E'; }
-      badge.title = d.topLabel ? `Top: ${d.topLabel}` : '';
+
+      const d = normalizeAnalysisResponse(response);
+
+      if (!d || !d.riskLevel) {
+        console.warn('[P.A.T.C.H] malformed analysis response:', response);
+        badge.innerText = '⚪ Unknown';
+        badge.title = 'Missing risk level in analysis response';
+        badge.style.background = '#6B7280';
+        return;
+      }
+
+      if (d.riskLevel === 'High') {
+        badge.innerText = '🔴 High';
+        badge.style.background = '#EF4444';
+      } else if (d.riskLevel === 'Medium') {
+        badge.innerText = '🟠 Medium';
+        badge.style.background = '#F59E0B';
+      } else {
+        badge.innerText = '🟢 Low';
+        badge.style.background = '#22C55E';
+      }
+
+      badge.title = [
+        d.topLabel ? `Top: ${d.topLabel}` : '',
+        `Suicidal: ${(d.suicidalProb * 100).toFixed(1)}%`,
+        `Distress: ${(d.distressProb * 100).toFixed(1)}%`,
+        `Normal: ${(d.normalProb * 100).toFixed(1)}%`
+      ].filter(Boolean).join('\n');
     };
 
-    const chunkSize = 5; // number of concurrent requests
-    const delayBetweenChunks = 250; // ms
+    const chunkSize = 5;
+    const delayBetweenChunks = 250;
 
     for (let i = 0; i < items.length; i += chunkSize) {
       const chunk = items.slice(i, i + chunkSize);
@@ -81,89 +159,78 @@ function injectUI() {
         let res = await sendAnalyze(it.caption, it.url);
         if (res && res.error) {
           console.warn('[P.A.T.C.H] first attempt failed, retrying...', res.error);
-          // small backoff then retry once with longer timeout
           await new Promise(r => setTimeout(r, 300));
           res = await sendAnalyze(it.caption, it.url, 20000);
         }
         updateBadge(it.badge, res);
       }));
-      // small pause between chunks
       if (i + chunkSize < items.length) await new Promise(r => setTimeout(r, delayBetweenChunks));
     }
   };
 
-  // Resilient selector helpers — try multiple fallbacks instead of brittle classnames
-  function findActionSection() {
-    // Prefer the currently-open article (single post view)
-    const article = document.querySelector('article');
-    const areas = [];
-    if (article) areas.push(...article.querySelectorAll('section, div[role="toolbar"], div[role="group"], div'));
-    areas.push(...document.querySelectorAll('section, header, div[role="toolbar"], div[role="group"]'));
+  function analyzeArticle(article, url = window.location.href) { 
+    const text = extractPostText(article);
 
-    for (const el of areas) {
-      if (!(el instanceof Element)) continue;
-      if (el.id && el.id.startsWith('patch-')) continue;
-
-      // Prefer elements that contain known action buttons (Like / Comment / Share)
-      try {
-        if (el.querySelector('button[aria-label*="Like"], button[aria-label*="Comment"], button[aria-label*="Share"], button[aria-label*="Send"]')) return el;
-      } catch (e) {}
-
-      // fallback: elements that contain buttons or SVG icons
-      if (el.querySelector('button, svg')) return el;
+    if (!text) { 
+      showDrawer({ error: 'No caption text found for this post' });
+      return;
     }
-    return null;
+
+    chrome.runtime.sendMessage({ type: 'ANALYZE_TEXT', text, url }, (response) => {
+      showDrawer(response);
+    });
+
   }
 
-  function findStoryContainer() {
-    // Heuristic: prefer an open dialog (story viewer) that contains an image and nav buttons
-    const dialog = document.querySelector('div[role="dialog"]');
-    if (dialog) {
-      if (dialog.querySelector('img') && dialog.querySelector('button, svg')) return dialog;
-      // sometimes story viewer nests in article or divs inside the dialog
-      const inner = dialog.querySelector('header, section, div');
-      if (inner && inner.querySelector('img')) return inner;
+  function findActionSectionForArticle(article) {
+    if (!article) return null;
+    const selectors = [
+      'div[role="toolbar"]',
+      'div[role="group"]',
+      'section',
+      'footer'
+    ];
+
+    for (const selector of selectors) { 
+      const el = article.querySelector(selector);
+      if (el) return el;
     }
 
-    // fallback: find header/banner-like elements with images + controls
-    const candidates = Array.from(document.querySelectorAll('header, div[role="banner"], div'));
-    for (const c of candidates) {
-      if (!(c instanceof Element)) continue;
-      if (c.querySelector('img') && c.querySelector('button, svg')) return c;
-      if (c.querySelector('button')) return c;
-    }
-    return null;
+    return article;
   }
+
 
   // debounce/throttle helper so we don't query on every micro-mutation
   let debounceTimer = null;
   function ensureInlineButtons() {
-    if (debounceTimer) clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(() => {
-      debounceTimer = null;
+    const articles = Array.from(document.querySelectorAll('article'));
 
-      // inline action button - Currently unused but could be added in the future
-      const actionSection = findActionSection();
-      if (actionSection && !document.getElementById('patch-analyze-post')) {
-        const btn = document.createElement('button');
-        btn.id = 'patch-analyze-post';
-        btn.innerText = '💙  Analyze Post Content';
-        btn.className = 'patch-inline-btn';
-        btn.onclick = () => showDrawer();
-        actionSection.appendChild(btn);
-      }
+    articles.forEach((article, index) => { 
+      if (!(article instanceof HTMLElement)) return;
+      //scope to one button per article
+      if (article.querySelector('.patch-inline-btn')) return;
 
-      // inline story button - currently unused but could be added in the future.
-      const storyContainer = findStoryContainer();
-      if (storyContainer && !document.getElementById('patch-story-btn')) {
-        const sBtn = document.createElement('button');
-        sBtn.id = 'patch-story-btn';
-        sBtn.innerText = '💙 Check Story Content';
-        sBtn.className = 'patch-story-btn';
-        sBtn.onclick = () => analyzeStory();
-        storyContainer.appendChild(sBtn);
+      const target = findActionSectionForArticle(article);
+      if (!target) return;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'patch-inline-btn patch-secondary-btn';
+      btn.innerText = 'Analyze Post Content';
+      btn.style.marginTop = '8px';
+      btn.style.display = 'block';
+      const permalink = article.querySelector('a[href*="/p/"]')?.href ||
+        `${window.location.href}#post-${index + 1}`;
+      
+      btn.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        analyzeArticle(article, permalink);
       }
-    }, 150);
+      
+      target.appendChild(btn);
+    })
+
   }
 
   // Observe for DOM changes but only act when nodes are added/removed
@@ -201,42 +268,57 @@ function showDrawer(data = null) {
 
   drawer.classList.add('open');
 
-  const render = (d) => {
+  const render = (raw) => {
     const body = document.getElementById('patch-drawer-body');
+    const d = normalizeAnalysisResponse(raw);
+
     if (!d) {
       body.innerHTML = `<p class="error">No analysis available</p>`;
       return;
     }
-    const riskColor = d.riskLevel === 'High' ? '#EF4444' : (d.riskLevel === 'Medium' ? '#F59E0B' : '#22C55E');
+
+    if (d.error) {
+      body.innerHTML = `<p class="error">Analysis failed: ${d.error}</p>`;
+      return;
+    }
+
+    if (!d.riskLevel) {
+      body.innerHTML = `<p class="error">Analysis response missing risk level</p>`;
+      return;
+    }
+
+    const riskColor = d.riskLevel === 'High'
+      ? '#EF4444'
+      : d.riskLevel === 'Medium'
+        ? '#F59E0B'
+        : '#22C55E';
+
     body.innerHTML = `
       <div class="risk-banner" style="background:${riskColor}">${d.riskLevel} Risk</div>
       <h4>Top label: ${d.topLabel || 'Unknown'}</h4>
       <ul>
-        <li>Suicidal: ${((d.suicidalProb||0)*100).toFixed(1)}%</li>
-        <li>Distress (Anxiety+Depression): ${((d.distressProb||0)*100).toFixed(1)}%</li>
-        <li>Normal: ${((d.normalProb||0)*100).toFixed(1)}%</li>
+        <li>Suicidal: ${(d.suicidalProb * 100).toFixed(1)}%</li>
+        <li>Distress (Anxiety+Depression): ${(d.distressProb * 100).toFixed(1)}%</li>
+        <li>Normal: ${(d.normalProb * 100).toFixed(1)}%</li>
       </ul>
       <div class="actions">
-        <button class="patch-primary-btn" id="patch-copy-tpl">Copy Outreach Template</button>
-        <button class="patch-secondary-btn">Save to Case</button>
+        <button class="patch-outreach-btn" id="patch-copy-tpl">Copy Outreach Template</button>
       </div>
     `;
+
     document.getElementById('patch-copy-tpl').onclick = () => {
       navigator.clipboard.writeText("Hi, I noticed your post and wanted to check in...");
       alert('Template copied!');
     };
   };
 
-  // If data provided (from caller), render it; otherwise request analysis for current caption
-  if (data && data.riskLevel) {
+  if (data) {
     render(data);
     return;
   }
 
   const caption = document.querySelector('h1')?.innerText || document.querySelector('article p')?.innerText || '';
   chrome.runtime.sendMessage({ type: 'ANALYZE_TEXT', text: caption, url: window.location.href }, (response) => {
-    if (!response) return render(null);
-    if (response.error) return render({ error: response.error });
     render(response);
   });
 }
@@ -255,6 +337,79 @@ function analyzeStory() {
     if (response && response.error) alert(response.error);
     else showDrawer(response);
   });
+}
+
+function cleanText(value) {
+  return String(value || '').replace(/\s+/g, ' ').trim();
+}
+
+function isNoiseText(text) {
+  const t = cleanText(text).toLowerCase();
+  if (!t) return true;
+
+  if (t.length < 8) return true;
+
+  // common instagram/ui noise
+  if (
+    /^(follow|following|message|reply|share|comment|like|likes|view replies|view all comments|see translation|suggested for you)$/i.test(t)
+  ) return true;
+
+  // timestamps / dates
+  if (
+    /^(\d+\s*(s|m|h|d|w) ago)$/i.test(t) ||
+    /^(today|yesterday)$/i.test(t) ||
+    /^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i.test(t) ||
+    /^\d{1,2}[/-]\d{1,2}([/-]\d{2,4})?$/.test(t)
+  ) return true;
+
+  // likely username-only / location-only fragments
+  if (t.split(' ').length === 1 && t.length < 20) return true;
+
+  return false;
+}
+
+function getNodeTextScore(text) {
+  const t = cleanText(text);
+  let score = 0;
+
+  score += Math.min(t.length, 280);
+  if (t.split(' ').length >= 5) score += 40;
+  if (/[.!?,]/.test(t)) score += 20;
+  if (/\b(i|me|my|feel|feeling|life|tired|sad|alone|anxious|depressed|hurt|help)\b/i.test(t)) score += 60;
+
+  return score;
+}
+
+function extractPostText(container) {
+  if (!container) return '';
+
+  const article = container.closest('article') || container;
+  const nodes = Array.from(article.querySelectorAll('h1, h2, p, span, li'));
+
+  const candidates = nodes
+    .filter((node) => {
+      if (!(node instanceof HTMLElement)) return false;
+      if (!node.innerText) return false;
+      if (node.closest('#patch-drawer, #patch-scan-btn, .patch-badge, [id^="patch-"]')) return false;
+      if (node.closest('button, time, svg, nav, header')) return false;
+      if (node.closest('a[href*="/p/"]')) return false;
+
+      const text = cleanText(node.innerText);
+      if (isNoiseText(text)) return false;
+
+      return true;
+    })
+    .map((node) => cleanText(node.innerText))
+    .filter(Boolean);
+
+  const unique = [...new Set(candidates)];
+
+  if (!unique.length) return '';
+
+  unique.sort((a, b) => getNodeTextScore(b) - getNodeTextScore(a));
+
+  // use the strongest caption-like node, plus one or two supporting comment/caption lines
+  return unique.slice(0, 3).join('\n');
 }
 
 injectUI();

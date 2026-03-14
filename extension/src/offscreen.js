@@ -99,7 +99,9 @@ async function handleAnalyzeText(text) {
 
     try {
       const session = await initSession();
+      console.log(`[P.A.T.C.H] Inference input: ${text}`);
       outputMap = await session.run(inputs);
+      console.log(`[P.A.T.C.H] Inference output:`, outputMap);
     } catch (err) {
       if (!isRetryableSessionError(err)) {
         throw err;

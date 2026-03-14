@@ -115,6 +115,17 @@
   margin-top: 5px;
 }
 
+.patch-outreach-btn {
+  background: #0b6df5;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 10px;
+}
+/*
 .patch-story-btn {
   background: rgba(33, 128, 141, 0.8);
   position: relative;
@@ -128,3 +139,4 @@
   bottom: auto;
   top: -40px;
 }
+  */

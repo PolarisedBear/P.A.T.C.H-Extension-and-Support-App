@@ -57,6 +57,11 @@ function normalizeAnalysisResponse(response) {
   return normalized;
 }
 
+function isInstagramSearchPage(url = '') {
+  return /^https:\/\/(www\.)?instagram\.com\/explore\//i.test(url);
+}
+
+
 function injectUI() {
   if (document.getElementById('patch-scan-btn')) return;
 
@@ -91,7 +96,11 @@ function injectUI() {
     const sendAnalyze = (text, url, timeout = 15000) => new Promise((resolve) => {
       let handled = false;
       try {
-        chrome.runtime.sendMessage({ type: 'ANALYZE_TEXT', text, url }, (response) => {
+        const request = isInstagramSearchPage(window.location.href)
+          ? { type: 'ANALYZE_IMAGE' }
+          : { type: 'ANALYZE_TEXT', text, url };
+
+        chrome.runtime.sendMessage(request, (response) => {
           handled = true;
           if (chrome.runtime.lastError) {
             console.error('[P.A.T.C.H] sendMessage error:', chrome.runtime.lastError.message);
@@ -105,6 +114,7 @@ function injectUI() {
         console.error('[P.A.T.C.H] sendMessage thrown:', e);
         resolve({ error: e.message });
       }
+
       setTimeout(() => {
         if (!handled) {
           console.warn('[P.A.T.C.H] analysis request timed out');

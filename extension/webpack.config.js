@@ -91,6 +91,14 @@ module.exports = [
       {
         from: path.resolve(__dirname, 'src/options.html'),
         to: 'options.html'
+      },
+      {
+        from: path.resolve(__dirname, 'tesseract'),
+        to: 'tesseract'
+      },
+      {
+        from: path.resolve(__dirname, 'tesseract/lang'),
+        to: 'tesseract/lang'
       }
     ]
   }),

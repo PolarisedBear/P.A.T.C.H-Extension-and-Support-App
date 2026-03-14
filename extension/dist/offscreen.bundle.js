@@ -1,5 +1,4 @@
 /******/ (() => { // webpackBootstrap
-/******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./src/offscreen.js"
@@ -8,18 +7,28 @@
   \**************************/
 (module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.a(module, async (__webpack_handle_async_dependencies__, __webpack_async_result__) => { try {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! onnxruntime-web */ "./node_modules/onnxruntime-web/dist/ort.bundle.min.mjs?3a96");
 /* harmony import */ var _tokenizer_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./tokenizer.js */ "./src/tokenizer.js");
-function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
-function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
+/* harmony import */ var tesseract_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! tesseract.js */ "./node_modules/tesseract.js/src/index.js");
+/* harmony import */ var tesseract_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(tesseract_js__WEBPACK_IMPORTED_MODULE_2__);
+function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
 function _iterableToArray(r) { if ("undefined" != typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]) return Array.from(r); }
 function _arrayWithoutHoles(r) { if (Array.isArray(r)) return _arrayLikeToArray(r); }
 function _arrayLikeToArray(r, a) { (null == a || a > r.length) && (a = r.length); for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e]; return n; }
+function _regenerator() { /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */ var e, t, r = "function" == typeof Symbol ? Symbol : {}, n = r.iterator || "@@iterator", o = r.toStringTag || "@@toStringTag"; function i(r, n, o, i) { var c = n && n.prototype instanceof Generator ? n : Generator, u = Object.create(c.prototype); return _regeneratorDefine2(u, "_invoke", function (r, n, o) { var i, c, u, f = 0, p = o || [], y = !1, G = { p: 0, n: 0, v: e, a: d, f: d.bind(e, 4), d: function d(t, r) { return i = t, c = 0, u = e, G.n = r, a; } }; function d(r, n) { for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) { var o, i = p[t], d = G.p, l = i[2]; r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0)); } if (o || r > 1) return a; throw y = !0, n; } return function (o, p, l) { if (f > 1) throw TypeError("Generator is already running"); for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) { i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u); try { if (f = 2, i) { if (c || (o = "next"), t = i[o]) { if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object"); if (!t.done) return t; u = t.value, c < 2 && (c = 0); } else 1 === c && (t = i["return"]) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1); i = e; } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break; } catch (t) { i = e, c = 1, u = t; } finally { f = 1; } } return { value: t, done: y }; }; }(r, o, i), !0), u; } var a = {}; function Generator() {} function GeneratorFunction() {} function GeneratorFunctionPrototype() {} t = Object.getPrototypeOf; var c = [][n] ? t(t([][n]())) : (_regeneratorDefine2(t = {}, n, function () { return this; }), t), u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c); function f(e) { return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine2(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e; } return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine2(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine2(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine2(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine2(u), _regeneratorDefine2(u, o, "Generator"), _regeneratorDefine2(u, n, function () { return this; }), _regeneratorDefine2(u, "toString", function () { return "[object Generator]"; }), (_regenerator = function _regenerator() { return { w: i, m: f }; })(); }
+function _regeneratorDefine2(e, r, n, t) { var i = Object.defineProperty; try { i({}, "", {}); } catch (e) { i = 0; } _regeneratorDefine2 = function _regeneratorDefine(e, r, n, t) { function o(r, n) { _regeneratorDefine2(e, r, function (e) { return this._invoke(r, n, e); }); } r ? i ? i(e, r, { value: n, enumerable: !t, configurable: !t, writable: !t }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2)); }, _regeneratorDefine2(e, r, n, t); }
 function asyncGeneratorStep(n, t, e, r, o, a, c) { try { var i = n[a](c), u = i.value; } catch (n) { return void e(n); } i.done ? t(u) : Promise.resolve(u).then(r, o); }
 function _asyncToGenerator(n) { return function () { var t = this, e = arguments; return new Promise(function (r, o) { var a = n.apply(t, e); function _next(n) { asyncGeneratorStep(a, r, o, _next, _throw, "next", n); } function _throw(n) { asyncGeneratorStep(a, r, o, _next, _throw, "throw", n); } _next(void 0); }); }; }
 // offscreen.js
@@ -29,24 +38,13 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
 // Use the local ESM build shipped in the extension so module resolution
 // works within the offscreen document environment.
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.type === 'ANALYZE_TEXT_OFFSCREEN') {
-    handleAnalyzeText(request.text).then(function (result) {
-      sendResponse(result);
-    })["catch"](function (err) {
-      console.error('[P.A.T.C.H] Offscreen Inference error:', err);
-      sendResponse({
-        error: err.message || 'Offscreen Inference failed'
-      });
-    });
-    return true; // Indicate that sendResponse will be called asynchronously
-  }
-});
 
- // Assuming tokenizer.js is compatible or also adapted
 
-// Init env variables before initializing session
 
+var tesseractWorker = null;
+var tesseractWorkerIdleTimer = null;
+var OCR_LANGUAGE = 'eng';
+var timeout = 20000;
 onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.env.wasm = onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.env.wasm || {};
 onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.env.wasm.logLevel = 'verbose';
 onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.env.wasm.debug = true;
@@ -57,23 +55,216 @@ onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.env.wasm.numThreads = 1;
 onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.env.wasm.simd = true;
 var sessionPromise = null;
 var inferenceQueue = Promise.resolve();
+function normalizeText() {
+  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+  return value.replace(/\s+/g, ' ').trim();
+}
+function scheduleTesseractWorkerTermination() {
+  if (tesseractWorkerIdleTimer) {
+    clearTimeout(tesseractWorkerIdleTimer);
+  }
+  tesseractWorkerIdleTimer = setTimeout(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+    var _t;
+    return _regenerator().w(function (_context) {
+      while (1) switch (_context.p = _context.n) {
+        case 0:
+          if (tesseractWorker) {
+            _context.n = 1;
+            break;
+          }
+          return _context.a(2);
+        case 1:
+          _context.p = 1;
+          _context.n = 2;
+          return tesseractWorker.terminate();
+        case 2:
+          console.log('[P.A.T.C.H] Tesseract worker terminated after inactivity');
+          _context.n = 4;
+          break;
+        case 3:
+          _context.p = 3;
+          _t = _context.v;
+          console.error('[P.A.T.C.H] failed to terminate Tesseract worker:', _t);
+        case 4:
+          _context.p = 4;
+          tesseractWorker = null;
+          tesseractWorkerIdleTimer = null;
+          return _context.f(4);
+        case 5:
+          return _context.a(2);
+      }
+    }, _callee, null, [[1, 3, 4, 5]]);
+  })), timeout);
+}
+function ensureTesseractWorker() {
+  return _ensureTesseractWorker.apply(this, arguments);
+}
+function _ensureTesseractWorker() {
+  _ensureTesseractWorker = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+    var _t3;
+    return _regenerator().w(function (_context3) {
+      while (1) switch (_context3.p = _context3.n) {
+        case 0:
+          if (tesseractWorker) {
+            _context3.n = 4;
+            break;
+          }
+          _context3.p = 1;
+          _context3.n = 2;
+          return (0,tesseract_js__WEBPACK_IMPORTED_MODULE_2__.createWorker)(OCR_LANGUAGE, 1, {
+            workerPath: chrome.runtime.getURL('tesseract/worker.min.js'),
+            corePath: chrome.runtime.getURL('tesseract/'),
+            langPath: chrome.runtime.getURL('tesseract/lang/'),
+            workerBlobURL: false,
+            logger: function logger(m) {
+              return console.debug('[P.A.T.C.H] Tesseract:', m.status, m.progress);
+            }
+          });
+        case 2:
+          tesseractWorker = _context3.v;
+          console.log('[P.A.T.C.H] Tesseract worker created in offscreen document');
+          _context3.n = 4;
+          break;
+        case 3:
+          _context3.p = 3;
+          _t3 = _context3.v;
+          console.error('[P.A.T.C.H] Failed to create Tesseract worker:', _t3);
+          throw _t3;
+        case 4:
+          scheduleTesseractWorkerTermination();
+          return _context3.a(2, tesseractWorker);
+      }
+    }, _callee3, null, [[1, 3]]);
+  }));
+  return _ensureTesseractWorker.apply(this, arguments);
+}
+function imageBlobFromDataURL(_x) {
+  return _imageBlobFromDataURL.apply(this, arguments);
+}
+function _imageBlobFromDataURL() {
+  _imageBlobFromDataURL = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(dataUrl) {
+    var res;
+    return _regenerator().w(function (_context4) {
+      while (1) switch (_context4.n) {
+        case 0:
+          _context4.n = 1;
+          return fetch(dataUrl);
+        case 1:
+          res = _context4.v;
+          return _context4.a(2, res.blob());
+      }
+    }, _callee4);
+  }));
+  return _imageBlobFromDataURL.apply(this, arguments);
+}
+function recognizeImageWithWorker(_x2) {
+  return _recognizeImageWithWorker.apply(this, arguments);
+}
+function _recognizeImageWithWorker() {
+  _recognizeImageWithWorker = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(imageBlob) {
+    var _result$data;
+    var worker, result;
+    return _regenerator().w(function (_context5) {
+      while (1) switch (_context5.n) {
+        case 0:
+          _context5.n = 1;
+          return ensureTesseractWorker();
+        case 1:
+          worker = _context5.v;
+          _context5.n = 2;
+          return worker.recognize(imageBlob);
+        case 2:
+          result = _context5.v;
+          scheduleTesseractWorkerTermination();
+          return _context5.a(2, normalizeText((result === null || result === void 0 || (_result$data = result.data) === null || _result$data === void 0 ? void 0 : _result$data.text) || ''));
+      }
+    }, _callee5);
+  }));
+  return _recognizeImageWithWorker.apply(this, arguments);
+}
+function ocrInstagramImages() {
+  return _ocrInstagramImages.apply(this, arguments);
+}
+function _ocrInstagramImages() {
+  _ocrInstagramImages = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
+    var imageDataUrls,
+      extractedTexts,
+      _iterator,
+      _step,
+      dataUrl,
+      blob,
+      text,
+      _args6 = arguments,
+      _t4,
+      _t5;
+    return _regenerator().w(function (_context6) {
+      while (1) switch (_context6.p = _context6.n) {
+        case 0:
+          imageDataUrls = _args6.length > 0 && _args6[0] !== undefined ? _args6[0] : [];
+          extractedTexts = [];
+          _iterator = _createForOfIteratorHelper(imageDataUrls);
+          _context6.p = 1;
+          _iterator.s();
+        case 2:
+          if ((_step = _iterator.n()).done) {
+            _context6.n = 8;
+            break;
+          }
+          dataUrl = _step.value;
+          _context6.p = 3;
+          _context6.n = 4;
+          return imageBlobFromDataURL(dataUrl);
+        case 4:
+          blob = _context6.v;
+          _context6.n = 5;
+          return recognizeImageWithWorker(blob);
+        case 5:
+          text = _context6.v;
+          if (text) extractedTexts.push(text);
+          _context6.n = 7;
+          break;
+        case 6:
+          _context6.p = 6;
+          _t4 = _context6.v;
+          console.warn('[P.A.T.C.H] OCR failed for image', _t4);
+        case 7:
+          _context6.n = 2;
+          break;
+        case 8:
+          _context6.n = 10;
+          break;
+        case 9:
+          _context6.p = 9;
+          _t5 = _context6.v;
+          _iterator.e(_t5);
+        case 10:
+          _context6.p = 10;
+          _iterator.f();
+          return _context6.f(10);
+        case 11:
+          return _context6.a(2, _toConsumableArray(new Set(extractedTexts)).join('\n'));
+      }
+    }, _callee6, null, [[3, 6], [1, 9, 10, 11]]);
+  }));
+  return _ocrInstagramImages.apply(this, arguments);
+}
 function initSession() {
   return _initSession.apply(this, arguments);
 }
 function _initSession() {
-  _initSession = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+  _initSession = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
     var modelUrl;
-    return _regenerator().w(function (_context) {
-      while (1) switch (_context.n) {
+    return _regenerator().w(function (_context7) {
+      while (1) switch (_context7.n) {
         case 0:
           if (!sessionPromise) {
-            _context.n = 1;
+            _context7.n = 1;
             break;
           }
-          return _context.a(2, sessionPromise);
+          return _context7.a(2, sessionPromise);
         case 1:
           if (!(!onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__ || !onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.InferenceSession || !onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.InferenceSession.create)) {
-            _context.n = 2;
+            _context7.n = 2;
             break;
           }
           throw new Error('ONNX Runtime not fully initialized. ort.InferenceSession.create is undefined');
@@ -91,9 +282,9 @@ function _initSession() {
             console.error('[P.A.T.C.H] ONNX session init failed in offscreen document:', err);
             sessionPromise = null;
           });
-          return _context.a(2, sessionPromise);
+          return _context7.a(2, sessionPromise);
       }
-    }, _callee);
+    }, _callee7);
   }));
   return _initSession.apply(this, arguments);
 }
@@ -113,24 +304,24 @@ function isRetryableSessionError(err) {
   return message.includes('Session mismatch') || message.includes('Session already started');
 }
 var LABELS = ['Anxiety', 'Depression', 'Normal', 'Suicidal'];
-function handleAnalyzeText(_x) {
+function handleAnalyzeText(_x3) {
   return _handleAnalyzeText.apply(this, arguments);
 }
 function _handleAnalyzeText() {
-  _handleAnalyzeText = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(text) {
-    return _regenerator().w(function (_context3) {
-      while (1) switch (_context3.n) {
+  _handleAnalyzeText = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(text) {
+    return _regenerator().w(function (_context9) {
+      while (1) switch (_context9.n) {
         case 0:
-          return _context3.a(2, queueInference(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
-            var maxLen, _yield$encodeText, inputIds, attentionMask, tokenTypeIds, inputs, outputMap, session, _session, logitsTensor, logits, probs, suicidalProb, distressProb, normalProb, riskLevel, topIdx, topLabel, _t;
-            return _regenerator().w(function (_context2) {
-              while (1) switch (_context2.p = _context2.n) {
+          return _context9.a(2, queueInference(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8() {
+            var maxLen, _yield$encodeText, inputIds, attentionMask, tokenTypeIds, inputs, outputMap, session, _session, logitsTensor, logits, probs, suicidalProb, distressProb, normalProb, riskLevel, topIdx, topLabel, _t6;
+            return _regenerator().w(function (_context8) {
+              while (1) switch (_context8.p = _context8.n) {
                 case 0:
                   maxLen = 128;
-                  _context2.n = 1;
+                  _context8.n = 1;
                   return (0,_tokenizer_js__WEBPACK_IMPORTED_MODULE_1__.encodeText)(text, maxLen);
                 case 1:
-                  _yield$encodeText = _context2.v;
+                  _yield$encodeText = _context8.v;
                   inputIds = _yield$encodeText.inputIds;
                   attentionMask = _yield$encodeText.attentionMask;
                   tokenTypeIds = _yield$encodeText.tokenTypeIds;
@@ -139,49 +330,49 @@ function _handleAnalyzeText() {
                     attention_mask: new onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.Tensor('int64', attentionMask, [1, maxLen]),
                     token_type_ids: new onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.Tensor('int64', tokenTypeIds, [1, maxLen])
                   };
-                  _context2.p = 2;
-                  _context2.n = 3;
+                  _context8.p = 2;
+                  _context8.n = 3;
                   return initSession();
                 case 3:
-                  session = _context2.v;
+                  session = _context8.v;
                   console.log("[P.A.T.C.H] Inference input: ".concat(text));
-                  _context2.n = 4;
+                  _context8.n = 4;
                   return session.run(inputs);
                 case 4:
-                  outputMap = _context2.v;
+                  outputMap = _context8.v;
                   console.log("[P.A.T.C.H] Inference output:", outputMap);
-                  _context2.n = 9;
+                  _context8.n = 9;
                   break;
                 case 5:
-                  _context2.p = 5;
-                  _t = _context2.v;
-                  if (isRetryableSessionError(_t)) {
-                    _context2.n = 6;
+                  _context8.p = 5;
+                  _t6 = _context8.v;
+                  if (isRetryableSessionError(_t6)) {
+                    _context8.n = 6;
                     break;
                   }
-                  throw _t;
+                  throw _t6;
                 case 6:
-                  console.warn('[P.A.T.C.H] Retrying inference after session state error:', _t.message);
-                  resetSession(_t.message);
-                  _context2.n = 7;
+                  console.warn('[P.A.T.C.H] Retrying inference after session state error:', _t6.message);
+                  resetSession(_t6.message);
+                  _context8.n = 7;
                   return initSession();
                 case 7:
-                  _session = _context2.v;
-                  _context2.n = 8;
+                  _session = _context8.v;
+                  _context8.n = 8;
                   return _session.run(inputs);
                 case 8:
-                  outputMap = _context2.v;
+                  outputMap = _context8.v;
                 case 9:
                   logitsTensor = outputMap.logits || Object.values(outputMap)[0];
                   logits = Array.from(logitsTensor.data);
-                  probs = softmax(logits); // length 4
-                  suicidalProb = probs[3]; // Suicidal
-                  distressProb = probs[0] + probs[1]; // Anxiety + Depression
-                  normalProb = probs[2]; // Normal
+                  probs = softmax(logits);
+                  suicidalProb = probs[3];
+                  distressProb = probs[0] + probs[1];
+                  normalProb = probs[2];
                   riskLevel = toRiskLevel(suicidalProb, distressProb, normalProb);
                   topIdx = argMax(probs);
                   topLabel = LABELS[topIdx];
-                  return _context2.a(2, {
+                  return _context8.a(2, {
                     riskLevel: riskLevel,
                     suicidalProb: suicidalProb,
                     distressProb: distressProb,
@@ -191,10 +382,10 @@ function _handleAnalyzeText() {
                     topLabel: topLabel
                   });
               }
-            }, _callee2, null, [[2, 5]]);
+            }, _callee8, null, [[2, 5]]);
           }))));
       }
-    }, _callee3);
+    }, _callee9);
   }));
   return _handleAnalyzeText.apply(this, arguments);
 }
@@ -221,7 +412,63 @@ function toRiskLevel(suicidalProb, distressProb, normalProb) {
   return 'Low';
 }
 
-// init inference session on startup to avoid first inference being slow
+// Single message listener for all offscreen message types
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.type === 'ANALYZE_TEXT_OFFSCREEN') {
+    handleAnalyzeText(request.text).then(function (result) {
+      return sendResponse(result);
+    })["catch"](function (err) {
+      console.error('[P.A.T.C.H] Offscreen Inference error:', err);
+      sendResponse({
+        error: err.message || 'Offscreen Inference failed'
+      });
+    });
+    return true;
+  }
+  if (request.type === 'OCR_INSTAGRAM_IMAGES') {
+    _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+      var ocrText, inferenceResult, _t2;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.n) {
+          case 0:
+            _t2 = normalizeText;
+            _context2.n = 1;
+            return ocrInstagramImages(request.imageDataUrls);
+          case 1:
+            ocrText = _t2(_context2.v);
+            if (ocrText) {
+              _context2.n = 2;
+              break;
+            }
+            return _context2.a(2, {
+              text: '',
+              riskLevel: 'Low',
+              probs: [0, 0, 1, 0],
+              topLabel: 'Normal'
+            });
+          case 2:
+            _context2.n = 3;
+            return handleAnalyzeText(ocrText);
+          case 3:
+            inferenceResult = _context2.v;
+            return _context2.a(2, _objectSpread({
+              text: ocrText
+            }, inferenceResult));
+        }
+      }, _callee2);
+    }))().then(function (result) {
+      return sendResponse(result);
+    })["catch"](function (err) {
+      console.error('[P.A.T.C.H] OCR Instagram Images error:', err);
+      sendResponse({
+        error: err.message || 'OCR Instagram Images failed'
+      });
+    });
+    return true;
+  }
+});
+
+// Init inference session on startup
 await initSession();
 __webpack_async_result__();
 } catch(e) { __webpack_async_result__(e); } }, 1);
@@ -234,6 +481,7 @@ __webpack_async_result__();
   \**************************/
 (__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   encodeText: () => (/* binding */ encodeText)
@@ -417,12 +665,784 @@ function _encodeText() {
 
 /***/ },
 
+/***/ "./node_modules/regenerator-runtime/runtime.js"
+/*!*****************************************************!*\
+  !*** ./node_modules/regenerator-runtime/runtime.js ***!
+  \*****************************************************/
+(module) {
+
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
+var runtime = (function (exports) {
+  "use strict";
+
+  var Op = Object.prototype;
+  var hasOwn = Op.hasOwnProperty;
+  var defineProperty = Object.defineProperty || function (obj, key, desc) { obj[key] = desc.value; };
+  var undefined; // More compressible than void 0.
+  var $Symbol = typeof Symbol === "function" ? Symbol : {};
+  var iteratorSymbol = $Symbol.iterator || "@@iterator";
+  var asyncIteratorSymbol = $Symbol.asyncIterator || "@@asyncIterator";
+  var toStringTagSymbol = $Symbol.toStringTag || "@@toStringTag";
+
+  function define(obj, key, value) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+    return obj[key];
+  }
+  try {
+    // IE 8 has a broken Object.defineProperty that only works on DOM objects.
+    define({}, "");
+  } catch (err) {
+    define = function(obj, key, value) {
+      return obj[key] = value;
+    };
+  }
+
+  function wrap(innerFn, outerFn, self, tryLocsList) {
+    // If outerFn provided and outerFn.prototype is a Generator, then outerFn.prototype instanceof Generator.
+    var protoGenerator = outerFn && outerFn.prototype instanceof Generator ? outerFn : Generator;
+    var generator = Object.create(protoGenerator.prototype);
+    var context = new Context(tryLocsList || []);
+
+    // The ._invoke method unifies the implementations of the .next,
+    // .throw, and .return methods.
+    defineProperty(generator, "_invoke", { value: makeInvokeMethod(innerFn, self, context) });
+
+    return generator;
+  }
+  exports.wrap = wrap;
+
+  // Try/catch helper to minimize deoptimizations. Returns a completion
+  // record like context.tryEntries[i].completion. This interface could
+  // have been (and was previously) designed to take a closure to be
+  // invoked without arguments, but in all the cases we care about we
+  // already have an existing method we want to call, so there's no need
+  // to create a new function object. We can even get away with assuming
+  // the method takes exactly one argument, since that happens to be true
+  // in every case, so we don't have to touch the arguments object. The
+  // only additional allocation required is the completion record, which
+  // has a stable shape and so hopefully should be cheap to allocate.
+  function tryCatch(fn, obj, arg) {
+    try {
+      return { type: "normal", arg: fn.call(obj, arg) };
+    } catch (err) {
+      return { type: "throw", arg: err };
+    }
+  }
+
+  var GenStateSuspendedStart = "suspendedStart";
+  var GenStateSuspendedYield = "suspendedYield";
+  var GenStateExecuting = "executing";
+  var GenStateCompleted = "completed";
+
+  // Returning this object from the innerFn has the same effect as
+  // breaking out of the dispatch switch statement.
+  var ContinueSentinel = {};
+
+  // Dummy constructor functions that we use as the .constructor and
+  // .constructor.prototype properties for functions that return Generator
+  // objects. For full spec compliance, you may wish to configure your
+  // minifier not to mangle the names of these two functions.
+  function Generator() {}
+  function GeneratorFunction() {}
+  function GeneratorFunctionPrototype() {}
+
+  // This is a polyfill for %IteratorPrototype% for environments that
+  // don't natively support it.
+  var IteratorPrototype = {};
+  define(IteratorPrototype, iteratorSymbol, function () {
+    return this;
+  });
+
+  var getProto = Object.getPrototypeOf;
+  var NativeIteratorPrototype = getProto && getProto(getProto(values([])));
+  if (NativeIteratorPrototype &&
+      NativeIteratorPrototype !== Op &&
+      hasOwn.call(NativeIteratorPrototype, iteratorSymbol)) {
+    // This environment has a native %IteratorPrototype%; use it instead
+    // of the polyfill.
+    IteratorPrototype = NativeIteratorPrototype;
+  }
+
+  var Gp = GeneratorFunctionPrototype.prototype =
+    Generator.prototype = Object.create(IteratorPrototype);
+  GeneratorFunction.prototype = GeneratorFunctionPrototype;
+  defineProperty(Gp, "constructor", { value: GeneratorFunctionPrototype, configurable: true });
+  defineProperty(
+    GeneratorFunctionPrototype,
+    "constructor",
+    { value: GeneratorFunction, configurable: true }
+  );
+  GeneratorFunction.displayName = define(
+    GeneratorFunctionPrototype,
+    toStringTagSymbol,
+    "GeneratorFunction"
+  );
+
+  // Helper for defining the .next, .throw, and .return methods of the
+  // Iterator interface in terms of a single ._invoke method.
+  function defineIteratorMethods(prototype) {
+    ["next", "throw", "return"].forEach(function(method) {
+      define(prototype, method, function(arg) {
+        return this._invoke(method, arg);
+      });
+    });
+  }
+
+  exports.isGeneratorFunction = function(genFun) {
+    var ctor = typeof genFun === "function" && genFun.constructor;
+    return ctor
+      ? ctor === GeneratorFunction ||
+        // For the native GeneratorFunction constructor, the best we can
+        // do is to check its .name property.
+        (ctor.displayName || ctor.name) === "GeneratorFunction"
+      : false;
+  };
+
+  exports.mark = function(genFun) {
+    if (Object.setPrototypeOf) {
+      Object.setPrototypeOf(genFun, GeneratorFunctionPrototype);
+    } else {
+      genFun.__proto__ = GeneratorFunctionPrototype;
+      define(genFun, toStringTagSymbol, "GeneratorFunction");
+    }
+    genFun.prototype = Object.create(Gp);
+    return genFun;
+  };
+
+  // Within the body of any async function, `await x` is transformed to
+  // `yield regeneratorRuntime.awrap(x)`, so that the runtime can test
+  // `hasOwn.call(value, "__await")` to determine if the yielded value is
+  // meant to be awaited.
+  exports.awrap = function(arg) {
+    return { __await: arg };
+  };
+
+  function AsyncIterator(generator, PromiseImpl) {
+    function invoke(method, arg, resolve, reject) {
+      var record = tryCatch(generator[method], generator, arg);
+      if (record.type === "throw") {
+        reject(record.arg);
+      } else {
+        var result = record.arg;
+        var value = result.value;
+        if (value &&
+            typeof value === "object" &&
+            hasOwn.call(value, "__await")) {
+          return PromiseImpl.resolve(value.__await).then(function(value) {
+            invoke("next", value, resolve, reject);
+          }, function(err) {
+            invoke("throw", err, resolve, reject);
+          });
+        }
+
+        return PromiseImpl.resolve(value).then(function(unwrapped) {
+          // When a yielded Promise is resolved, its final value becomes
+          // the .value of the Promise<{value,done}> result for the
+          // current iteration.
+          result.value = unwrapped;
+          resolve(result);
+        }, function(error) {
+          // If a rejected Promise was yielded, throw the rejection back
+          // into the async generator function so it can be handled there.
+          return invoke("throw", error, resolve, reject);
+        });
+      }
+    }
+
+    var previousPromise;
+
+    function enqueue(method, arg) {
+      function callInvokeWithMethodAndArg() {
+        return new PromiseImpl(function(resolve, reject) {
+          invoke(method, arg, resolve, reject);
+        });
+      }
+
+      return previousPromise =
+        // If enqueue has been called before, then we want to wait until
+        // all previous Promises have been resolved before calling invoke,
+        // so that results are always delivered in the correct order. If
+        // enqueue has not been called before, then it is important to
+        // call invoke immediately, without waiting on a callback to fire,
+        // so that the async generator function has the opportunity to do
+        // any necessary setup in a predictable way. This predictability
+        // is why the Promise constructor synchronously invokes its
+        // executor callback, and why async functions synchronously
+        // execute code before the first await. Since we implement simple
+        // async functions in terms of async generators, it is especially
+        // important to get this right, even though it requires care.
+        previousPromise ? previousPromise.then(
+          callInvokeWithMethodAndArg,
+          // Avoid propagating failures to Promises returned by later
+          // invocations of the iterator.
+          callInvokeWithMethodAndArg
+        ) : callInvokeWithMethodAndArg();
+    }
+
+    // Define the unified helper method that is used to implement .next,
+    // .throw, and .return (see defineIteratorMethods).
+    defineProperty(this, "_invoke", { value: enqueue });
+  }
+
+  defineIteratorMethods(AsyncIterator.prototype);
+  define(AsyncIterator.prototype, asyncIteratorSymbol, function () {
+    return this;
+  });
+  exports.AsyncIterator = AsyncIterator;
+
+  // Note that simple async functions are implemented on top of
+  // AsyncIterator objects; they just return a Promise for the value of
+  // the final result produced by the iterator.
+  exports.async = function(innerFn, outerFn, self, tryLocsList, PromiseImpl) {
+    if (PromiseImpl === void 0) PromiseImpl = Promise;
+
+    var iter = new AsyncIterator(
+      wrap(innerFn, outerFn, self, tryLocsList),
+      PromiseImpl
+    );
+
+    return exports.isGeneratorFunction(outerFn)
+      ? iter // If outerFn is a generator, return the full iterator.
+      : iter.next().then(function(result) {
+          return result.done ? result.value : iter.next();
+        });
+  };
+
+  function makeInvokeMethod(innerFn, self, context) {
+    var state = GenStateSuspendedStart;
+
+    return function invoke(method, arg) {
+      if (state === GenStateExecuting) {
+        throw new Error("Generator is already running");
+      }
+
+      if (state === GenStateCompleted) {
+        if (method === "throw") {
+          throw arg;
+        }
+
+        // Be forgiving, per 25.3.3.3.3 of the spec:
+        // https://people.mozilla.org/~jorendorff/es6-draft.html#sec-generatorresume
+        return doneResult();
+      }
+
+      context.method = method;
+      context.arg = arg;
+
+      while (true) {
+        var delegate = context.delegate;
+        if (delegate) {
+          var delegateResult = maybeInvokeDelegate(delegate, context);
+          if (delegateResult) {
+            if (delegateResult === ContinueSentinel) continue;
+            return delegateResult;
+          }
+        }
+
+        if (context.method === "next") {
+          // Setting context._sent for legacy support of Babel's
+          // function.sent implementation.
+          context.sent = context._sent = context.arg;
+
+        } else if (context.method === "throw") {
+          if (state === GenStateSuspendedStart) {
+            state = GenStateCompleted;
+            throw context.arg;
+          }
+
+          context.dispatchException(context.arg);
+
+        } else if (context.method === "return") {
+          context.abrupt("return", context.arg);
+        }
+
+        state = GenStateExecuting;
+
+        var record = tryCatch(innerFn, self, context);
+        if (record.type === "normal") {
+          // If an exception is thrown from innerFn, we leave state ===
+          // GenStateExecuting and loop back for another invocation.
+          state = context.done
+            ? GenStateCompleted
+            : GenStateSuspendedYield;
+
+          if (record.arg === ContinueSentinel) {
+            continue;
+          }
+
+          return {
+            value: record.arg,
+            done: context.done
+          };
+
+        } else if (record.type === "throw") {
+          state = GenStateCompleted;
+          // Dispatch the exception by looping back around to the
+          // context.dispatchException(context.arg) call above.
+          context.method = "throw";
+          context.arg = record.arg;
+        }
+      }
+    };
+  }
+
+  // Call delegate.iterator[context.method](context.arg) and handle the
+  // result, either by returning a { value, done } result from the
+  // delegate iterator, or by modifying context.method and context.arg,
+  // setting context.delegate to null, and returning the ContinueSentinel.
+  function maybeInvokeDelegate(delegate, context) {
+    var methodName = context.method;
+    var method = delegate.iterator[methodName];
+    if (method === undefined) {
+      // A .throw or .return when the delegate iterator has no .throw
+      // method, or a missing .next mehtod, always terminate the
+      // yield* loop.
+      context.delegate = null;
+
+      // Note: ["return"] must be used for ES3 parsing compatibility.
+      if (methodName === "throw" && delegate.iterator["return"]) {
+        // If the delegate iterator has a return method, give it a
+        // chance to clean up.
+        context.method = "return";
+        context.arg = undefined;
+        maybeInvokeDelegate(delegate, context);
+
+        if (context.method === "throw") {
+          // If maybeInvokeDelegate(context) changed context.method from
+          // "return" to "throw", let that override the TypeError below.
+          return ContinueSentinel;
+        }
+      }
+      if (methodName !== "return") {
+        context.method = "throw";
+        context.arg = new TypeError(
+          "The iterator does not provide a '" + methodName + "' method");
+      }
+
+      return ContinueSentinel;
+    }
+
+    var record = tryCatch(method, delegate.iterator, context.arg);
+
+    if (record.type === "throw") {
+      context.method = "throw";
+      context.arg = record.arg;
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    var info = record.arg;
+
+    if (! info) {
+      context.method = "throw";
+      context.arg = new TypeError("iterator result is not an object");
+      context.delegate = null;
+      return ContinueSentinel;
+    }
+
+    if (info.done) {
+      // Assign the result of the finished delegate to the temporary
+      // variable specified by delegate.resultName (see delegateYield).
+      context[delegate.resultName] = info.value;
+
+      // Resume execution at the desired location (see delegateYield).
+      context.next = delegate.nextLoc;
+
+      // If context.method was "throw" but the delegate handled the
+      // exception, let the outer generator proceed normally. If
+      // context.method was "next", forget context.arg since it has been
+      // "consumed" by the delegate iterator. If context.method was
+      // "return", allow the original .return call to continue in the
+      // outer generator.
+      if (context.method !== "return") {
+        context.method = "next";
+        context.arg = undefined;
+      }
+
+    } else {
+      // Re-yield the result returned by the delegate method.
+      return info;
+    }
+
+    // The delegate iterator is finished, so forget it and continue with
+    // the outer generator.
+    context.delegate = null;
+    return ContinueSentinel;
+  }
+
+  // Define Generator.prototype.{next,throw,return} in terms of the
+  // unified ._invoke helper method.
+  defineIteratorMethods(Gp);
+
+  define(Gp, toStringTagSymbol, "Generator");
+
+  // A Generator should always return itself as the iterator object when the
+  // @@iterator function is called on it. Some browsers' implementations of the
+  // iterator prototype chain incorrectly implement this, causing the Generator
+  // object to not be returned from this call. This ensures that doesn't happen.
+  // See https://github.com/facebook/regenerator/issues/274 for more details.
+  define(Gp, iteratorSymbol, function() {
+    return this;
+  });
+
+  define(Gp, "toString", function() {
+    return "[object Generator]";
+  });
+
+  function pushTryEntry(locs) {
+    var entry = { tryLoc: locs[0] };
+
+    if (1 in locs) {
+      entry.catchLoc = locs[1];
+    }
+
+    if (2 in locs) {
+      entry.finallyLoc = locs[2];
+      entry.afterLoc = locs[3];
+    }
+
+    this.tryEntries.push(entry);
+  }
+
+  function resetTryEntry(entry) {
+    var record = entry.completion || {};
+    record.type = "normal";
+    delete record.arg;
+    entry.completion = record;
+  }
+
+  function Context(tryLocsList) {
+    // The root entry object (effectively a try statement without a catch
+    // or a finally block) gives us a place to store values thrown from
+    // locations where there is no enclosing try statement.
+    this.tryEntries = [{ tryLoc: "root" }];
+    tryLocsList.forEach(pushTryEntry, this);
+    this.reset(true);
+  }
+
+  exports.keys = function(val) {
+    var object = Object(val);
+    var keys = [];
+    for (var key in object) {
+      keys.push(key);
+    }
+    keys.reverse();
+
+    // Rather than returning an object with a next method, we keep
+    // things simple and return the next function itself.
+    return function next() {
+      while (keys.length) {
+        var key = keys.pop();
+        if (key in object) {
+          next.value = key;
+          next.done = false;
+          return next;
+        }
+      }
+
+      // To avoid creating an additional object, we just hang the .value
+      // and .done properties off the next function object itself. This
+      // also ensures that the minifier will not anonymize the function.
+      next.done = true;
+      return next;
+    };
+  };
+
+  function values(iterable) {
+    if (iterable) {
+      var iteratorMethod = iterable[iteratorSymbol];
+      if (iteratorMethod) {
+        return iteratorMethod.call(iterable);
+      }
+
+      if (typeof iterable.next === "function") {
+        return iterable;
+      }
+
+      if (!isNaN(iterable.length)) {
+        var i = -1, next = function next() {
+          while (++i < iterable.length) {
+            if (hasOwn.call(iterable, i)) {
+              next.value = iterable[i];
+              next.done = false;
+              return next;
+            }
+          }
+
+          next.value = undefined;
+          next.done = true;
+
+          return next;
+        };
+
+        return next.next = next;
+      }
+    }
+
+    // Return an iterator with no values.
+    return { next: doneResult };
+  }
+  exports.values = values;
+
+  function doneResult() {
+    return { value: undefined, done: true };
+  }
+
+  Context.prototype = {
+    constructor: Context,
+
+    reset: function(skipTempReset) {
+      this.prev = 0;
+      this.next = 0;
+      // Resetting context._sent for legacy support of Babel's
+      // function.sent implementation.
+      this.sent = this._sent = undefined;
+      this.done = false;
+      this.delegate = null;
+
+      this.method = "next";
+      this.arg = undefined;
+
+      this.tryEntries.forEach(resetTryEntry);
+
+      if (!skipTempReset) {
+        for (var name in this) {
+          // Not sure about the optimal order of these conditions:
+          if (name.charAt(0) === "t" &&
+              hasOwn.call(this, name) &&
+              !isNaN(+name.slice(1))) {
+            this[name] = undefined;
+          }
+        }
+      }
+    },
+
+    stop: function() {
+      this.done = true;
+
+      var rootEntry = this.tryEntries[0];
+      var rootRecord = rootEntry.completion;
+      if (rootRecord.type === "throw") {
+        throw rootRecord.arg;
+      }
+
+      return this.rval;
+    },
+
+    dispatchException: function(exception) {
+      if (this.done) {
+        throw exception;
+      }
+
+      var context = this;
+      function handle(loc, caught) {
+        record.type = "throw";
+        record.arg = exception;
+        context.next = loc;
+
+        if (caught) {
+          // If the dispatched exception was caught by a catch block,
+          // then let that catch block handle the exception normally.
+          context.method = "next";
+          context.arg = undefined;
+        }
+
+        return !! caught;
+      }
+
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        var record = entry.completion;
+
+        if (entry.tryLoc === "root") {
+          // Exception thrown outside of any try block that could handle
+          // it, so set the completion value of the entire function to
+          // throw the exception.
+          return handle("end");
+        }
+
+        if (entry.tryLoc <= this.prev) {
+          var hasCatch = hasOwn.call(entry, "catchLoc");
+          var hasFinally = hasOwn.call(entry, "finallyLoc");
+
+          if (hasCatch && hasFinally) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            } else if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else if (hasCatch) {
+            if (this.prev < entry.catchLoc) {
+              return handle(entry.catchLoc, true);
+            }
+
+          } else if (hasFinally) {
+            if (this.prev < entry.finallyLoc) {
+              return handle(entry.finallyLoc);
+            }
+
+          } else {
+            throw new Error("try statement without catch or finally");
+          }
+        }
+      }
+    },
+
+    abrupt: function(type, arg) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc <= this.prev &&
+            hasOwn.call(entry, "finallyLoc") &&
+            this.prev < entry.finallyLoc) {
+          var finallyEntry = entry;
+          break;
+        }
+      }
+
+      if (finallyEntry &&
+          (type === "break" ||
+           type === "continue") &&
+          finallyEntry.tryLoc <= arg &&
+          arg <= finallyEntry.finallyLoc) {
+        // Ignore the finally entry if control is not jumping to a
+        // location outside the try/catch block.
+        finallyEntry = null;
+      }
+
+      var record = finallyEntry ? finallyEntry.completion : {};
+      record.type = type;
+      record.arg = arg;
+
+      if (finallyEntry) {
+        this.method = "next";
+        this.next = finallyEntry.finallyLoc;
+        return ContinueSentinel;
+      }
+
+      return this.complete(record);
+    },
+
+    complete: function(record, afterLoc) {
+      if (record.type === "throw") {
+        throw record.arg;
+      }
+
+      if (record.type === "break" ||
+          record.type === "continue") {
+        this.next = record.arg;
+      } else if (record.type === "return") {
+        this.rval = this.arg = record.arg;
+        this.method = "return";
+        this.next = "end";
+      } else if (record.type === "normal" && afterLoc) {
+        this.next = afterLoc;
+      }
+
+      return ContinueSentinel;
+    },
+
+    finish: function(finallyLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.finallyLoc === finallyLoc) {
+          this.complete(entry.completion, entry.afterLoc);
+          resetTryEntry(entry);
+          return ContinueSentinel;
+        }
+      }
+    },
+
+    "catch": function(tryLoc) {
+      for (var i = this.tryEntries.length - 1; i >= 0; --i) {
+        var entry = this.tryEntries[i];
+        if (entry.tryLoc === tryLoc) {
+          var record = entry.completion;
+          if (record.type === "throw") {
+            var thrown = record.arg;
+            resetTryEntry(entry);
+          }
+          return thrown;
+        }
+      }
+
+      // The context.catch method must only be called with a location
+      // argument that corresponds to a known catch block.
+      throw new Error("illegal catch attempt");
+    },
+
+    delegateYield: function(iterable, resultName, nextLoc) {
+      this.delegate = {
+        iterator: values(iterable),
+        resultName: resultName,
+        nextLoc: nextLoc
+      };
+
+      if (this.method === "next") {
+        // Deliberately forget the last sent value so that we don't
+        // accidentally pass it on to the delegate.
+        this.arg = undefined;
+      }
+
+      return ContinueSentinel;
+    }
+  };
+
+  // Regardless of whether this script is executing as a CommonJS module
+  // or not, return the runtime object so that we can declare the variable
+  // regeneratorRuntime in the outer scope, which allows this module to be
+  // injected easily by `bin/regenerator --include-runtime script.js`.
+  return exports;
+
+}(
+  // If this script is executing as a CommonJS module, use module.exports
+  // as the regeneratorRuntime namespace. Otherwise create a new empty
+  // object. Either way, the resulting object will be used to initialize
+  // the regeneratorRuntime variable at the top of this file.
+   true ? module.exports : 0
+));
+
+try {
+  regeneratorRuntime = runtime;
+} catch (accidentalStrictMode) {
+  // This module should not be running in strict mode, so the above
+  // assignment should always work unless something is misconfigured. Just
+  // in case runtime.js accidentally runs in strict mode, in modern engines
+  // we can explicitly access globalThis. In older engines we can escape
+  // strict mode using a global Function call. This could conceivably fail
+  // if a Content Security Policy forbids using Function, but in that case
+  // the proper solution is to fix the accidental strict mode problem. If
+  // you've misconfigured your bundler to force strict mode and applied a
+  // CSP to forbid Function, and you're not willing to fix either of those
+  // problems, please detail your unique predicament in a GitHub issue.
+  if (typeof globalThis === "object") {
+    globalThis.regeneratorRuntime = runtime;
+  } else {
+    Function("r", "regeneratorRuntime = r")(runtime);
+  }
+}
+
+
+/***/ },
+
 /***/ "./node_modules/onnxruntime-web/dist/ort-wasm-simd-threaded.jsep.wasm"
 /*!****************************************************************************!*\
   !*** ./node_modules/onnxruntime-web/dist/ort-wasm-simd-threaded.jsep.wasm ***!
   \****************************************************************************/
 (module, __unused_webpack_exports, __webpack_require__) {
 
+"use strict";
 module.exports = __webpack_require__.p + "48f06381ab0c9c1b832b.wasm";
 
 /***/ },
@@ -433,7 +1453,1110 @@ module.exports = __webpack_require__.p + "48f06381ab0c9c1b832b.wasm";
   \**************************************************************/
 (module, __unused_webpack_exports, __webpack_require__) {
 
+"use strict";
 module.exports = __webpack_require__.p + "b39d31f38a2d0a0fbe89.mjs";
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/Tesseract.js"
+/*!****************************************************!*\
+  !*** ./node_modules/tesseract.js/src/Tesseract.js ***!
+  \****************************************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+
+
+const createWorker = __webpack_require__(/*! ./createWorker */ "./node_modules/tesseract.js/src/createWorker.js");
+
+const recognize = async (image, langs, options) => {
+  const worker = await createWorker(langs, 1, options);
+  return worker.recognize(image)
+    .finally(async () => {
+      await worker.terminate();
+    });
+};
+
+const detect = async (image, options) => {
+  const worker = await createWorker('osd', 0, options);
+  return worker.detect(image)
+    .finally(async () => {
+      await worker.terminate();
+    });
+};
+
+module.exports = {
+  recognize,
+  detect,
+};
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/constants/OEM.js"
+/*!********************************************************!*\
+  !*** ./node_modules/tesseract.js/src/constants/OEM.js ***!
+  \********************************************************/
+(module) {
+
+"use strict";
+
+
+/*
+ * OEM = OCR Engine Mode, and there are 4 possible modes.
+ *
+ * By default tesseract.js uses LSTM_ONLY mode.
+ *
+ */
+module.exports = {
+  TESSERACT_ONLY: 0,
+  LSTM_ONLY: 1,
+  TESSERACT_LSTM_COMBINED: 2,
+  DEFAULT: 3,
+};
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/constants/PSM.js"
+/*!********************************************************!*\
+  !*** ./node_modules/tesseract.js/src/constants/PSM.js ***!
+  \********************************************************/
+(module) {
+
+"use strict";
+
+
+/*
+ * PSM = Page Segmentation Mode
+ */
+module.exports = {
+  OSD_ONLY: '0',
+  AUTO_OSD: '1',
+  AUTO_ONLY: '2',
+  AUTO: '3',
+  SINGLE_COLUMN: '4',
+  SINGLE_BLOCK_VERT_TEXT: '5',
+  SINGLE_BLOCK: '6',
+  SINGLE_LINE: '7',
+  SINGLE_WORD: '8',
+  CIRCLE_WORD: '9',
+  SINGLE_CHAR: '10',
+  SPARSE_TEXT: '11',
+  SPARSE_TEXT_OSD: '12',
+  RAW_LINE: '13',
+};
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/constants/defaultOptions.js"
+/*!*******************************************************************!*\
+  !*** ./node_modules/tesseract.js/src/constants/defaultOptions.js ***!
+  \*******************************************************************/
+(module) {
+
+"use strict";
+
+
+module.exports = {
+  /*
+   * Use BlobURL for worker script by default
+   * TODO: remove this option
+   *
+   */
+  workerBlobURL: true,
+  logger: () => {},
+};
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/constants/languages.js"
+/*!**************************************************************!*\
+  !*** ./node_modules/tesseract.js/src/constants/languages.js ***!
+  \**************************************************************/
+(module) {
+
+"use strict";
+
+
+/*
+ * languages with existing tesseract traineddata
+ * https://tesseract-ocr.github.io/tessdoc/Data-Files#data-files-for-version-400-november-29-2016
+ */
+
+/**
+ * @typedef {object} Languages
+ * @property {string} AFR Afrikaans
+ * @property {string} AMH Amharic
+ * @property {string} ARA Arabic
+ * @property {string} ASM Assamese
+ * @property {string} AZE Azerbaijani
+ * @property {string} AZE_CYRL Azerbaijani - Cyrillic
+ * @property {string} BEL Belarusian
+ * @property {string} BEN Bengali
+ * @property {string} BOD Tibetan
+ * @property {string} BOS Bosnian
+ * @property {string} BUL Bulgarian
+ * @property {string} CAT Catalan; Valencian
+ * @property {string} CEB Cebuano
+ * @property {string} CES Czech
+ * @property {string} CHI_SIM Chinese - Simplified
+ * @property {string} CHI_TRA Chinese - Traditional
+ * @property {string} CHR Cherokee
+ * @property {string} CYM Welsh
+ * @property {string} DAN Danish
+ * @property {string} DEU German
+ * @property {string} DZO Dzongkha
+ * @property {string} ELL Greek, Modern (1453-)
+ * @property {string} ENG English
+ * @property {string} ENM English, Middle (1100-1500)
+ * @property {string} EPO Esperanto
+ * @property {string} EST Estonian
+ * @property {string} EUS Basque
+ * @property {string} FAS Persian
+ * @property {string} FIN Finnish
+ * @property {string} FRA French
+ * @property {string} FRK German Fraktur
+ * @property {string} FRM French, Middle (ca. 1400-1600)
+ * @property {string} GLE Irish
+ * @property {string} GLG Galician
+ * @property {string} GRC Greek, Ancient (-1453)
+ * @property {string} GUJ Gujarati
+ * @property {string} HAT Haitian; Haitian Creole
+ * @property {string} HEB Hebrew
+ * @property {string} HIN Hindi
+ * @property {string} HRV Croatian
+ * @property {string} HUN Hungarian
+ * @property {string} IKU Inuktitut
+ * @property {string} IND Indonesian
+ * @property {string} ISL Icelandic
+ * @property {string} ITA Italian
+ * @property {string} ITA_OLD Italian - Old
+ * @property {string} JAV Javanese
+ * @property {string} JPN Japanese
+ * @property {string} KAN Kannada
+ * @property {string} KAT Georgian
+ * @property {string} KAT_OLD Georgian - Old
+ * @property {string} KAZ Kazakh
+ * @property {string} KHM Central Khmer
+ * @property {string} KIR Kirghiz; Kyrgyz
+ * @property {string} KOR Korean
+ * @property {string} KUR Kurdish
+ * @property {string} LAO Lao
+ * @property {string} LAT Latin
+ * @property {string} LAV Latvian
+ * @property {string} LIT Lithuanian
+ * @property {string} MAL Malayalam
+ * @property {string} MAR Marathi
+ * @property {string} MKD Macedonian
+ * @property {string} MLT Maltese
+ * @property {string} MSA Malay
+ * @property {string} MYA Burmese
+ * @property {string} NEP Nepali
+ * @property {string} NLD Dutch; Flemish
+ * @property {string} NOR Norwegian
+ * @property {string} ORI Oriya
+ * @property {string} PAN Panjabi; Punjabi
+ * @property {string} POL Polish
+ * @property {string} POR Portuguese
+ * @property {string} PUS Pushto; Pashto
+ * @property {string} RON Romanian; Moldavian; Moldovan
+ * @property {string} RUS Russian
+ * @property {string} SAN Sanskrit
+ * @property {string} SIN Sinhala; Sinhalese
+ * @property {string} SLK Slovak
+ * @property {string} SLV Slovenian
+ * @property {string} SPA Spanish; Castilian
+ * @property {string} SPA_OLD Spanish; Castilian - Old
+ * @property {string} SQI Albanian
+ * @property {string} SRP Serbian
+ * @property {string} SRP_LATN Serbian - Latin
+ * @property {string} SWA Swahili
+ * @property {string} SWE Swedish
+ * @property {string} SYR Syriac
+ * @property {string} TAM Tamil
+ * @property {string} TEL Telugu
+ * @property {string} TGK Tajik
+ * @property {string} TGL Tagalog
+ * @property {string} THA Thai
+ * @property {string} TIR Tigrinya
+ * @property {string} TUR Turkish
+ * @property {string} UIG Uighur; Uyghur
+ * @property {string} UKR Ukrainian
+ * @property {string} URD Urdu
+ * @property {string} UZB Uzbek
+ * @property {string} UZB_CYRL Uzbek - Cyrillic
+ * @property {string} VIE Vietnamese
+ * @property {string} YID Yiddish
+ */
+
+/**
+  * @type {Languages}
+  */
+module.exports = {
+  AFR: 'afr',
+  AMH: 'amh',
+  ARA: 'ara',
+  ASM: 'asm',
+  AZE: 'aze',
+  AZE_CYRL: 'aze_cyrl',
+  BEL: 'bel',
+  BEN: 'ben',
+  BOD: 'bod',
+  BOS: 'bos',
+  BUL: 'bul',
+  CAT: 'cat',
+  CEB: 'ceb',
+  CES: 'ces',
+  CHI_SIM: 'chi_sim',
+  CHI_TRA: 'chi_tra',
+  CHR: 'chr',
+  CYM: 'cym',
+  DAN: 'dan',
+  DEU: 'deu',
+  DZO: 'dzo',
+  ELL: 'ell',
+  ENG: 'eng',
+  ENM: 'enm',
+  EPO: 'epo',
+  EST: 'est',
+  EUS: 'eus',
+  FAS: 'fas',
+  FIN: 'fin',
+  FRA: 'fra',
+  FRK: 'frk',
+  FRM: 'frm',
+  GLE: 'gle',
+  GLG: 'glg',
+  GRC: 'grc',
+  GUJ: 'guj',
+  HAT: 'hat',
+  HEB: 'heb',
+  HIN: 'hin',
+  HRV: 'hrv',
+  HUN: 'hun',
+  IKU: 'iku',
+  IND: 'ind',
+  ISL: 'isl',
+  ITA: 'ita',
+  ITA_OLD: 'ita_old',
+  JAV: 'jav',
+  JPN: 'jpn',
+  KAN: 'kan',
+  KAT: 'kat',
+  KAT_OLD: 'kat_old',
+  KAZ: 'kaz',
+  KHM: 'khm',
+  KIR: 'kir',
+  KOR: 'kor',
+  KUR: 'kur',
+  LAO: 'lao',
+  LAT: 'lat',
+  LAV: 'lav',
+  LIT: 'lit',
+  MAL: 'mal',
+  MAR: 'mar',
+  MKD: 'mkd',
+  MLT: 'mlt',
+  MSA: 'msa',
+  MYA: 'mya',
+  NEP: 'nep',
+  NLD: 'nld',
+  NOR: 'nor',
+  ORI: 'ori',
+  PAN: 'pan',
+  POL: 'pol',
+  POR: 'por',
+  PUS: 'pus',
+  RON: 'ron',
+  RUS: 'rus',
+  SAN: 'san',
+  SIN: 'sin',
+  SLK: 'slk',
+  SLV: 'slv',
+  SPA: 'spa',
+  SPA_OLD: 'spa_old',
+  SQI: 'sqi',
+  SRP: 'srp',
+  SRP_LATN: 'srp_latn',
+  SWA: 'swa',
+  SWE: 'swe',
+  SYR: 'syr',
+  TAM: 'tam',
+  TEL: 'tel',
+  TGK: 'tgk',
+  TGL: 'tgl',
+  THA: 'tha',
+  TIR: 'tir',
+  TUR: 'tur',
+  UIG: 'uig',
+  UKR: 'ukr',
+  URD: 'urd',
+  UZB: 'uzb',
+  UZB_CYRL: 'uzb_cyrl',
+  VIE: 'vie',
+  YID: 'yid',
+};
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/createJob.js"
+/*!****************************************************!*\
+  !*** ./node_modules/tesseract.js/src/createJob.js ***!
+  \****************************************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+
+
+const getId = __webpack_require__(/*! ./utils/getId */ "./node_modules/tesseract.js/src/utils/getId.js");
+
+let jobCounter = 0;
+
+module.exports = ({
+  id: _id,
+  action,
+  payload = {},
+}) => {
+  let id = _id;
+  if (typeof id === 'undefined') {
+    id = getId('Job', jobCounter);
+    jobCounter += 1;
+  }
+
+  return {
+    id,
+    action,
+    payload,
+  };
+};
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/createScheduler.js"
+/*!**********************************************************!*\
+  !*** ./node_modules/tesseract.js/src/createScheduler.js ***!
+  \**********************************************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+
+
+const createJob = __webpack_require__(/*! ./createJob */ "./node_modules/tesseract.js/src/createJob.js");
+const { log } = __webpack_require__(/*! ./utils/log */ "./node_modules/tesseract.js/src/utils/log.js");
+const getId = __webpack_require__(/*! ./utils/getId */ "./node_modules/tesseract.js/src/utils/getId.js");
+
+let schedulerCounter = 0;
+
+module.exports = () => {
+  const id = getId('Scheduler', schedulerCounter);
+  const workers = {};
+  const runningWorkers = {};
+  let jobQueue = [];
+
+  schedulerCounter += 1;
+
+  const getQueueLen = () => jobQueue.length;
+  const getNumWorkers = () => Object.keys(workers).length;
+
+  const dequeue = () => {
+    if (jobQueue.length !== 0) {
+      const wIds = Object.keys(workers);
+      for (let i = 0; i < wIds.length; i += 1) {
+        if (typeof runningWorkers[wIds[i]] === 'undefined') {
+          jobQueue[0](workers[wIds[i]]);
+          break;
+        }
+      }
+    }
+  };
+
+  const queue = (action, payload) => (
+    new Promise((resolve, reject) => {
+      const job = createJob({ action, payload });
+      jobQueue.push(async (w) => {
+        jobQueue.shift();
+        runningWorkers[w.id] = job;
+        try {
+          resolve(await w[action].apply(this, [...payload, job.id]));
+        } catch (err) {
+          reject(err);
+        } finally {
+          delete runningWorkers[w.id];
+          dequeue();
+        }
+      });
+      log(`[${id}]: Add ${job.id} to JobQueue`);
+      log(`[${id}]: JobQueue length=${jobQueue.length}`);
+      dequeue();
+    })
+  );
+
+  const addWorker = (w) => {
+    workers[w.id] = w;
+    log(`[${id}]: Add ${w.id}`);
+    log(`[${id}]: Number of workers=${getNumWorkers()}`);
+    dequeue();
+    return w.id;
+  };
+
+  const addJob = async (action, ...payload) => {
+    if (getNumWorkers() === 0) {
+      throw Error(`[${id}]: You need to have at least one worker before adding jobs`);
+    }
+    return queue(action, payload);
+  };
+
+  const terminate = async () => {
+    Object.keys(workers).forEach(async (wid) => {
+      await workers[wid].terminate();
+    });
+    jobQueue = [];
+  };
+
+  return {
+    addWorker,
+    addJob,
+    terminate,
+    getQueueLen,
+    getNumWorkers,
+  };
+};
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/createWorker.js"
+/*!*******************************************************!*\
+  !*** ./node_modules/tesseract.js/src/createWorker.js ***!
+  \*******************************************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+
+
+const resolvePaths = __webpack_require__(/*! ./utils/resolvePaths */ "./node_modules/tesseract.js/src/utils/resolvePaths.js");
+const createJob = __webpack_require__(/*! ./createJob */ "./node_modules/tesseract.js/src/createJob.js");
+const { log } = __webpack_require__(/*! ./utils/log */ "./node_modules/tesseract.js/src/utils/log.js");
+const getId = __webpack_require__(/*! ./utils/getId */ "./node_modules/tesseract.js/src/utils/getId.js");
+const OEM = __webpack_require__(/*! ./constants/OEM */ "./node_modules/tesseract.js/src/constants/OEM.js");
+const {
+  defaultOptions,
+  spawnWorker,
+  terminateWorker,
+  onMessage,
+  loadImage,
+  send,
+} = __webpack_require__(/*! ./worker/node */ "./node_modules/tesseract.js/src/worker/browser/index.js");
+
+let workerCounter = 0;
+
+module.exports = async (langs = 'eng', oem = OEM.LSTM_ONLY, _options = {}, config = {}) => {
+  const id = getId('Worker', workerCounter);
+  const {
+    logger,
+    errorHandler,
+    ...options
+  } = resolvePaths({
+    ...defaultOptions,
+    ..._options,
+  });
+  const promises = {};
+
+  // Current langs, oem, and config file.
+  // Used if the user ever re-initializes the worker using `worker.reinitialize`.
+  const currentLangs = typeof langs === 'string' ? langs.split('+') : langs;
+  let currentOem = oem;
+  let currentConfig = config;
+  const lstmOnlyCore = [OEM.DEFAULT, OEM.LSTM_ONLY].includes(oem) && !options.legacyCore;
+
+  let workerResReject;
+  let workerResResolve;
+  const workerRes = new Promise((resolve, reject) => {
+    workerResResolve = resolve;
+    workerResReject = reject;
+  });
+  const workerError = (event) => { workerResReject(event.message); };
+
+  let worker = spawnWorker(options);
+  worker.onerror = workerError;
+
+  workerCounter += 1;
+
+  const startJob = ({ id: jobId, action, payload }) => (
+    new Promise((resolve, reject) => {
+      log(`[${id}]: Start ${jobId}, action=${action}`);
+      // Using both `action` and `jobId` in case user provides non-unique `jobId`.
+      const promiseId = `${action}-${jobId}`;
+      promises[promiseId] = { resolve, reject };
+      send(worker, {
+        workerId: id,
+        jobId,
+        action,
+        payload,
+      });
+    })
+  );
+
+  const load = () => (
+    console.warn('`load` is depreciated and should be removed from code (workers now come pre-loaded)')
+  );
+
+  const loadInternal = (jobId) => (
+    startJob(createJob({
+      id: jobId, action: 'load', payload: { options: { lstmOnly: lstmOnlyCore, corePath: options.corePath, logging: options.logging } },
+    }))
+  );
+
+  const writeText = (path, text, jobId) => (
+    startJob(createJob({
+      id: jobId,
+      action: 'FS',
+      payload: { method: 'writeFile', args: [path, text] },
+    }))
+  );
+
+  const readText = (path, jobId) => (
+    startJob(createJob({
+      id: jobId,
+      action: 'FS',
+      payload: { method: 'readFile', args: [path, { encoding: 'utf8' }] },
+    }))
+  );
+
+  const removeFile = (path, jobId) => (
+    startJob(createJob({
+      id: jobId,
+      action: 'FS',
+      payload: { method: 'unlink', args: [path] },
+    }))
+  );
+
+  const FS = (method, args, jobId) => (
+    startJob(createJob({
+      id: jobId,
+      action: 'FS',
+      payload: { method, args },
+    }))
+  );
+
+  const loadLanguageInternal = (_langs, jobId) => startJob(createJob({
+    id: jobId,
+    action: 'loadLanguage',
+    payload: {
+      langs: _langs,
+      options: {
+        langPath: options.langPath,
+        dataPath: options.dataPath,
+        cachePath: options.cachePath,
+        cacheMethod: options.cacheMethod,
+        gzip: options.gzip,
+        lstmOnly: [OEM.DEFAULT, OEM.LSTM_ONLY].includes(currentOem)
+          && !options.legacyLang,
+      },
+    },
+  }));
+
+  const initializeInternal = (_langs, _oem, _config, jobId) => (
+    startJob(createJob({
+      id: jobId,
+      action: 'initialize',
+      payload: { langs: _langs, oem: _oem, config: _config },
+    }))
+  );
+
+  const reinitialize = (langs = 'eng', oem, config, jobId) => { // eslint-disable-line
+
+    if (lstmOnlyCore && [OEM.TESSERACT_ONLY, OEM.TESSERACT_LSTM_COMBINED].includes(oem)) throw Error('Legacy model requested but code missing.');
+
+    const _oem = oem || currentOem;
+    currentOem = _oem;
+
+    const _config = config || currentConfig;
+    currentConfig = _config;
+
+    // Only load langs that are not already loaded.
+    // This logic fails if the user downloaded the LSTM-only English data for a language
+    // and then uses `worker.reinitialize` to switch to the Legacy engine.
+    // However, the correct data will still be downloaded after initialization fails
+    // and this can be avoided entirely if the user loads the correct data ahead of time.
+    const langsArr = typeof langs === 'string' ? langs.split('+') : langs;
+    const _langs = langsArr.filter((x) => !currentLangs.includes(x));
+    currentLangs.push(..._langs);
+
+    if (_langs.length > 0) {
+      return loadLanguageInternal(_langs, jobId)
+        .then(() => initializeInternal(langs, _oem, _config, jobId));
+    }
+
+    return initializeInternal(langs, _oem, _config, jobId);
+  };
+
+  const setParameters = (params = {}, jobId) => (
+    startJob(createJob({
+      id: jobId,
+      action: 'setParameters',
+      payload: { params },
+    }))
+  );
+
+  const recognize = async (image, opts = {}, output = {
+    text: true,
+  }, jobId) => (
+    startJob(createJob({
+      id: jobId,
+      action: 'recognize',
+      payload: { image: await loadImage(image), options: opts, output },
+    }))
+  );
+
+  const detect = async (image, jobId) => {
+    if (lstmOnlyCore) throw Error('`worker.detect` requires Legacy model, which was not loaded.');
+
+    return startJob(createJob({
+      id: jobId,
+      action: 'detect',
+      payload: { image: await loadImage(image) },
+    }));
+  };
+
+  const terminate = async () => {
+    if (worker !== null) {
+      /*
+      await startJob(createJob({
+        id: jobId,
+        action: 'terminate',
+      }));
+      */
+      terminateWorker(worker);
+      worker = null;
+    }
+    return Promise.resolve();
+  };
+
+  onMessage(worker, ({
+    workerId, jobId, status, action, data,
+  }) => {
+    const promiseId = `${action}-${jobId}`;
+    if (status === 'resolve') {
+      log(`[${workerId}]: Complete ${jobId}`);
+      promises[promiseId].resolve({ jobId, data });
+      delete promises[promiseId];
+    } else if (status === 'reject') {
+      promises[promiseId].reject(data);
+      delete promises[promiseId];
+      if (action === 'load') workerResReject(data);
+      if (errorHandler) {
+        errorHandler(data);
+      } else {
+        throw Error(data);
+      }
+    } else if (status === 'progress') {
+      logger({ ...data, userJobId: jobId });
+    }
+  });
+
+  const resolveObj = {
+    id,
+    worker,
+    load,
+    writeText,
+    readText,
+    removeFile,
+    FS,
+    reinitialize,
+    setParameters,
+    recognize,
+    detect,
+    terminate,
+  };
+
+  loadInternal()
+    .then(() => loadLanguageInternal(langs))
+    .then(() => initializeInternal(langs, oem, config))
+    .then(() => workerResResolve(resolveObj))
+    .catch(() => {});
+
+  return workerRes;
+};
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/index.js"
+/*!************************************************!*\
+  !*** ./node_modules/tesseract.js/src/index.js ***!
+  \************************************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ *
+ * Entry point for tesseract.js, should be the entry when bundling.
+ *
+ * @fileoverview entry point for tesseract.js
+ * @author Kevin Kwok <antimatter15@gmail.com>
+ * @author Guillermo Webster <gui@mit.edu>
+ * @author Jerome Wu <jeromewus@gmail.com>
+ */
+__webpack_require__(/*! regenerator-runtime/runtime */ "./node_modules/regenerator-runtime/runtime.js");
+const createScheduler = __webpack_require__(/*! ./createScheduler */ "./node_modules/tesseract.js/src/createScheduler.js");
+const createWorker = __webpack_require__(/*! ./createWorker */ "./node_modules/tesseract.js/src/createWorker.js");
+const Tesseract = __webpack_require__(/*! ./Tesseract */ "./node_modules/tesseract.js/src/Tesseract.js");
+const languages = __webpack_require__(/*! ./constants/languages */ "./node_modules/tesseract.js/src/constants/languages.js");
+const OEM = __webpack_require__(/*! ./constants/OEM */ "./node_modules/tesseract.js/src/constants/OEM.js");
+const PSM = __webpack_require__(/*! ./constants/PSM */ "./node_modules/tesseract.js/src/constants/PSM.js");
+const { setLogging } = __webpack_require__(/*! ./utils/log */ "./node_modules/tesseract.js/src/utils/log.js");
+
+module.exports = {
+  languages,
+  OEM,
+  PSM,
+  createScheduler,
+  createWorker,
+  setLogging,
+  ...Tesseract,
+};
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/utils/getEnvironment.js"
+/*!***************************************************************!*\
+  !*** ./node_modules/tesseract.js/src/utils/getEnvironment.js ***!
+  \***************************************************************/
+(module) {
+
+"use strict";
+
+
+module.exports = (key) => {
+  const env = {};
+
+  if (typeof WorkerGlobalScope !== 'undefined') {
+    env.type = 'webworker';
+  } else if (typeof document === 'object') {
+    env.type = 'browser';
+  } else if (typeof process === 'object' && "function" === 'function') {
+    env.type = 'node';
+  }
+
+  if (typeof key === 'undefined') {
+    return env;
+  }
+
+  return env[key];
+};
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/utils/getId.js"
+/*!******************************************************!*\
+  !*** ./node_modules/tesseract.js/src/utils/getId.js ***!
+  \******************************************************/
+(module) {
+
+"use strict";
+
+
+module.exports = (prefix, cnt) => (
+  `${prefix}-${cnt}-${Math.random().toString(16).slice(3, 8)}`
+);
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/utils/log.js"
+/*!****************************************************!*\
+  !*** ./node_modules/tesseract.js/src/utils/log.js ***!
+  \****************************************************/
+(__unused_webpack_module, exports) {
+
+"use strict";
+
+
+let logging = false;
+
+exports.logging = logging;
+
+exports.setLogging = (_logging) => {
+  logging = _logging;
+};
+
+exports.log = (...args) => (logging ? console.log.apply(this, args) : null);
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/utils/resolvePaths.js"
+/*!*************************************************************!*\
+  !*** ./node_modules/tesseract.js/src/utils/resolvePaths.js ***!
+  \*************************************************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+
+
+const isBrowser = __webpack_require__(/*! ./getEnvironment */ "./node_modules/tesseract.js/src/utils/getEnvironment.js")('type') === 'browser';
+
+const resolveURL = isBrowser ? s => (new URL(s, window.location.href)).href : s => s; // eslint-disable-line
+
+module.exports = (options) => {
+  const opts = { ...options };
+  ['corePath', 'workerPath', 'langPath'].forEach((key) => {
+    if (options[key]) {
+      opts[key] = resolveURL(opts[key]);
+    }
+  });
+  return opts;
+};
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/worker/browser/defaultOptions.js"
+/*!************************************************************************!*\
+  !*** ./node_modules/tesseract.js/src/worker/browser/defaultOptions.js ***!
+  \************************************************************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+
+
+const version = (__webpack_require__(/*! ../../../package.json */ "./node_modules/tesseract.js/package.json").version);
+const defaultOptions = __webpack_require__(/*! ../../constants/defaultOptions */ "./node_modules/tesseract.js/src/constants/defaultOptions.js");
+
+/*
+ * Default options for browser worker
+ */
+module.exports = {
+  ...defaultOptions,
+  workerPath: `https://cdn.jsdelivr.net/npm/tesseract.js@v${version}/dist/worker.min.js`,
+};
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/worker/browser/index.js"
+/*!***************************************************************!*\
+  !*** ./node_modules/tesseract.js/src/worker/browser/index.js ***!
+  \***************************************************************/
+(module, __unused_webpack_exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ *
+ * Tesseract Worker adapter for browser
+ *
+ * @fileoverview Tesseract Worker adapter for browser
+ * @author Kevin Kwok <antimatter15@gmail.com>
+ * @author Guillermo Webster <gui@mit.edu>
+ * @author Jerome Wu <jeromewus@gmail.com>
+ */
+const defaultOptions = __webpack_require__(/*! ./defaultOptions */ "./node_modules/tesseract.js/src/worker/browser/defaultOptions.js");
+const spawnWorker = __webpack_require__(/*! ./spawnWorker */ "./node_modules/tesseract.js/src/worker/browser/spawnWorker.js");
+const terminateWorker = __webpack_require__(/*! ./terminateWorker */ "./node_modules/tesseract.js/src/worker/browser/terminateWorker.js");
+const onMessage = __webpack_require__(/*! ./onMessage */ "./node_modules/tesseract.js/src/worker/browser/onMessage.js");
+const send = __webpack_require__(/*! ./send */ "./node_modules/tesseract.js/src/worker/browser/send.js");
+const loadImage = __webpack_require__(/*! ./loadImage */ "./node_modules/tesseract.js/src/worker/browser/loadImage.js");
+
+module.exports = {
+  defaultOptions,
+  spawnWorker,
+  terminateWorker,
+  onMessage,
+  send,
+  loadImage,
+};
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/worker/browser/loadImage.js"
+/*!*******************************************************************!*\
+  !*** ./node_modules/tesseract.js/src/worker/browser/loadImage.js ***!
+  \*******************************************************************/
+(module) {
+
+"use strict";
+
+
+/**
+ * readFromBlobOrFile
+ *
+ * @name readFromBlobOrFile
+ * @function
+ * @access private
+ */
+const readFromBlobOrFile = (blob) => (
+  new Promise((resolve, reject) => {
+    const fileReader = new FileReader();
+    fileReader.onload = () => {
+      resolve(fileReader.result);
+    };
+    fileReader.onerror = ({ target: { error: { code } } }) => {
+      reject(Error(`File could not be read! Code=${code}`));
+    };
+    fileReader.readAsArrayBuffer(blob);
+  })
+);
+
+/**
+ * loadImage
+ *
+ * @name loadImage
+ * @function load image from different source
+ * @access private
+ */
+const loadImage = async (image) => {
+  let data = image;
+  if (typeof image === 'undefined') {
+    return 'undefined';
+  }
+
+  if (typeof image === 'string') {
+    // Base64 Image
+    if (/data:image\/([a-zA-Z]*);base64,([^"]*)/.test(image)) {
+      data = atob(image.split(',')[1])
+        .split('')
+        .map((c) => c.charCodeAt(0));
+    } else {
+      const resp = await fetch(image);
+      data = await resp.arrayBuffer();
+    }
+  } else if (typeof HTMLElement !== 'undefined' && image instanceof HTMLElement) {
+    if (image.tagName === 'IMG') {
+      data = await loadImage(image.src);
+    }
+    if (image.tagName === 'VIDEO') {
+      data = await loadImage(image.poster);
+    }
+    if (image.tagName === 'CANVAS') {
+      await new Promise((resolve) => {
+        image.toBlob(async (blob) => {
+          data = await readFromBlobOrFile(blob);
+          resolve();
+        });
+      });
+    }
+  } else if (typeof OffscreenCanvas !== 'undefined' && image instanceof OffscreenCanvas) {
+    const blob = await image.convertToBlob();
+    data = await readFromBlobOrFile(blob);
+  } else if (image instanceof File || image instanceof Blob) {
+    data = await readFromBlobOrFile(image);
+  }
+
+  return new Uint8Array(data);
+};
+
+module.exports = loadImage;
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/worker/browser/onMessage.js"
+/*!*******************************************************************!*\
+  !*** ./node_modules/tesseract.js/src/worker/browser/onMessage.js ***!
+  \*******************************************************************/
+(module) {
+
+"use strict";
+
+
+module.exports = (worker, handler) => {
+  worker.onmessage = ({ data }) => { // eslint-disable-line
+    handler(data);
+  };
+};
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/worker/browser/send.js"
+/*!**************************************************************!*\
+  !*** ./node_modules/tesseract.js/src/worker/browser/send.js ***!
+  \**************************************************************/
+(module) {
+
+"use strict";
+
+
+/**
+ * send
+ *
+ * @name send
+ * @function send packet to worker and create a job
+ * @access public
+ */
+module.exports = async (worker, packet) => {
+  worker.postMessage(packet);
+};
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/worker/browser/spawnWorker.js"
+/*!*********************************************************************!*\
+  !*** ./node_modules/tesseract.js/src/worker/browser/spawnWorker.js ***!
+  \*********************************************************************/
+(module) {
+
+"use strict";
+
+
+/**
+ * spawnWorker
+ *
+ * @name spawnWorker
+ * @function create a new Worker in browser
+ * @access public
+ */
+module.exports = ({ workerPath, workerBlobURL }) => {
+  let worker;
+  if (Blob && URL && workerBlobURL) {
+    const blob = new Blob([`importScripts("${workerPath}");`], {
+      type: 'application/javascript',
+    });
+    worker = new Worker(URL.createObjectURL(blob));
+  } else {
+    worker = new Worker(workerPath);
+  }
+
+  return worker;
+};
+
+
+/***/ },
+
+/***/ "./node_modules/tesseract.js/src/worker/browser/terminateWorker.js"
+/*!*************************************************************************!*\
+  !*** ./node_modules/tesseract.js/src/worker/browser/terminateWorker.js ***!
+  \*************************************************************************/
+(module) {
+
+"use strict";
+
+
+/**
+ * terminateWorker
+ *
+ * @name terminateWorker
+ * @function terminate worker
+ * @access public
+ */
+module.exports = (worker) => {
+  worker.terminate();
+};
+
 
 /***/ },
 
@@ -443,6 +2566,7 @@ module.exports = __webpack_require__.p + "b39d31f38a2d0a0fbe89.mjs";
   \**************************************************************/
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   InferenceSession: () => (/* binding */ vf),
@@ -3310,6 +5434,7 @@ ${u}`,c=n.createShaderModule({code:d,label:e.name});se("verbose",()=>`[WebGPU] $
   \***************************************/
 (__unused_webpack___webpack_module__, __webpack_exports__, __webpack_require__) {
 
+"use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (/* binding */ createTokenizer)
@@ -3339,6 +5464,17 @@ function createTokenizer() {
 }
 
 
+/***/ },
+
+/***/ "./node_modules/tesseract.js/package.json"
+/*!************************************************!*\
+  !*** ./node_modules/tesseract.js/package.json ***!
+  \************************************************/
+(module) {
+
+"use strict";
+module.exports = /*#__PURE__*/JSON.parse('{"name":"tesseract.js","version":"7.0.0","description":"Pure Javascript Multilingual OCR","main":"src/index.js","type":"commonjs","types":"src/index.d.ts","unpkg":"dist/tesseract.min.js","jsdelivr":"dist/tesseract.min.js","scripts":{"start":"node scripts/server.js","build":"rimraf dist && webpack --config scripts/webpack.config.prod.js && rollup -c scripts/rollup.esm.mjs","profile:tesseract":"webpack-bundle-analyzer dist/tesseract-stats.json","profile:worker":"webpack-bundle-analyzer dist/worker-stats.json","prepublishOnly":"npm run build","wait":"rimraf dist && wait-on http://localhost:3000/dist/tesseract.min.js","test":"npm-run-all -p -r start test:all","test:all":"npm-run-all wait test:browser test:node:all","test:browser":"karma start karma.conf.js","test:node":"nyc mocha --exit --bail --require ./scripts/test-helper.mjs","test:node:all":"npm run test:node -- ./tests/*.test.mjs","lint":"eslint src","lint:fix":"eslint --fix src","postinstall":"opencollective-postinstall || true"},"browser":{"./src/worker/node/index.js":"./src/worker/browser/index.js"},"author":"","contributors":["jeromewu"],"license":"Apache-2.0","devDependencies":{"@babel/core":"^7.21.4","@babel/eslint-parser":"^7.21.3","@babel/preset-env":"^7.21.4","@rollup/plugin-commonjs":"^24.1.0","acorn":"^8.8.2","babel-loader":"^9.1.2","buffer":"^6.0.3","cors":"^2.8.5","eslint":"^7.32.0","eslint-config-airbnb-base":"^14.2.1","eslint-plugin-import":"^2.27.5","expect.js":"^0.3.1","express":"^4.18.2","mocha":"^10.2.0","npm-run-all":"^4.1.5","karma":"^6.4.2","karma-chrome-launcher":"^3.2.0","karma-firefox-launcher":"^2.1.2","karma-mocha":"^2.0.1","karma-webpack":"^5.0.0","nyc":"^15.1.0","rimraf":"^5.0.0","rollup":"^3.20.7","wait-on":"^7.0.1","webpack":"^5.79.0","webpack-bundle-analyzer":"^4.8.0","webpack-cli":"^5.0.1","webpack-dev-middleware":"^6.0.2","rollup-plugin-sourcemaps":"^0.6.3"},"dependencies":{"bmp-js":"^0.1.0","idb-keyval":"^6.2.0","is-url":"^1.2.4","node-fetch":"^2.6.9","opencollective-postinstall":"^2.0.3","regenerator-runtime":"^0.13.3","tesseract.js-core":"^7.0.0","wasm-feature-detect":"^1.8.0","zlibjs":"^0.3.1"},"overrides":{"@rollup/pluginutils":"^5.0.2"},"repository":{"type":"git","url":"https://github.com/naptha/tesseract.js.git"},"bugs":{"url":"https://github.com/naptha/tesseract.js/issues"},"homepage":"https://github.com/naptha/tesseract.js","collective":{"type":"opencollective","url":"https://opencollective.com/tesseractjs"}}');
+
 /***/ }
 
 /******/ 	});
@@ -3367,7 +5503,7 @@ function createTokenizer() {
 /******/ 			e.code = 'MODULE_NOT_FOUND';
 /******/ 			throw e;
 /******/ 		}
-/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 		__webpack_modules__[moduleId].call(module.exports, module, module.exports, __webpack_require__);
 /******/ 	
 /******/ 		// Return the exports of the module
 /******/ 		return module.exports;
@@ -3450,6 +5586,18 @@ function createTokenizer() {
 /******/ 			var done = (err) => ((err ? reject(promise[webpackError] = err) : outerResolve(exports)), resolveQueue(queue))
 /******/ 			body(handle, done);
 /******/ 			queue && queue.d < 0 && (queue.d = 0);
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
 /******/ 		};
 /******/ 	})();
 /******/ 	

@@ -9,99 +9,193 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
 // src/background.js
 
 var creatingOffscreen = null;
+var MAX_INSTAGRAM_IMAGE_REGIONS = 128;
+function isInstagramSearchPage() {
+  var url = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+  return /^https:\/\/(www\.)?instagram\.com\/explore\//i.test(url);
+}
+function normalizeText() {
+  var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
+  return value.replace(/\s+/g, ' ').trim();
+}
 function ensureOffscreenDocument() {
   return _ensureOffscreenDocument.apply(this, arguments);
 }
 function _ensureOffscreenDocument() {
-  _ensureOffscreenDocument = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
-    var existingContexts, clients;
-    return _regenerator().w(function (_context) {
-      while (1) switch (_context.n) {
+  _ensureOffscreenDocument = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
+    var existingContexts;
+    return _regenerator().w(function (_context3) {
+      while (1) switch (_context3.p = _context3.n) {
         case 0:
           if (!('getContexts' in chrome.runtime)) {
-            _context.n = 4;
+            _context3.n = 2;
             break;
           }
-          _context.n = 1;
+          _context3.n = 1;
           return chrome.runtime.getContexts({
             contextTypes: ['OFFSCREEN_DOCUMENT'],
             documentUrls: [chrome.runtime.getURL('offscreen.html')]
           });
         case 1:
-          existingContexts = _context.v;
+          existingContexts = _context3.v;
           if (!(existingContexts.length > 0)) {
-            _context.n = 2;
+            _context3.n = 2;
             break;
           }
-          console.log('[P.A.T.C.H] reusing existing offscreen document');
-          return _context.a(2);
+          console.log('[P.A.T.C.H] reusing existing Offscreen Document');
+          return _context3.a(2);
         case 2:
-          _context.n = 3;
-          return self.clients.matchAll();
-        case 3:
-          clients = _context.v;
-          if (!clients.some(function (client) {
-            return client.url.includes(chrome.runtime.id);
-          })) {
-            _context.n = 4;
-            break;
-          }
-          return _context.a(2);
-        case 4:
           if (creatingOffscreen) {
-            _context.n = 6;
+            _context3.n = 7;
             break;
           }
           creatingOffscreen = chrome.offscreen.createDocument({
             url: 'offscreen.html',
             reasons: ['WORKERS', 'BLOBS'],
-            justification: 'Maintain persistent data for offscreen inference'
+            justification: 'OCR and offline inference'
           });
-          _context.n = 5;
+          _context3.p = 3;
+          _context3.n = 4;
           return creatingOffscreen;
-        case 5:
-          creatingOffscreen = null;
+        case 4:
           console.log('[P.A.T.C.H] offscreen document created');
-          _context.n = 7;
-          break;
+        case 5:
+          _context3.p = 5;
+          creatingOffscreen = null;
+          return _context3.f(5);
         case 6:
-          _context.n = 7;
-          return creatingOffscreen;
+          _context3.n = 8;
+          break;
         case 7:
-          return _context.a(2);
+          _context3.n = 8;
+          return creatingOffscreen;
+        case 8:
+          return _context3.a(2);
       }
-    }, _callee);
+    }, _callee3, null, [[3,, 5, 6]]);
   }));
   return _ensureOffscreenDocument.apply(this, arguments);
 }
+function getInstagramImageDataUrls(_x) {
+  return _getInstagramImageDataUrls.apply(this, arguments);
+}
+function _getInstagramImageDataUrls() {
+  _getInstagramImageDataUrls = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(tabId) {
+    var _results$;
+    var results;
+    return _regenerator().w(function (_context4) {
+      while (1) switch (_context4.n) {
+        case 0:
+          _context4.n = 1;
+          return chrome.scripting.executeScript({
+            target: {
+              tabId: tabId
+            },
+            args: [MAX_INSTAGRAM_IMAGE_REGIONS],
+            func: function func(maxRegions) {
+              var viewportWidth = window.innerWidth;
+              var viewportHeight = window.innerHeight;
+              var seen = new Set();
+              return Array.from(document.querySelectorAll('img')).map(function (img) {
+                var rect = img.getBoundingClientRect();
+                var anchor = img.closest('a[href]');
+                var href = (anchor === null || anchor === void 0 ? void 0 : anchor.getAttribute('href')) || '';
+                var src = img.currentSrc || img.src || '';
+                var inViewport = rect.bottom > 0 && rect.right > 0 && rect.top < viewportHeight && rect.left < viewportWidth;
+                var largeEnough = rect.width >= 120 && rect.height >= 120;
+                var looksLikePost = /\/p\//.test(href);
+                if (!src || !inViewport || !largeEnough || !looksLikePost) return null;
+                var key = "".concat(src);
+                if (seen.has(key)) return null;
+                seen.add(key);
+
+                // Convert image element to canvas and then to data URL
+                var canvas = document.createElement('canvas');
+                canvas.width = img.naturalWidth || img.width;
+                canvas.height = img.naturalHeight || img.height;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                return canvas.toDataURL('image/png');
+              }).filter(Boolean).slice(0, maxRegions);
+            }
+          });
+        case 1:
+          results = _context4.v;
+          return _context4.a(2, (results === null || results === void 0 || (_results$ = results[0]) === null || _results$ === void 0 ? void 0 : _results$.result) || []);
+      }
+    }, _callee4);
+  }));
+  return _getInstagramImageDataUrls.apply(this, arguments);
+}
 chrome.runtime.onInstalled.addListener(function () {
   ensureOffscreenDocument();
-  console.log('[P.A.T.C.H] installed, offscreen document ensured');
 });
 chrome.runtime.onStartup.addListener(function () {
   ensureOffscreenDocument();
-  console.log('[P.A.T.C.H] startup, offscreen document ensured');
 });
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.type === 'ANALYZE_TEXT') {
-    console.debug('[P.A.T.C.H] received ANALYZE_TEXT request', (request.text || '').slice(0, 120));
-    ensureOffscreenDocument().then(function () {
-      chrome.runtime.sendMessage({
-        type: 'ANALYZE_TEXT_OFFSCREEN',
-        text: request.text
-      }).then(function (response) {
-        console.debug('[P.A.T.C.H] received ANALYZE_TEXT_OFFSCREEN response', response && response.riskLevel);
-        sendResponse(response);
-      })["catch"](function (err) {
-        console.error('[P.A.T.C.H] Message to offscreen failed', err);
-        sendResponse({
-          error: err.message || 'Offscreen communication failed'
-        });
+    _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee() {
+      var originalText;
+      return _regenerator().w(function (_context) {
+        while (1) switch (_context.n) {
+          case 0:
+            _context.n = 1;
+            return ensureOffscreenDocument();
+          case 1:
+            originalText = normalizeText(request.text || '');
+            return _context.a(2, chrome.runtime.sendMessage({
+              type: 'ANALYZE_TEXT_OFFSCREEN',
+              text: originalText,
+              originalText: originalText
+            }));
+        }
+      }, _callee);
+    }))().then(sendResponse)["catch"](function (err) {
+      return sendResponse({
+        error: err.message || 'Analyze text flow failed'
       });
-    })["catch"](function (err) {
-      console.error('[P.A.T.C.H] failed to setup offscreen document', err);
-      sendResponse({
-        error: err.message || 'failed to setup offscreen document'
+    });
+    return true;
+  }
+  if (request.type === 'ANALYZE_IMAGE') {
+    _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+      var imageDataUrls;
+      return _regenerator().w(function (_context2) {
+        while (1) switch (_context2.n) {
+          case 0:
+            _context2.n = 1;
+            return ensureOffscreenDocument();
+          case 1:
+            if (isInstagramSearchPage(sender.tab.url || '')) {
+              _context2.n = 2;
+              break;
+            }
+            return _context2.a(2, {
+              error: 'Not on Instagram search page'
+            });
+          case 2:
+            _context2.n = 3;
+            return getInstagramImageDataUrls(sender.tab.id);
+          case 3:
+            imageDataUrls = _context2.v;
+            if (imageDataUrls.length) {
+              _context2.n = 4;
+              break;
+            }
+            return _context2.a(2, {
+              error: 'No Instagram images found'
+            });
+          case 4:
+            return _context2.a(2, chrome.runtime.sendMessage({
+              type: 'OCR_INSTAGRAM_IMAGES',
+              imageDataUrls: imageDataUrls
+            }));
+        }
+      }, _callee2);
+    }))().then(sendResponse)["catch"](function (err) {
+      return sendResponse({
+        error: err.message || 'Analyze Image flow failed'
       });
     });
     return true;

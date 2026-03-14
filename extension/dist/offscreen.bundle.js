@@ -144,10 +144,12 @@ function _handleAnalyzeText() {
                   return initSession();
                 case 3:
                   session = _context2.v;
+                  console.log("[P.A.T.C.H] Inference input: ".concat(text));
                   _context2.n = 4;
                   return session.run(inputs);
                 case 4:
                   outputMap = _context2.v;
+                  console.log("[P.A.T.C.H] Inference output:", outputMap);
                   _context2.n = 9;
                   break;
                 case 5:
@@ -219,7 +221,7 @@ function toRiskLevel(suicidalProb, distressProb, normalProb) {
   return 'Low';
 }
 
-// init inference session
+// init inference session on startup to avoid first inference being slow
 await initSession();
 __webpack_async_result__();
 } catch(e) { __webpack_async_result__(e); } }, 1);

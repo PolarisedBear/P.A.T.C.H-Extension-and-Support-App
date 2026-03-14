@@ -73,6 +73,88 @@ function injectUI() {
 
   // Batch-scan posts with limited concurrency to avoid spamming the background worker
   scanBtn.onclick = async () => {
+    if (isInstagramSearchPage(window.location.href)) {
+      // Instagram search page: use image OCR analysis
+      const posts = Array.from(document.querySelectorAll('a[href*="/p/"]'));
+      const badges = [];
+
+      posts.forEach(post => {
+        const parent = post.closest('article') || post.closest('div');
+        if (parent && !parent.querySelector('.patch-badge')) {
+          const badge = document.createElement('div');
+          badge.className = 'patch-badge';
+          badge.innerText = 'Analyzing...';
+          parent.style.position = parent.style.position || 'relative';
+          parent.appendChild(badge);
+          badges.push(badge);
+        }
+      });
+
+      if (!badges.length) return;
+
+      chrome.runtime.sendMessage({ type: 'ANALYZE_IMAGE' }, (response) => {
+        if (chrome.runtime.lastError) {
+          console.error('[P.A.T.C.H] ANALYZE_IMAGE error:', chrome.runtime.lastError.message);
+          badges.forEach(b => {
+            b.innerText = '⚪ Error';
+            b.style.background = '#6B7280';
+          });
+          return;
+        }
+
+        if (response?.error || !response?.results) {
+          console.warn('[P.A.T.C.H] ANALYZE_IMAGE failed:', response?.error);
+          badges.forEach(b => {
+            b.innerText = '⚪ Error';
+            b.title = response?.error || 'Unknown error';
+            b.style.background = '#6B7280';
+          });
+          return;
+        }
+
+        const results = response.results;
+
+        badges.forEach((badge, index) => {
+          if (index >= results.length) {
+            badge.innerText = '⚪ N/A';
+            badge.style.background = '#6B7280';
+            return;
+          }
+
+          const d = normalizeAnalysisResponse(results[index]);
+
+          if (!d || !d.riskLevel) {
+            badge.innerText = '⚪ Unknown';
+            badge.title = 'Missing risk level';
+            badge.style.background = '#6B7280';
+            return;
+          }
+
+          if (d.riskLevel === 'High') {
+            badge.innerText = '🔴 High';
+            badge.style.background = '#EF4444';
+          } else if (d.riskLevel === 'Medium') {
+            badge.innerText = '🟠 Medium';
+            badge.style.background = '#F59E0B';
+          } else {
+            badge.innerText = '🟢 Low';
+            badge.style.background = '#22C55E';
+          }
+
+          badge.title = [
+            d.text ? `OCR: "${d.text.slice(0, 80)}${d.text.length > 80 ? '...' : ''}"` : '',
+            d.topLabel ? `Top: ${d.topLabel}` : '',
+            `Suicidal: ${(d.suicidalProb * 100).toFixed(1)}%`,
+            `Distress: ${(d.distressProb * 100).toFixed(1)}%`,
+            `Normal: ${(d.normalProb * 100).toFixed(1)}%`
+          ].filter(Boolean).join('\n');
+        });
+      });
+
+      return;
+    }
+
+    // Non-Instagram: existing text analysis flow
     const posts = Array.from(document.querySelectorAll('a[href*="/p/"]'));
     const items = [];
 

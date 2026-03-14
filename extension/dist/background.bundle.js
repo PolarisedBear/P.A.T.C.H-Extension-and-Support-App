@@ -184,7 +184,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
               break;
             }
             return _context2.a(2, {
-              error: 'No Instagram images found'
+              error: 'No Instagram images found',
+              results: []
             });
           case 4:
             return _context2.a(2, chrome.runtime.sendMessage({
@@ -195,7 +196,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       }, _callee2);
     }))().then(sendResponse)["catch"](function (err) {
       return sendResponse({
-        error: err.message || 'Analyze Image flow failed'
+        error: err.message || 'Analyze Image flow failed',
+        results: []
       });
     });
     return true;

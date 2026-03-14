@@ -99,6 +99,30 @@ async function ocrInstagramImages(imageDataUrls = []) {
   return [...new Set(extractedTexts)].join('\n');
 }
 
+async function ocrAndInferInstagramImages(imageDataUrls = []) {
+  const results = [];
+
+  for (const dataUrl of imageDataUrls) {
+    try {
+      const blob = await imageBlobFromDataURL(dataUrl);
+      const text = await recognizeImageWithWorker(blob);
+
+      if (!text) {
+        results.push({ text: '', riskLevel: 'Low', probs: [0, 0, 1, 0], topLabel: 'Normal' });
+        continue;
+      }
+
+      const inferenceResult = await handleAnalyzeText(text);
+      results.push({ text, ...inferenceResult });
+    } catch (err) {
+      console.warn('[P.A.T.C.H] OCR/inference failed for image', err);
+      results.push({ text: '', error: err.message || 'OCR failed', riskLevel: 'Low', probs: [0, 0, 1, 0], topLabel: 'Normal' });
+    }
+  }
+
+  return results;
+}
+
 async function initSession() {
   if (sessionPromise) return sessionPromise;
 
@@ -228,20 +252,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.type === 'OCR_INSTAGRAM_IMAGES') {
-    (async () => {
-      const ocrText = normalizeText(await ocrInstagramImages(request.imageDataUrls));
-
-      if (!ocrText) {
-        return { text: '', riskLevel: 'Low', probs: [0, 0, 1, 0], topLabel: 'Normal' };
-      }
-
-      const inferenceResult = await handleAnalyzeText(ocrText);
-      return { text: ocrText, ...inferenceResult };
-    })()
-      .then(result => sendResponse(result))
+    ocrAndInferInstagramImages(request.imageDataUrls)
+      .then(results => sendResponse({ results }))
       .catch(err => {
         console.error('[P.A.T.C.H] OCR Instagram Images error:', err);
-        sendResponse({ error: err.message || 'OCR Instagram Images failed' });
+        sendResponse({ error: err.message || 'OCR Instagram Images failed', results: [] });
       });
     return true;
   }

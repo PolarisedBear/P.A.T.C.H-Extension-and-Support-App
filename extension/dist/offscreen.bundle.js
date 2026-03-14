@@ -15,12 +15,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tesseract_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! tesseract.js */ "./node_modules/tesseract.js/src/index.js");
 /* harmony import */ var tesseract_js__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(tesseract_js__WEBPACK_IMPORTED_MODULE_2__);
 function _typeof(o) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (o) { return typeof o; } : function (o) { return o && "function" == typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? "symbol" : typeof o; }, _typeof(o); }
-function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
 function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
 function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
 function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == _typeof(i) ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != _typeof(t) || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != _typeof(i)) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
+function _createForOfIteratorHelper(r, e) { var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"]; if (!t) { if (Array.isArray(r) || (t = _unsupportedIterableToArray(r)) || e && r && "number" == typeof r.length) { t && (r = t); var _n = 0, F = function F() {}; return { s: F, n: function n() { return _n >= r.length ? { done: !0 } : { done: !1, value: r[_n++] }; }, e: function e(r) { throw r; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var o, a = !0, u = !1; return { s: function s() { t = t.call(r); }, n: function n() { var r = t.next(); return a = r.done, r; }, e: function e(r) { u = !0, o = r; }, f: function f() { try { a || null == t["return"] || t["return"](); } finally { if (u) throw o; } } }; }
 function _toConsumableArray(r) { return _arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
 function _unsupportedIterableToArray(r, a) { if (r) { if ("string" == typeof r) return _arrayLikeToArray(r, a); var t = {}.toString.call(r).slice(8, -1); return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0; } }
@@ -100,17 +100,17 @@ function ensureTesseractWorker() {
   return _ensureTesseractWorker.apply(this, arguments);
 }
 function _ensureTesseractWorker() {
-  _ensureTesseractWorker = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3() {
-    var _t3;
-    return _regenerator().w(function (_context3) {
-      while (1) switch (_context3.p = _context3.n) {
+  _ensureTesseractWorker = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
+    var _t2;
+    return _regenerator().w(function (_context2) {
+      while (1) switch (_context2.p = _context2.n) {
         case 0:
           if (tesseractWorker) {
-            _context3.n = 4;
+            _context2.n = 4;
             break;
           }
-          _context3.p = 1;
-          _context3.n = 2;
+          _context2.p = 1;
+          _context2.n = 2;
           return (0,tesseract_js__WEBPACK_IMPORTED_MODULE_2__.createWorker)(OCR_LANGUAGE, 1, {
             workerPath: chrome.runtime.getURL('tesseract/worker.min.js'),
             corePath: chrome.runtime.getURL('tesseract/'),
@@ -121,20 +121,20 @@ function _ensureTesseractWorker() {
             }
           });
         case 2:
-          tesseractWorker = _context3.v;
+          tesseractWorker = _context2.v;
           console.log('[P.A.T.C.H] Tesseract worker created in offscreen document');
-          _context3.n = 4;
+          _context2.n = 4;
           break;
         case 3:
-          _context3.p = 3;
-          _t3 = _context3.v;
-          console.error('[P.A.T.C.H] Failed to create Tesseract worker:', _t3);
-          throw _t3;
+          _context2.p = 3;
+          _t2 = _context2.v;
+          console.error('[P.A.T.C.H] Failed to create Tesseract worker:', _t2);
+          throw _t2;
         case 4:
           scheduleTesseractWorkerTermination();
-          return _context3.a(2, tesseractWorker);
+          return _context2.a(2, tesseractWorker);
       }
-    }, _callee3, null, [[1, 3]]);
+    }, _callee2, null, [[1, 3]]);
   }));
   return _ensureTesseractWorker.apply(this, arguments);
 }
@@ -142,18 +142,18 @@ function imageBlobFromDataURL(_x) {
   return _imageBlobFromDataURL.apply(this, arguments);
 }
 function _imageBlobFromDataURL() {
-  _imageBlobFromDataURL = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(dataUrl) {
+  _imageBlobFromDataURL = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(dataUrl) {
     var res;
-    return _regenerator().w(function (_context4) {
-      while (1) switch (_context4.n) {
+    return _regenerator().w(function (_context3) {
+      while (1) switch (_context3.n) {
         case 0:
-          _context4.n = 1;
+          _context3.n = 1;
           return fetch(dataUrl);
         case 1:
-          res = _context4.v;
-          return _context4.a(2, res.blob());
+          res = _context3.v;
+          return _context3.a(2, res.blob());
       }
-    }, _callee4);
+    }, _callee3);
   }));
   return _imageBlobFromDataURL.apply(this, arguments);
 }
@@ -161,24 +161,24 @@ function recognizeImageWithWorker(_x2) {
   return _recognizeImageWithWorker.apply(this, arguments);
 }
 function _recognizeImageWithWorker() {
-  _recognizeImageWithWorker = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5(imageBlob) {
+  _recognizeImageWithWorker = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee4(imageBlob) {
     var _result$data;
     var worker, result;
-    return _regenerator().w(function (_context5) {
-      while (1) switch (_context5.n) {
+    return _regenerator().w(function (_context4) {
+      while (1) switch (_context4.n) {
         case 0:
-          _context5.n = 1;
+          _context4.n = 1;
           return ensureTesseractWorker();
         case 1:
-          worker = _context5.v;
-          _context5.n = 2;
+          worker = _context4.v;
+          _context4.n = 2;
           return worker.recognize(imageBlob);
         case 2:
-          result = _context5.v;
+          result = _context4.v;
           scheduleTesseractWorkerTermination();
-          return _context5.a(2, normalizeText((result === null || result === void 0 || (_result$data = result.data) === null || _result$data === void 0 ? void 0 : _result$data.text) || ''));
+          return _context4.a(2, normalizeText((result === null || result === void 0 || (_result$data = result.data) === null || _result$data === void 0 ? void 0 : _result$data.text) || ''));
       }
-    }, _callee5);
+    }, _callee4);
   }));
   return _recognizeImageWithWorker.apply(this, arguments);
 }
@@ -186,7 +186,7 @@ function ocrInstagramImages() {
   return _ocrInstagramImages.apply(this, arguments);
 }
 function _ocrInstagramImages() {
-  _ocrInstagramImages = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
+  _ocrInstagramImages = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
     var imageDataUrls,
       extractedTexts,
       _iterator,
@@ -194,23 +194,90 @@ function _ocrInstagramImages() {
       dataUrl,
       blob,
       text,
+      _args5 = arguments,
+      _t3,
+      _t4;
+    return _regenerator().w(function (_context5) {
+      while (1) switch (_context5.p = _context5.n) {
+        case 0:
+          imageDataUrls = _args5.length > 0 && _args5[0] !== undefined ? _args5[0] : [];
+          extractedTexts = [];
+          _iterator = _createForOfIteratorHelper(imageDataUrls);
+          _context5.p = 1;
+          _iterator.s();
+        case 2:
+          if ((_step = _iterator.n()).done) {
+            _context5.n = 8;
+            break;
+          }
+          dataUrl = _step.value;
+          _context5.p = 3;
+          _context5.n = 4;
+          return imageBlobFromDataURL(dataUrl);
+        case 4:
+          blob = _context5.v;
+          _context5.n = 5;
+          return recognizeImageWithWorker(blob);
+        case 5:
+          text = _context5.v;
+          if (text) extractedTexts.push(text);
+          _context5.n = 7;
+          break;
+        case 6:
+          _context5.p = 6;
+          _t3 = _context5.v;
+          console.warn('[P.A.T.C.H] OCR failed for image', _t3);
+        case 7:
+          _context5.n = 2;
+          break;
+        case 8:
+          _context5.n = 10;
+          break;
+        case 9:
+          _context5.p = 9;
+          _t4 = _context5.v;
+          _iterator.e(_t4);
+        case 10:
+          _context5.p = 10;
+          _iterator.f();
+          return _context5.f(10);
+        case 11:
+          return _context5.a(2, _toConsumableArray(new Set(extractedTexts)).join('\n'));
+      }
+    }, _callee5, null, [[3, 6], [1, 9, 10, 11]]);
+  }));
+  return _ocrInstagramImages.apply(this, arguments);
+}
+function ocrAndInferInstagramImages() {
+  return _ocrAndInferInstagramImages.apply(this, arguments);
+}
+function _ocrAndInferInstagramImages() {
+  _ocrAndInferInstagramImages = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
+    var imageDataUrls,
+      results,
+      _iterator2,
+      _step2,
+      dataUrl,
+      blob,
+      text,
+      inferenceResult,
       _args6 = arguments,
-      _t4,
-      _t5;
+      _t5,
+      _t6;
     return _regenerator().w(function (_context6) {
       while (1) switch (_context6.p = _context6.n) {
         case 0:
           imageDataUrls = _args6.length > 0 && _args6[0] !== undefined ? _args6[0] : [];
-          extractedTexts = [];
-          _iterator = _createForOfIteratorHelper(imageDataUrls);
+          results = [];
+          _iterator2 = _createForOfIteratorHelper(imageDataUrls);
           _context6.p = 1;
-          _iterator.s();
+          _iterator2.s();
         case 2:
-          if ((_step = _iterator.n()).done) {
-            _context6.n = 8;
+          if ((_step2 = _iterator2.n()).done) {
+            _context6.n = 10;
             break;
           }
-          dataUrl = _step.value;
+          dataUrl = _step2.value;
           _context6.p = 3;
           _context6.n = 4;
           return imageBlobFromDataURL(dataUrl);
@@ -220,33 +287,58 @@ function _ocrInstagramImages() {
           return recognizeImageWithWorker(blob);
         case 5:
           text = _context6.v;
-          if (text) extractedTexts.push(text);
-          _context6.n = 7;
-          break;
+          if (text) {
+            _context6.n = 6;
+            break;
+          }
+          results.push({
+            text: '',
+            riskLevel: 'Low',
+            probs: [0, 0, 1, 0],
+            topLabel: 'Normal'
+          });
+          return _context6.a(3, 9);
         case 6:
-          _context6.p = 6;
-          _t4 = _context6.v;
-          console.warn('[P.A.T.C.H] OCR failed for image', _t4);
+          _context6.n = 7;
+          return handleAnalyzeText(text);
         case 7:
-          _context6.n = 2;
+          inferenceResult = _context6.v;
+          results.push(_objectSpread({
+            text: text
+          }, inferenceResult));
+          _context6.n = 9;
           break;
         case 8:
-          _context6.n = 10;
-          break;
-        case 9:
-          _context6.p = 9;
+          _context6.p = 8;
           _t5 = _context6.v;
-          _iterator.e(_t5);
+          console.warn('[P.A.T.C.H] OCR/inference failed for image', _t5);
+          results.push({
+            text: '',
+            error: _t5.message || 'OCR failed',
+            riskLevel: 'Low',
+            probs: [0, 0, 1, 0],
+            topLabel: 'Normal'
+          });
+        case 9:
+          _context6.n = 2;
+          break;
         case 10:
-          _context6.p = 10;
-          _iterator.f();
-          return _context6.f(10);
+          _context6.n = 12;
+          break;
         case 11:
-          return _context6.a(2, _toConsumableArray(new Set(extractedTexts)).join('\n'));
+          _context6.p = 11;
+          _t6 = _context6.v;
+          _iterator2.e(_t6);
+        case 12:
+          _context6.p = 12;
+          _iterator2.f();
+          return _context6.f(12);
+        case 13:
+          return _context6.a(2, results);
       }
-    }, _callee6, null, [[3, 6], [1, 9, 10, 11]]);
+    }, _callee6, null, [[3, 8], [1, 11, 12, 13]]);
   }));
-  return _ocrInstagramImages.apply(this, arguments);
+  return _ocrAndInferInstagramImages.apply(this, arguments);
 }
 function initSession() {
   return _initSession.apply(this, arguments);
@@ -313,7 +405,7 @@ function _handleAnalyzeText() {
       while (1) switch (_context9.n) {
         case 0:
           return _context9.a(2, queueInference(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8() {
-            var maxLen, _yield$encodeText, inputIds, attentionMask, tokenTypeIds, inputs, outputMap, session, _session, logitsTensor, logits, probs, suicidalProb, distressProb, normalProb, riskLevel, topIdx, topLabel, _t6;
+            var maxLen, _yield$encodeText, inputIds, attentionMask, tokenTypeIds, inputs, outputMap, session, _session, logitsTensor, logits, probs, suicidalProb, distressProb, normalProb, riskLevel, topIdx, topLabel, _t7;
             return _regenerator().w(function (_context8) {
               while (1) switch (_context8.p = _context8.n) {
                 case 0:
@@ -345,15 +437,15 @@ function _handleAnalyzeText() {
                   break;
                 case 5:
                   _context8.p = 5;
-                  _t6 = _context8.v;
-                  if (isRetryableSessionError(_t6)) {
+                  _t7 = _context8.v;
+                  if (isRetryableSessionError(_t7)) {
                     _context8.n = 6;
                     break;
                   }
-                  throw _t6;
+                  throw _t7;
                 case 6:
-                  console.warn('[P.A.T.C.H] Retrying inference after session state error:', _t6.message);
-                  resetSession(_t6.message);
+                  console.warn('[P.A.T.C.H] Retrying inference after session state error:', _t7.message);
+                  resetSession(_t7.message);
                   _context8.n = 7;
                   return initSession();
                 case 7:
@@ -426,42 +518,15 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     return true;
   }
   if (request.type === 'OCR_INSTAGRAM_IMAGES') {
-    _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
-      var ocrText, inferenceResult, _t2;
-      return _regenerator().w(function (_context2) {
-        while (1) switch (_context2.n) {
-          case 0:
-            _t2 = normalizeText;
-            _context2.n = 1;
-            return ocrInstagramImages(request.imageDataUrls);
-          case 1:
-            ocrText = _t2(_context2.v);
-            if (ocrText) {
-              _context2.n = 2;
-              break;
-            }
-            return _context2.a(2, {
-              text: '',
-              riskLevel: 'Low',
-              probs: [0, 0, 1, 0],
-              topLabel: 'Normal'
-            });
-          case 2:
-            _context2.n = 3;
-            return handleAnalyzeText(ocrText);
-          case 3:
-            inferenceResult = _context2.v;
-            return _context2.a(2, _objectSpread({
-              text: ocrText
-            }, inferenceResult));
-        }
-      }, _callee2);
-    }))().then(function (result) {
-      return sendResponse(result);
+    ocrAndInferInstagramImages(request.imageDataUrls).then(function (results) {
+      return sendResponse({
+        results: results
+      });
     })["catch"](function (err) {
       console.error('[P.A.T.C.H] OCR Instagram Images error:', err);
       sendResponse({
-        error: err.message || 'OCR Instagram Images failed'
+        error: err.message || 'OCR Instagram Images failed',
+        results: []
       });
     });
     return true;

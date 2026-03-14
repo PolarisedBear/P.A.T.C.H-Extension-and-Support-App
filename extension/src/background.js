@@ -129,7 +129,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       const imageDataUrls = await getInstagramImageDataUrls(sender.tab.id);
 
       if (!imageDataUrls.length) {
-        return { error: 'No Instagram images found' };
+        return { error: 'No Instagram images found', results: [] };
       }
 
       return chrome.runtime.sendMessage({
@@ -138,7 +138,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       });
     })()
       .then(sendResponse)
-      .catch((err) => sendResponse({ error: err.message || 'Analyze Image flow failed' }));
+      .catch((err) => sendResponse({ error: err.message || 'Analyze Image flow failed', results: [] }));
 
     return true;
   }

@@ -48,6 +48,14 @@
       "matches": [
         "<all_urls>"
       ]
+    },
+    {
+      "resources": [
+        "tesseract/*"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ],
   "action": {

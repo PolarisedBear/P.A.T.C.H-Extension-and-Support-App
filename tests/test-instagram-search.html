@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>P.A.T.C.H Instagram Search / Explore Sandbox</title>
+  <style>
+    :root {
+      --bg: #fafafa;
+      --surface: #ffffff;
+      --border: #dbdbdb;
+      --text: #262626;
+      --muted: #737373;
+      --blue: #0095f6;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --safe: #22c55e;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* ── Top bar ───────────────────────────────────────────── */
+    header[role="banner"] {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .topbar {
+      max-width: 975px;
+      margin: 0 auto;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .search-bar {
+      flex: 1;
+      max-width: 280px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font: inherit;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .search-bar::placeholder { color: var(--muted); }
+
+    .nav-icons {
+      display: flex;
+      gap: 16px;
+      font-size: 1.3rem;
+    }
+
+    /* ── Toolbar row ──────────────────────────────────────── */
+    .toolbar-row {
+      max-width: 975px;
+      margin: 0 auto;
+      padding: 8px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+
+    .toolbar-row button,
+    .toolbar-row select {
+      border: 1px solid var(--border);
+      background: #fff;
+      border-radius: 8px;
+      padding: 8px 12px;
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .toolbar-row button.primary {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* ── Topic chips (explore categories) ─────────────────── */
+    .topic-chips {
+      max-width: 975px;
+      margin: 16px auto 0;
+      padding: 0 20px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+    }
+
+    .chip {
+      white-space: nowrap;
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .chip.active {
+      background: var(--text);
+      color: #fff;
+      border-color: var(--text);
+    }
+
+    /* ── Explore grid ─────────────────────────────────────── */
+    .explore-grid {
+      max-width: 975px;
+      margin: 16px auto 60px;
+      padding: 0 20px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 4px;
+    }
+
+    .explore-grid article {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: #efefef;
+      border-radius: 4px;
+    }
+
+    /* Span large tiles across 2 rows / 2 cols */
+    .explore-grid article.large {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+
+    .explore-grid article a {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+
+    .explore-grid article img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Hover overlay with engagement counts */
+    .explore-grid article .hover-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      opacity: 0;
+      transition: opacity 0.15s;
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .explore-grid article:hover .hover-overlay { opacity: 1; }
+
+    .hover-overlay span { display: flex; align-items: center; gap: 6px; }
+
+    /* ── Debug / label overlay ────────────────────────────── */
+    .debug-label {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      z-index: 2;
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      font-size: 0.7rem;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.85);
+      color: #374151;
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+
+    .pill.safe    { color: #166534; background: rgba(220,252,231,0.9); }
+    .pill.warning { color: #92400e; background: rgba(254,243,199,0.9); }
+    .pill.danger  { color: #991b1b; background: rgba(254,226,226,0.9); }
+
+    /* ── Sidebar info cards ───────────────────────────────── */
+    .layout-wrap {
+      max-width: 975px;
+      margin: 0 auto;
+      padding: 0 20px 60px;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 28px;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 84px;
+      align-self: start;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .help-list {
+      margin: 8px 0 0 18px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.9rem;
+    }
+
+    .small { font-size: 0.84rem; color: var(--muted); }
+    .mono  { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.85rem; }
+
+    .label-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    /* ── Responsive ───────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .explore-grid { grid-template-columns: repeat(3, 1fr); gap: 2px; }
+      .explore-grid article.large { grid-column: span 1; grid-row: span 1; }
+      .layout-wrap { grid-template-columns: 1fr; }
+      .sidebar { position: static; }
+    }
+  </style>
+</head>
+<body data-patch-page-type="explore">
+
+  <!-- ════════════════════════════════════════════════════════
+       Top navigation bar
+       ════════════════════════════════════════════════════════ -->
+  <header role="banner">
+    <div class="topbar">
+      <div class="brand" aria-label="Instagram">Instagram</div>
+      <input class="search-bar" type="search" placeholder="Search" aria-label="Search" />
+      <nav class="nav-icons" aria-label="Navigation">
+        <span aria-label="Home">🏠</span>
+        <span aria-label="Explore" style="opacity:1;text-decoration:underline">🔍</span>
+        <span aria-label="Reels">🎬</span>
+        <span aria-label="Messages">💬</span>
+        <span aria-label="Notifications">♡</span>
+        <span aria-label="Profile">👤</span>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ════════════════════════════════════════════════════════
+       Sandbox toolbar
+       ════════════════════════════════════════════════════════ -->
+  <div class="toolbar-row">
+    <select id="preset-selector" aria-label="Image-text preset">
+      <option value="mixed">Mixed risk OCR samples</option>
+      <option value="safe">Mostly low-risk text</option>
+      <option value="concern">Elevated concern text</option>
+    </select>
+    <button id="apply-preset">Apply preset</button>
+    <button id="toggle-reel-modal" class="primary">Open Reel Modal</button>
+    <span class="small" style="margin-left:auto;">URL pattern: <span class="mono">/explore/</span></span>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       Topic chips (Instagram explore category row)
+       ════════════════════════════════════════════════════════ -->
+  <div class="topic-chips" aria-label="Explore topics">
+    <div class="chip active">For You</div>
+    <div class="chip">Art</div>
+    <div class="chip">Style</div>
+    <div class="chip">Wellness</div>
+    <div class="chip">Nature</div>
+    <div class="chip">Music</div>
+    <div class="chip">Travel</div>
+    <div class="chip">Food</div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       Explore grid – images with embedded text for OCR
+       ════════════════════════════════════════════════════════ -->
+  <section class="explore-grid" aria-label="Explore posts">
+
+    <!-- ── Tile 1 – LOW risk, large tile ──────────────────── -->
+    <article data-sandbox-risk="low" class="large">
+      <a href="https://www.instagram.com/p/C8SEARCH01/" aria-label="Explore post 1">
+        <img id="img-1" alt="nature scene with uplifting text"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 800'><rect width='800' height='800' fill='%23d1fae5'/><circle cx='620' cy='180' r='80' fill='%23fde68a'/><path d='M0 520 Q200 420 400 480 T800 440 L800 800 L0 800 Z' fill='%2386efac'/><path d='M0 600 Q250 520 500 570 T800 530 L800 800 L0 800 Z' fill='%2322c55e'/><text x='400' y='280' text-anchor='middle' font-family='Arial,sans-serif' font-size='42' font-weight='bold' fill='%23065f46'>Grateful for this morning</text><text x='400' y='340' text-anchor='middle' font-family='Arial,sans-serif' font-size='30' fill='%23065f46'>fresh air and good vibes</text></svg>" />
+      </a>
+      <div class="hover-overlay"><span>♡ 3,201</span><span>💬 89</span></div>
+      <div class="debug-label">
+        <span class="pill safe">synthetic</span>
+        <span class="pill safe">low-risk OCR</span>
+      </div>
+    </article>
+
+    <!-- ── Tile 2 – LOW risk ──────────────────────────────── -->
+    <article data-sandbox-risk="low">
+      <a href="https://www.instagram.com/p/C8SEARCH02/" aria-label="Explore post 2">
+        <img id="img-2" alt="coffee shop note"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' fill='%23fef3c7'/><rect x='60' y='80' width='280' height='240' rx='16' fill='%23fff'/><text x='200' y='170' text-anchor='middle' font-family='Georgia,serif' font-size='22' fill='%2378350f'>Weekend reset</text><text x='200' y='210' text-anchor='middle' font-family='Georgia,serif' font-size='18' fill='%2392400e'>small wins and sunshine</text><text x='200' y='250' text-anchor='middle' font-family='Georgia,serif' font-size='18' fill='%2392400e'>are all I need today</text><circle cx='320' cy='340' r='36' fill='%23f59e0b'/><rect x='308' y='320' width='24' height='30' rx='4' fill='%23fef3c7'/></svg>" />
+      </a>
+      <div class="hover-overlay"><span>♡ 1,120</span><span>💬 34</span></div>
+      <div class="debug-label">
+        <span class="pill safe">synthetic</span>
+        <span class="pill safe">low-risk OCR</span>
+      </div>
+    </article>
+
+    <!-- ── Tile 3 – MEDIUM risk ───────────────────────────── -->
+    <article data-sandbox-risk="medium">
+      <a href="https://www.instagram.com/p/C8SEARCH03/" aria-label="Explore post 3">
+        <img id="img-3" alt="handwritten journal page"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' fill='%23e0e7ff'/><rect x='40' y='40' width='320' height='320' rx='8' fill='%23fff'/><line x1='60' y1='100' x2='340' y2='100' stroke='%23c7d2fe' stroke-width='1'/><line x1='60' y1='140' x2='340' y2='140' stroke='%23c7d2fe' stroke-width='1'/><line x1='60' y1='180' x2='340' y2='180' stroke='%23c7d2fe' stroke-width='1'/><line x1='60' y1='220' x2='340' y2='220' stroke='%23c7d2fe' stroke-width='1'/><line x1='60' y1='260' x2='340' y2='260' stroke='%23c7d2fe' stroke-width='1'/><text x='70' y='96' font-family='Comic Sans MS,cursive' font-size='18' fill='%233730a3'>I keep smiling for people</text><text x='70' y='136' font-family='Comic Sans MS,cursive' font-size='18' fill='%233730a3'>but everything feels heavy</text><text x='70' y='176' font-family='Comic Sans MS,cursive' font-size='18' fill='%233730a3'>and I am exhausted</text><text x='70' y='216' font-family='Comic Sans MS,cursive' font-size='18' fill='%233730a3'>all the time lately</text></svg>" />
+      </a>
+      <div class="hover-overlay"><span>♡ 742</span><span>💬 56</span></div>
+      <div class="debug-label">
+        <span class="pill warning">synthetic</span>
+        <span class="pill warning">medium-risk OCR</span>
+      </div>
+    </article>
+
+    <!-- ── Tile 4 – LOW risk ──────────────────────────────── -->
+    <article data-sandbox-risk="low">
+      <a href="https://www.instagram.com/p/C8SEARCH04/" aria-label="Explore post 4">
+        <img id="img-4" alt="motivational poster"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' fill='%23fce7f3'/><text x='200' y='160' text-anchor='middle' font-family='Arial,sans-serif' font-size='36' font-weight='bold' fill='%23be185d'>breathe</text><text x='200' y='210' text-anchor='middle' font-family='Arial,sans-serif' font-size='20' fill='%23be185d'>you are doing better</text><text x='200' y='245' text-anchor='middle' font-family='Arial,sans-serif' font-size='20' fill='%23be185d'>than you think</text><circle cx='200' cy='320' r='30' fill='none' stroke='%23f9a8d4' stroke-width='3'/><path d='M185 320 L195 330 L215 310' fill='none' stroke='%23f9a8d4' stroke-width='3' stroke-linecap='round'/></svg>" />
+      </a>
+      <div class="hover-overlay"><span>♡ 5,430</span><span>💬 201</span></div>
+      <div class="debug-label">
+        <span class="pill safe">synthetic</span>
+        <span class="pill safe">low-risk OCR</span>
+      </div>
+    </article>
+
+    <!-- ── Tile 5 – HIGH risk ─────────────────────────────── -->
+    <article data-sandbox-risk="high">
+      <a href="https://www.instagram.com/p/C8SEARCH05/" aria-label="Explore post 5">
+        <img id="img-5" alt="dark background with concerning text"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' fill='%230f172a'/><text x='200' y='150' text-anchor='middle' font-family='Arial,sans-serif' font-size='22' fill='%23e2e8f0'>I feel isolated and numb</text><text x='200' y='190' text-anchor='middle' font-family='Arial,sans-serif' font-size='22' fill='%23e2e8f0'>it is getting harder to</text><text x='200' y='230' text-anchor='middle' font-family='Arial,sans-serif' font-size='22' fill='%23e2e8f0'>imagine things improving</text><text x='200' y='290' text-anchor='middle' font-family='Arial,sans-serif' font-size='16' fill='%2394a3b8'>I do not know how much longer</text><text x='200' y='320' text-anchor='middle' font-family='Arial,sans-serif' font-size='16' fill='%2394a3b8'>I can keep going like this</text></svg>" />
+      </a>
+      <div class="hover-overlay"><span>♡ 298</span><span>💬 12</span></div>
+      <div class="debug-label">
+        <span class="pill danger">synthetic</span>
+        <span class="pill danger">high-risk OCR</span>
+      </div>
+    </article>
+
+    <!-- ── Tile 6 – MEDIUM risk ───────────────────────────── -->
+    <article data-sandbox-risk="medium">
+      <a href="https://www.instagram.com/p/C8SEARCH06/" aria-label="Explore post 6">
+        <img id="img-6" alt="note on colored background"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' fill='%23dbeafe'/><rect x='50' y='70' width='300' height='260' rx='14' fill='%23eff6ff' stroke='%2393c5fd' stroke-width='2'/><text x='200' y='150' text-anchor='middle' font-family='Arial,sans-serif' font-size='20' fill='%231e40af'>feeling drained and</text><text x='200' y='185' text-anchor='middle' font-family='Arial,sans-serif' font-size='20' fill='%231e40af'>disconnected from everyone</text><text x='200' y='230' text-anchor='middle' font-family='Arial,sans-serif' font-size='18' fill='%233b82f6'>not sure how long I can</text><text x='200' y='260' text-anchor='middle' font-family='Arial,sans-serif' font-size='18' fill='%233b82f6'>pretend I am fine</text></svg>" />
+      </a>
+      <div class="hover-overlay"><span>♡ 510</span><span>💬 38</span></div>
+      <div class="debug-label">
+        <span class="pill warning">synthetic</span>
+        <span class="pill warning">medium-risk OCR</span>
+      </div>
+    </article>
+
+    <!-- ── Tile 7 – LOW risk ──────────────────────────────── -->
+    <article data-sandbox-risk="low">
+      <a href="https://www.instagram.com/p/C8SEARCH07/" aria-label="Explore post 7">
+        <img id="img-7" alt="recipe card"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' fill='%23fef9c3'/><rect x='50' y='50' width='300' height='300' rx='12' fill='%23fff'/><text x='200' y='110' text-anchor='middle' font-family='Georgia,serif' font-size='26' font-weight='bold' fill='%23854d0e'>Sunday Pancakes</text><text x='200' y='155' text-anchor='middle' font-family='Georgia,serif' font-size='16' fill='%23a16207'>flour eggs milk butter</text><text x='200' y='185' text-anchor='middle' font-family='Georgia,serif' font-size='16' fill='%23a16207'>mix until smooth</text><text x='200' y='215' text-anchor='middle' font-family='Georgia,serif' font-size='16' fill='%23a16207'>cook on medium heat</text><text x='200' y='260' text-anchor='middle' font-family='Georgia,serif' font-size='14' fill='%23ca8a04'>simple mornings are the best</text></svg>" />
+      </a>
+      <div class="hover-overlay"><span>♡ 8,211</span><span>💬 342</span></div>
+      <div class="debug-label">
+        <span class="pill safe">synthetic</span>
+        <span class="pill safe">low-risk OCR</span>
+      </div>
+    </article>
+
+    <!-- ── Tile 8 – HIGH risk, large tile ─────────────────── -->
+    <article data-sandbox-risk="high" class="large">
+      <a href="https://www.instagram.com/p/C8SEARCH08/" aria-label="Explore post 8">
+        <img id="img-8" alt="dark poem with distressed handwriting"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 800'><rect width='800' height='800' fill='%231e1b4b'/><text x='400' y='200' text-anchor='middle' font-family='Georgia,serif' font-size='36' fill='%23c4b5fd'>tonight feels especially</text><text x='400' y='260' text-anchor='middle' font-family='Georgia,serif' font-size='36' fill='%23c4b5fd'>lonely and overwhelming</text><text x='400' y='360' text-anchor='middle' font-family='Georgia,serif' font-size='28' fill='%23a78bfa'>I have been shutting down</text><text x='400' y='410' text-anchor='middle' font-family='Georgia,serif' font-size='28' fill='%23a78bfa'>more and more each day</text><text x='400' y='500' text-anchor='middle' font-family='Georgia,serif' font-size='24' fill='%238b5cf6'>I wish someone noticed</text><text x='400' y='545' text-anchor='middle' font-family='Georgia,serif' font-size='24' fill='%238b5cf6'>how tired I really am</text><circle cx='400' cy='660' r='40' fill='none' stroke='%236d28d9' stroke-width='2'/><circle cx='400' cy='660' r='20' fill='none' stroke='%236d28d9' stroke-width='1.5'/></svg>" />
+      </a>
+      <div class="hover-overlay"><span>♡ 187</span><span>💬 5</span></div>
+      <div class="debug-label">
+        <span class="pill danger">synthetic</span>
+        <span class="pill danger">high-risk OCR</span>
+      </div>
+    </article>
+
+    <!-- ── Tile 9 – MEDIUM risk ───────────────────────────── -->
+    <article data-sandbox-risk="medium">
+      <a href="https://www.instagram.com/p/C8SEARCH09/" aria-label="Explore post 9">
+        <img id="img-9" alt="sticky note on mirror"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' fill='%23f0fdf4'/><rect x='80' y='60' width='240' height='240' rx='4' fill='%23fef08a' transform='rotate(3 200 180)'/><text x='200' y='145' text-anchor='middle' font-family='Comic Sans MS,cursive' font-size='18' fill='%23422006'>some days I feel like</text><text x='200' y='175' text-anchor='middle' font-family='Comic Sans MS,cursive' font-size='18' fill='%23422006'>I am just going through</text><text x='200' y='205' text-anchor='middle' font-family='Comic Sans MS,cursive' font-size='18' fill='%23422006'>the motions and nothing</text><text x='200' y='235' text-anchor='middle' font-family='Comic Sans MS,cursive' font-size='18' fill='%23422006'>feels real anymore</text></svg>" />
+      </a>
+      <div class="hover-overlay"><span>♡ 623</span><span>💬 41</span></div>
+      <div class="debug-label">
+        <span class="pill warning">synthetic</span>
+        <span class="pill warning">medium-risk OCR</span>
+      </div>
+    </article>
+
+    <!-- ── Tile 10 – LOW risk ─────────────────────────────── -->
+    <article data-sandbox-risk="low">
+      <a href="https://www.instagram.com/p/C8SEARCH10/" aria-label="Explore post 10">
+        <img id="img-10" alt="sunset quote card"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><defs><linearGradient id='sunset' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%23fda4af'/><stop offset='0.5' stop-color='%23fb923c'/><stop offset='1' stop-color='%23fbbf24'/></linearGradient></defs><rect width='400' height='400' fill='url(%23sunset)'/><text x='200' y='170' text-anchor='middle' font-family='Arial,sans-serif' font-size='28' font-weight='bold' fill='%23fff'>good things take time</text><text x='200' y='215' text-anchor='middle' font-family='Arial,sans-serif' font-size='20' fill='%23fff'>be patient with yourself</text><text x='200' y='260' text-anchor='middle' font-family='Arial,sans-serif' font-size='18' fill='%23fffbeb'>you are growing every day</text></svg>" />
+      </a>
+      <div class="hover-overlay"><span>♡ 12,050</span><span>💬 580</span></div>
+      <div class="debug-label">
+        <span class="pill safe">synthetic</span>
+        <span class="pill safe">low-risk OCR</span>
+      </div>
+    </article>
+
+    <!-- ── Tile 11 – HIGH risk ────────────────────────────── -->
+    <article data-sandbox-risk="high">
+      <a href="https://www.instagram.com/p/C8SEARCH11/" aria-label="Explore post 11">
+        <img id="img-11" alt="text on dark background"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' fill='%2318181b'/><text x='200' y='130' text-anchor='middle' font-family='Arial,sans-serif' font-size='20' fill='%23fca5a5'>I do not want to be here</text><text x='200' y='170' text-anchor='middle' font-family='Arial,sans-serif' font-size='20' fill='%23fca5a5'>anymore and no one cares</text><text x='200' y='230' text-anchor='middle' font-family='Arial,sans-serif' font-size='18' fill='%23f87171'>everything hurts and I am</text><text x='200' y='265' text-anchor='middle' font-family='Arial,sans-serif' font-size='18' fill='%23f87171'>so tired of pretending</text><text x='200' y='325' text-anchor='middle' font-family='Arial,sans-serif' font-size='16' fill='%23ef4444'>what is the point</text></svg>" />
+      </a>
+      <div class="hover-overlay"><span>♡ 156</span><span>💬 3</span></div>
+      <div class="debug-label">
+        <span class="pill danger">synthetic</span>
+        <span class="pill danger">high-risk OCR</span>
+      </div>
+    </article>
+
+    <!-- ── Tile 12 – LOW risk ─────────────────────────────── -->
+    <article data-sandbox-risk="low">
+      <a href="https://www.instagram.com/p/C8SEARCH12/" aria-label="Explore post 12">
+        <img id="img-12" alt="workout checklist"
+          src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 400'><rect width='400' height='400' fill='%23ecfdf5'/><rect x='60' y='40' width='280' height='320' rx='12' fill='%23fff' stroke='%2386efac' stroke-width='2'/><text x='200' y='90' text-anchor='middle' font-family='Arial,sans-serif' font-size='22' font-weight='bold' fill='%23065f46'>Daily Wins</text><text x='110' y='135' font-family='Arial,sans-serif' font-size='17' fill='%23166534'>✓ morning walk done</text><text x='110' y='170' font-family='Arial,sans-serif' font-size='17' fill='%23166534'>✓ drank water</text><text x='110' y='205' font-family='Arial,sans-serif' font-size='17' fill='%23166534'>✓ called a friend</text><text x='110' y='240' font-family='Arial,sans-serif' font-size='17' fill='%23166534'>✓ 10 min meditation</text><text x='200' y='300' text-anchor='middle' font-family='Arial,sans-serif' font-size='14' fill='%2322c55e'>small steps matter</text></svg>" />
+      </a>
+      <div class="hover-overlay"><span>♡ 4,580</span><span>💬 120</span></div>
+      <div class="debug-label">
+        <span class="pill safe">synthetic</span>
+        <span class="pill safe">low-risk OCR</span>
+      </div>
+    </article>
+
+  </section>
+
+  <!-- ════════════════════════════════════════════════════════
+       Sidebar info cards
+       ════════════════════════════════════════════════════════ -->
+  <div class="layout-wrap">
+    <div><!-- empty left column, grid consumed above --></div>
+    <aside class="sidebar">
+      <div class="card">
+        <strong>Sandbox notes</strong>
+        <ul class="help-list">
+          <li>Every image is a synthetic SVG with <strong>embedded text</strong> designed for Tesseract OCR testing.</li>
+          <li>Each tile is an <span class="mono">article</span> with an <span class="mono">a[href*="/p/"]</span> permalink, matching the selectors in <span class="mono">content.js</span>.</li>
+          <li>The page mimics <span class="mono">/explore/</span> so <span class="mono">isInstagramSearchPage()</span> would match.</li>
+          <li>Use "Apply preset" to swap image text between risk tiers.</li>
+          <li>The Reel modal uses <span class="mono">role="dialog"</span> with image + text for story/reel OCR paths.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <strong>Selectors covered</strong>
+        <div class="label-row">
+          <span class="pill">article</span>
+          <span class="pill">a[href*="/p/"]</span>
+          <span class="pill">img (OCR targets)</span>
+          <span class="pill">div[role="dialog"]</span>
+          <span class="pill">button[aria-label]</span>
+        </div>
+        <p class="small" style="margin-top:8px;">Mirrors the selectors used by the extension content script's search-page OCR branch.</p>
+      </div>
+
+      <div class="card">
+        <strong>OCR text in images</strong>
+        <ul class="help-list">
+          <li><strong>Low:</strong> gratitude, recipes, workout lists, motivational quotes.</li>
+          <li><strong>Medium:</strong> emotional fatigue, feeling drained, disconnection.</li>
+          <li><strong>High:</strong> isolation, numbness, hopelessness, self-harm language.</li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════
+       JavaScript – presets & reel/reels modal
+       ════════════════════════════════════════════════════════ -->
+  <script>
+    /* ── Preset image-text data ─────────────────────────────
+       Each SVG is rebuilt dynamically so Tesseract sees
+       different text when the user switches presets.
+       ───────────────────────────────────────────────────── */
+    const presets = {
+      mixed: {
+        tiles: [
+          { bg: '%23d1fae5', lines: ['Grateful for this morning','fresh air and good vibes'], colors: ['%23065f46','%23065f46'], risk: 'low' },
+          { bg: '%23fef3c7', lines: ['Weekend reset','small wins and sunshine','are all I need today'], colors: ['%2378350f','%2392400e','%2392400e'], risk: 'low' },
+          { bg: '%23e0e7ff', lines: ['I keep smiling for people','but everything feels heavy','and I am exhausted','all the time lately'], colors: ['%233730a3','%233730a3','%233730a3','%233730a3'], risk: 'medium' },
+          { bg: '%23fce7f3', lines: ['breathe','you are doing better','than you think'], colors: ['%23be185d','%23be185d','%23be185d'], risk: 'low' },
+          { bg: '%230f172a', lines: ['I feel isolated and numb','it is getting harder to','imagine things improving'], colors: ['%23e2e8f0','%23e2e8f0','%23e2e8f0'], risk: 'high' },
+          { bg: '%23dbeafe', lines: ['feeling drained and','disconnected from everyone','not sure how long I can','pretend I am fine'], colors: ['%231e40af','%231e40af','%233b82f6','%233b82f6'], risk: 'medium' },
+          { bg: '%23fef9c3', lines: ['Sunday Pancakes','flour eggs milk butter','mix until smooth','cook on medium heat'], colors: ['%23854d0e','%23a16207','%23a16207','%23a16207'], risk: 'low' },
+          { bg: '%231e1b4b', lines: ['tonight feels especially','lonely and overwhelming','I have been shutting down','more and more each day'], colors: ['%23c4b5fd','%23c4b5fd','%23a78bfa','%23a78bfa'], risk: 'high' },
+          { bg: '%23f0fdf4', lines: ['some days I feel like','I am just going through','the motions and nothing','feels real anymore'], colors: ['%23422006','%23422006','%23422006','%23422006'], risk: 'medium' },
+          { bg: '%23fda4af', lines: ['good things take time','be patient with yourself','you are growing every day'], colors: ['%23fff','%23fff','%23fffbeb'], risk: 'low' },
+          { bg: '%2318181b', lines: ['I do not want to be here','anymore and no one cares','everything hurts and I am','so tired of pretending'], colors: ['%23fca5a5','%23fca5a5','%23f87171','%23f87171'], risk: 'high' },
+          { bg: '%23ecfdf5', lines: ['Daily Wins','morning walk done','drank water','called a friend'], colors: ['%23065f46','%23166534','%23166534','%23166534'], risk: 'low' },
+        ],
+        reel: 'some nights feel so loud in my head even when everything is quiet'
+      },
+      safe: {
+        tiles: [
+          { bg: '%23d1fae5', lines: ['Morning sunshine','starting the day right','with gratitude'], colors: ['%23065f46','%23065f46','%23065f46'], risk: 'low' },
+          { bg: '%23fef3c7', lines: ['New playlist done','ten songs that make me','smile every time'], colors: ['%2378350f','%2392400e','%2392400e'], risk: 'low' },
+          { bg: '%23e0e7ff', lines: ['Trying a new hobby','learning to paint','it is really calming'], colors: ['%233730a3','%233730a3','%233730a3'], risk: 'low' },
+          { bg: '%23fce7f3', lines: ['self care Sunday','face mask and a good book','recharging energy'], colors: ['%23be185d','%23be185d','%23be185d'], risk: 'low' },
+          { bg: '%23bfdbfe', lines: ['Finally finished that puzzle','1000 pieces of patience','worth every minute'], colors: ['%231e40af','%231e40af','%231e40af'], risk: 'low' },
+          { bg: '%23dbeafe', lines: ['cooked dinner from scratch','proud of myself today','getting better at this'], colors: ['%231e40af','%231e40af','%233b82f6'], risk: 'low' },
+          { bg: '%23fef9c3', lines: ['Lemonade recipe','fresh lemons sugar water','perfect for summer'], colors: ['%23854d0e','%23a16207','%23a16207'], risk: 'low' },
+          { bg: '%23d1fae5', lines: ['Walked five miles today','the park was beautiful','feeling accomplished'], colors: ['%23065f46','%23065f46','%23065f46'], risk: 'low' },
+          { bg: '%23f0fdf4', lines: ['Journaling challenge','day seven and going strong','learning about myself'], colors: ['%23422006','%23422006','%23422006'], risk: 'low' },
+          { bg: '%23fda4af', lines: ['sunset was incredible','pink sky and orange clouds','nature is healing'], colors: ['%23fff','%23fff','%23fffbeb'], risk: 'low' },
+          { bg: '%23e0f2fe', lines: ['Read a whole chapter','productivity is up','small wins matter'], colors: ['%231e40af','%231e40af','%231e40af'], risk: 'low' },
+          { bg: '%23ecfdf5', lines: ['Morning routine','stretch meditate journal','ready for the day'], colors: ['%23065f46','%23166534','%23166534'], risk: 'low' },
+        ],
+        reel: 'made soup and cleaned my room and it is enough for today'
+      },
+      concern: {
+        tiles: [
+          { bg: '%230f172a', lines: ['I am so tired of','acting okay when I am not','nobody understands'], colors: ['%23e2e8f0','%23e2e8f0','%23e2e8f0'], risk: 'high' },
+          { bg: '%231e1b4b', lines: ['cannot sleep again','my thoughts will not stop','it is always like this'], colors: ['%23c4b5fd','%23c4b5fd','%23a78bfa'], risk: 'medium' },
+          { bg: '%23e0e7ff', lines: ['pulling away from everyone','I do not have the energy','to explain how I feel'], colors: ['%233730a3','%233730a3','%233730a3'], risk: 'medium' },
+          { bg: '%2318181b', lines: ['I feel like a burden','to everyone around me','they would be better off'], colors: ['%23fca5a5','%23fca5a5','%23f87171'], risk: 'high' },
+          { bg: '%230f172a', lines: ['everything feels pointless','I go through the motions','but nothing matters'], colors: ['%23e2e8f0','%23e2e8f0','%2394a3b8'], risk: 'high' },
+          { bg: '%23dbeafe', lines: ['worn out and anxious','my chest feels tight','I cannot calm down'], colors: ['%231e40af','%231e40af','%233b82f6'], risk: 'medium' },
+          { bg: '%231e1b4b', lines: ['crying again tonight','I do not know why','I feel so empty inside'], colors: ['%23c4b5fd','%23c4b5fd','%23a78bfa'], risk: 'high' },
+          { bg: '%230f172a', lines: ['I want to disappear','just for a while','maybe forever'], colors: ['%23fca5a5','%23fca5a5','%23f87171'], risk: 'high' },
+          { bg: '%23e0e7ff', lines: ['nobody checks on me','I could vanish and','no one would notice'], colors: ['%233730a3','%233730a3','%233730a3'], risk: 'high' },
+          { bg: '%2318181b', lines: ['the sadness is constant','nothing helps anymore','I am losing hope'], colors: ['%23e2e8f0','%23e2e8f0','%2394a3b8'], risk: 'high' },
+          { bg: '%231e1b4b', lines: ['I hurt so much inside','and I cannot tell anyone','what is happening to me'], colors: ['%23c4b5fd','%23c4b5fd','%23a78bfa'], risk: 'high' },
+          { bg: '%230f172a', lines: ['tonight is really bad','I need help but I am','too scared to ask'], colors: ['%23fca5a5','%23fca5a5','%23f87171'], risk: 'high' },
+        ],
+        reel: 'I have been shutting down more and more and I wish someone noticed how tired I am'
+      }
+    };
+
+    const riskToPill = { low: 'safe', medium: 'warning', high: 'danger' };
+
+    function buildTileSVG(tile, large) {
+      const w = large ? 800 : 400;
+      const h = large ? 800 : 400;
+      const startY = large ? 260 : 150;
+      const lineH = large ? 55 : 38;
+      const fontSize = large ? 36 : 20;
+
+      let textEls = '';
+      tile.lines.forEach((line, i) => {
+        const color = tile.colors[i] || tile.colors[tile.colors.length - 1];
+        textEls += `<text x='${w/2}' y='${startY + i * lineH}' text-anchor='middle' font-family='Arial,sans-serif' font-size='${fontSize}' fill='${color}'>${line}</text>`;
+      });
+
+      return `data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 ${w} ${h}'><rect width='${w}' height='${h}' fill='${tile.bg}'/>${textEls}</svg>`;
+    }
+
+    function applyPreset(name) {
+      const data = presets[name] || presets.mixed;
+      const articles = document.querySelectorAll('.explore-grid article');
+
+      articles.forEach((art, i) => {
+        if (i >= data.tiles.length) return;
+        const tile = data.tiles[i];
+        const large = art.classList.contains('large');
+        const img = art.querySelector('img');
+        if (img) img.src = buildTileSVG(tile, large);
+
+        // update risk attribute & debug labels
+        art.setAttribute('data-sandbox-risk', tile.risk);
+        const labelRow = art.querySelector('.debug-label');
+        if (labelRow) {
+          const pillClass = riskToPill[tile.risk] || '';
+          labelRow.innerHTML = `<span class="pill ${pillClass}">synthetic</span><span class="pill ${pillClass}">${tile.risk}-risk OCR</span>`;
+        }
+      });
+
+      // update reel modal text if open
+      const reelText = document.querySelector('[role="dialog"] .story-overlay-text');
+      if (reelText) reelText.textContent = data.reel;
+    }
+
+    /* ── Reel / Story modal ─────────────────────────────── */
+    function buildReelDialog() {
+      const currentPreset = document.getElementById('preset-selector').value;
+      const reelCaption = (presets[currentPreset] || presets.mixed).reel;
+
+      const overlay = document.createElement('div');
+      overlay.setAttribute('role', 'dialog');
+      overlay.setAttribute('aria-modal', 'true');
+      overlay.setAttribute('aria-label', 'Reel viewer');
+      overlay.innerHTML = `
+        <div class="story-modal">
+          <div class="story-media">
+            <img alt="reel image with text overlay" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 900 1400'><defs><linearGradient id='sky' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='%231e3a8a'/><stop offset='1' stop-color='%230f172a'/></linearGradient></defs><rect width='900' height='1400' fill='url(%23sky)'/><circle cx='720' cy='230' r='90' fill='%23dbeafe'/><text x='450' y='700' text-anchor='middle' font-family='Arial,sans-serif' font-size='42' font-weight='bold' fill='%23fff'>${reelCaption.split(' ').slice(0, 6).join(' ')}</text><text x='450' y='760' text-anchor='middle' font-family='Arial,sans-serif' font-size='42' font-weight='bold' fill='%23fff'>${reelCaption.split(' ').slice(6).join(' ')}</text></svg>" />
+            <div class="story-overlay-text">${reelCaption}</div>
+          </div>
+          <div class="story-side">
+            <header>
+              <div class="post-meta">
+                <div class="profile-thumb">
+                  <img alt="reel profile" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23fecdd3'/><circle cx='50' cy='34' r='18' fill='%23be123c'/><rect x='24' y='56' width='52' height='24' rx='12' fill='%23be123c'/></svg>">
+                </div>
+                <div class="identity">
+                  <strong>reel.checkpoint</strong>
+                  <span>now</span>
+                </div>
+              </div>
+            </header>
+            <section>
+              <p>This reel modal triggers the extension's <strong>story/dialog detection path</strong> and OCR pipeline.</p>
+              <span class="small">The overlay text and the SVG image both contain extractable text.</span>
+            </section>
+            <section>
+              <div role="group" aria-label="Reel actions" class="toolbar-row">
+                <button aria-label="Like">♡ Like</button>
+                <button aria-label="Comment">💬 Comment</button>
+                <button aria-label="Share">✈ Share</button>
+                <button aria-label="Save">🔖 Save</button>
+              </div>
+            </section>
+            <footer>
+              <button id="close-reel" aria-label="Close">✕ Close</button>
+            </footer>
+          </div>
+        </div>
+      `;
+      return overlay;
+    }
+
+    /* ── Event listeners ────────────────────────────────── */
+    document.getElementById('apply-preset').addEventListener('click', () => {
+      applyPreset(document.getElementById('preset-selector').value);
+    });
+
+    document.getElementById('toggle-reel-modal').addEventListener('click', () => {
+      const existing = document.querySelector('[role="dialog"]');
+      if (existing) { existing.remove(); return; }
+
+      const dialog = buildReelDialog();
+      document.body.appendChild(dialog);
+      dialog.querySelector('#close-reel').addEventListener('click', () => dialog.remove());
+      dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.remove(); });
+    });
+
+    /* Topic chip toggle */
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      });
+    });
+  </script>
+
+  <!-- ════════════════════════════════════════════════════════
+       Inline styles for the reel / story modal
+       (same as test-instagram.html for consistency)
+       ════════════════════════════════════════════════════════ -->
+  <style>
+    [role="dialog"] {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 100;
+    }
+
+    .story-modal {
+      width: min(980px, 100%);
+      min-height: min(80vh, 720px);
+      background: #111827;
+      color: #fff;
+      border-radius: 18px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(320px, 1.15fr) minmax(280px, 0.85fr);
+    }
+
+    .story-media {
+      position: relative;
+      background: #000;
+      min-height: 420px;
+    }
+
+    .story-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .story-overlay-text {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 24px;
+      font-size: 1.1rem;
+      line-height: 1.5;
+      font-weight: 600;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.45);
+    }
+
+    .story-side {
+      display: flex;
+      flex-direction: column;
+      background: #111827;
+    }
+
+    .story-side header,
+    .story-side section,
+    .story-side footer {
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .story-side footer {
+      margin-top: auto;
+      border-bottom: 0;
+    }
+
+    .story-side button {
+      border: 1px solid rgba(255,255,255,0.14);
+      color: #fff;
+      background: rgba(255,255,255,0.08);
+      border-radius: 10px;
+      padding: 10px 12px;
+      cursor: pointer;
+      font: inherit;
+    }
+
+    .profile-thumb {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      overflow: hidden;
+      flex: 0 0 auto;
+    }
+
+    .profile-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .identity strong,
+    .identity span {
+      display: block;
+    }
+
+    .identity span {
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    @media (max-width: 768px) {
+      .story-modal { grid-template-columns: 1fr; }
+    }
+  </style>
+</body>
+</html>

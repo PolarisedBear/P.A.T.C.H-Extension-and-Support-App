@@ -167,6 +167,12 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             _context2.n = 1;
             return ensureOffscreenDocument();
           case 1:
+            // Accept image data URLs directly from content script (batched flow)
+            imageDataUrls = request.imageDataUrls;
+            if (!(!imageDataUrls || !imageDataUrls.length)) {
+              _context2.n = 4;
+              break;
+            }
             if (isInstagramSearchPage(sender.tab.url || '')) {
               _context2.n = 2;
               break;
@@ -179,15 +185,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             return getInstagramImageDataUrls(sender.tab.id);
           case 3:
             imageDataUrls = _context2.v;
+          case 4:
             if (imageDataUrls.length) {
-              _context2.n = 4;
+              _context2.n = 5;
               break;
             }
             return _context2.a(2, {
               error: 'No Instagram images found',
               results: []
             });
-          case 4:
+          case 5:
             return _context2.a(2, chrome.runtime.sendMessage({
               type: 'OCR_INSTAGRAM_IMAGES',
               imageDataUrls: imageDataUrls

@@ -58,9 +58,88 @@ function normalizeAnalysisResponse(response) {
 }
 
 function isInstagramSearchPage(url = '') {
-  return /^https:\/\/(www\.)?instagram\.com\/explore\//i.test(url);
+  // Match the real Instagram explore page
+  if (/^https:\/\/(www\.)?instagram\.com\/explore\//i.test(url)) return true;
+  // Match local test/sandbox pages that declare themselves as explore pages
+  if (document.body && document.body.dataset.patchPageType === 'explore') return true;
+  return false;
 }
 
+
+function extractImageDataUrl(container) {
+  const anchor = container.querySelector('a[href*="/p/"]');
+  const img = anchor ? anchor.querySelector('img') : null;
+  const target = img || container.querySelector('img');
+  if (!target) return null;
+  try {
+    const canvas = document.createElement('canvas');
+    canvas.width = target.naturalWidth || target.width;
+    canvas.height = target.naturalHeight || target.height;
+    if (!canvas.width || !canvas.height) return null;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(target, 0, 0);
+    return canvas.toDataURL('image/png');
+  } catch (e) {
+    console.warn('[P.A.T.C.H] Failed to extract image data URL:', e);
+    return null;
+  }
+}
+
+function updateOCRBadge(badge, result) {
+  const d = normalizeAnalysisResponse(result);
+
+  if (!d || !d.riskLevel) {
+    badge.innerText = '⚪ Unknown';
+    badge.title = 'Missing risk level';
+    badge.style.background = '#6B7280';
+    return;
+  }
+
+  if (d.riskLevel === 'High') {
+    badge.innerText = '🔴 High';
+    badge.style.background = '#EF4444';
+  } else if (d.riskLevel === 'Medium') {
+    badge.innerText = '🟠 Medium';
+    badge.style.background = '#F59E0B';
+  } else {
+    badge.innerText = '🟢 Low';
+    badge.style.background = '#22C55E';
+  }
+
+  badge.title = [
+    d.text ? `OCR: "${d.text.slice(0, 80)}${d.text.length > 80 ? '...' : ''}"` : '',
+    d.topLabel ? `Top: ${d.topLabel}` : '',
+    `Suicidal: ${(d.suicidalProb * 100).toFixed(1)}%`,
+    `Distress: ${(d.distressProb * 100).toFixed(1)}%`,
+    `Normal: ${(d.normalProb * 100).toFixed(1)}%`
+  ].filter(Boolean).join('\n');
+}
+
+function sendAnalyzeImageBatch(imageDataUrls, timeout = 30000) {
+  return new Promise((resolve) => {
+    let handled = false;
+    try {
+      chrome.runtime.sendMessage({ type: 'ANALYZE_IMAGE', imageDataUrls }, (response) => {
+        handled = true;
+        if (chrome.runtime.lastError) {
+          console.error('[P.A.T.C.H] ANALYZE_IMAGE error:', chrome.runtime.lastError.message);
+          resolve({ error: chrome.runtime.lastError.message });
+          return;
+        }
+        resolve(response);
+      });
+    } catch (e) {
+      console.error('[P.A.T.C.H] ANALYZE_IMAGE thrown:', e);
+      resolve({ error: e.message });
+    }
+    setTimeout(() => {
+      if (!handled) {
+        console.warn('[P.A.T.C.H] ANALYZE_IMAGE batch timed out');
+        resolve({ error: 'timeout' });
+      }
+    }, timeout);
+  });
+}
 
 function injectUI() {
   if (document.getElementById('patch-scan-btn')) return;
@@ -76,7 +155,7 @@ function injectUI() {
     if (isInstagramSearchPage(window.location.href)) {
       // Instagram search page: use image OCR analysis
       const posts = Array.from(document.querySelectorAll('a[href*="/p/"]'));
-      const badges = [];
+      const postData = [];
 
       posts.forEach(post => {
         const parent = post.closest('article') || post.closest('div');
@@ -86,70 +165,64 @@ function injectUI() {
           badge.innerText = 'Analyzing...';
           parent.style.position = parent.style.position || 'relative';
           parent.appendChild(badge);
-          badges.push(badge);
+
+          const imageDataUrl = extractImageDataUrl(parent);
+          postData.push({ badge, imageDataUrl });
         }
       });
 
-      if (!badges.length) return;
+      if (!postData.length) return;
 
-      chrome.runtime.sendMessage({ type: 'ANALYZE_IMAGE' }, (response) => {
-        if (chrome.runtime.lastError) {
-          console.error('[P.A.T.C.H] ANALYZE_IMAGE error:', chrome.runtime.lastError.message);
-          badges.forEach(b => {
-            b.innerText = '⚪ Error';
-            b.style.background = '#6B7280';
+      // Process in batches so all posts get inference, not just the first response
+      const OCR_BATCH_SIZE = 5;
+      const DELAY_BETWEEN_BATCHES = 300;
+
+      for (let i = 0; i < postData.length; i += OCR_BATCH_SIZE) {
+        const batch = postData.slice(i, i + OCR_BATCH_SIZE);
+        const imageDataUrls = batch.map(p => p.imageDataUrl).filter(Boolean);
+
+        if (!imageDataUrls.length) {
+          batch.forEach(p => {
+            p.badge.innerText = '⚪ No image';
+            p.badge.style.background = '#6B7280';
           });
-          return;
+          continue;
         }
+
+        const response = await sendAnalyzeImageBatch(imageDataUrls);
 
         if (response?.error || !response?.results) {
-          console.warn('[P.A.T.C.H] ANALYZE_IMAGE failed:', response?.error);
-          badges.forEach(b => {
-            b.innerText = '⚪ Error';
-            b.title = response?.error || 'Unknown error';
-            b.style.background = '#6B7280';
+          console.warn('[P.A.T.C.H] ANALYZE_IMAGE batch failed:', response?.error);
+          batch.forEach(p => {
+            p.badge.innerText = '⚪ Error';
+            p.badge.title = response?.error || 'Unknown error';
+            p.badge.style.background = '#6B7280';
           });
-          return;
+        } else {
+          // Map results back: only posts with valid images sent data
+          let resultIdx = 0;
+          batch.forEach(p => {
+            if (!p.imageDataUrl) {
+              p.badge.innerText = '⚪ No image';
+              p.badge.style.background = '#6B7280';
+              return;
+            }
+            if (resultIdx < response.results.length) {
+              updateOCRBadge(p.badge, response.results[resultIdx]);
+            } else {
+              p.badge.innerText = '⚪ Error';
+              p.badge.title = 'No result returned for this image';
+              p.badge.style.background = '#6B7280';
+            }
+            resultIdx++;
+          });
         }
 
-        const results = response.results;
-
-        badges.forEach((badge, index) => {
-          if (index >= results.length) {
-            badge.innerText = '⚪ N/A';
-            badge.style.background = '#6B7280';
-            return;
-          }
-
-          const d = normalizeAnalysisResponse(results[index]);
-
-          if (!d || !d.riskLevel) {
-            badge.innerText = '⚪ Unknown';
-            badge.title = 'Missing risk level';
-            badge.style.background = '#6B7280';
-            return;
-          }
-
-          if (d.riskLevel === 'High') {
-            badge.innerText = '🔴 High';
-            badge.style.background = '#EF4444';
-          } else if (d.riskLevel === 'Medium') {
-            badge.innerText = '🟠 Medium';
-            badge.style.background = '#F59E0B';
-          } else {
-            badge.innerText = '🟢 Low';
-            badge.style.background = '#22C55E';
-          }
-
-          badge.title = [
-            d.text ? `OCR: "${d.text.slice(0, 80)}${d.text.length > 80 ? '...' : ''}"` : '',
-            d.topLabel ? `Top: ${d.topLabel}` : '',
-            `Suicidal: ${(d.suicidalProb * 100).toFixed(1)}%`,
-            `Distress: ${(d.distressProb * 100).toFixed(1)}%`,
-            `Normal: ${(d.normalProb * 100).toFixed(1)}%`
-          ].filter(Boolean).join('\n');
-        });
-      });
+        // Pause between batches to avoid overwhelming the worker
+        if (i + OCR_BATCH_SIZE < postData.length) {
+          await new Promise(r => setTimeout(r, DELAY_BETWEEN_BATCHES));
+        }
+      }
 
       return;
     }

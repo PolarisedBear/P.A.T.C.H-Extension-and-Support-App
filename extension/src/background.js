@@ -122,11 +122,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     (async () => {
       await ensureOffscreenDocument();
 
-      if (!isInstagramSearchPage(sender.tab.url || '')) {
-        return { error: 'Not on Instagram search page' };
-      }
+      // Accept image data URLs directly from content script (batched flow)
+      let imageDataUrls = request.imageDataUrls;
 
-      const imageDataUrls = await getInstagramImageDataUrls(sender.tab.id);
+      if (!imageDataUrls || !imageDataUrls.length) {
+        // Fallback: extract images from the tab (legacy single-call flow)
+        if (!isInstagramSearchPage(sender.tab.url || '')) {
+          return { error: 'Not on Instagram search page' };
+        }
+
+        imageDataUrls = await getInstagramImageDataUrls(sender.tab.id);
+      }
 
       if (!imageDataUrls.length) {
         return { error: 'No Instagram images found', results: [] };

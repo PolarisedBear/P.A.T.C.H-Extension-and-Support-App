@@ -3,6 +3,9 @@
   "name": "P.A.T.C.H Worker Assist",
   "version": "1.1",
   "description": "Local analysis tool for youth outreach workers.",
+  "icons": {
+    "128": "assets/P.A.T.C.H_icon.png"
+  },
   "permissions": [
     "storage",
     "activeTab",

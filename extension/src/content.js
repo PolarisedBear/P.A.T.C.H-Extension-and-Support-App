@@ -174,7 +174,7 @@ function injectUI() {
       if (!postData.length) return;
 
       // Process in batches so all posts get inference, not just the first response
-      const OCR_BATCH_SIZE = 5;
+      const OCR_BATCH_SIZE = 10;
       const DELAY_BETWEEN_BATCHES = 300;
 
       for (let i = 0; i < postData.length; i += OCR_BATCH_SIZE) {
@@ -315,7 +315,7 @@ function injectUI() {
       ].filter(Boolean).join('\n');
     };
 
-    const chunkSize = 5;
+    const chunkSize = 10;
     const delayBetweenChunks = 250;
 
     for (let i = 0; i < items.length; i += chunkSize) {
@@ -472,8 +472,12 @@ function showDrawer(data = null) {
     `;
 
     document.getElementById('patch-copy-tpl').onclick = () => {
-      navigator.clipboard.writeText("Hi, I noticed your post and wanted to check in...");
-      alert('Template copied!');
+      const defaultTemplate = "Hi! I am a youth outreach worker and I came across a post that made me concerned about your wellbeing. If you want to talk, I'm here to listen.";
+      chrome.storage.local.get('config', (data) => {
+        const template = data?.config?.outreachMessageTemplate || defaultTemplate;
+        navigator.clipboard.writeText(template);
+        alert('Template copied!');
+      });
     };
   };
 
@@ -488,6 +492,7 @@ function showDrawer(data = null) {
   });
 }
 
+// Unused function. Kept for potential future use if we want a manual "Scan Story" button in the story viewer.
 function analyzeStory() {
   // Attempt to extract visible text from the story viewer/dialog
   const dialog = document.querySelector('div[role="dialog"]');

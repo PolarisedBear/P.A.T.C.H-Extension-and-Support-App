@@ -83,21 +83,6 @@ async function recognizeImageWithWorker(imageBlob) {
   return normalizeText(result?.data?.text || '');
 }
 
-async function ocrInstagramImages(imageDataUrls = []) {
-  const extractedTexts = [];
-
-  for (const dataUrl of imageDataUrls) {
-    try {
-      const blob = await imageBlobFromDataURL(dataUrl);
-      const text = await recognizeImageWithWorker(blob);
-      if (text) extractedTexts.push(text);
-    } catch (err) {
-      console.warn('[P.A.T.C.H] OCR failed for image', err);
-    }
-  }
-
-  return [...new Set(extractedTexts)].join('\n');
-}
 
 async function ocrAndInferInstagramImages(imageDataUrls = []) {
   const results = [];

@@ -182,18 +182,19 @@ function _recognizeImageWithWorker() {
   }));
   return _recognizeImageWithWorker.apply(this, arguments);
 }
-function ocrInstagramImages() {
-  return _ocrInstagramImages.apply(this, arguments);
+function ocrAndInferInstagramImages() {
+  return _ocrAndInferInstagramImages.apply(this, arguments);
 }
-function _ocrInstagramImages() {
-  _ocrInstagramImages = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
+function _ocrAndInferInstagramImages() {
+  _ocrAndInferInstagramImages = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
     var imageDataUrls,
-      extractedTexts,
+      results,
       _iterator,
       _step,
       dataUrl,
       blob,
       text,
+      inferenceResult,
       _args5 = arguments,
       _t3,
       _t4;
@@ -201,13 +202,13 @@ function _ocrInstagramImages() {
       while (1) switch (_context5.p = _context5.n) {
         case 0:
           imageDataUrls = _args5.length > 0 && _args5[0] !== undefined ? _args5[0] : [];
-          extractedTexts = [];
+          results = [];
           _iterator = _createForOfIteratorHelper(imageDataUrls);
           _context5.p = 1;
           _iterator.s();
         case 2:
           if ((_step = _iterator.n()).done) {
-            _context5.n = 8;
+            _context5.n = 10;
             break;
           }
           dataUrl = _step.value;
@@ -220,75 +221,8 @@ function _ocrInstagramImages() {
           return recognizeImageWithWorker(blob);
         case 5:
           text = _context5.v;
-          if (text) extractedTexts.push(text);
-          _context5.n = 7;
-          break;
-        case 6:
-          _context5.p = 6;
-          _t3 = _context5.v;
-          console.warn('[P.A.T.C.H] OCR failed for image', _t3);
-        case 7:
-          _context5.n = 2;
-          break;
-        case 8:
-          _context5.n = 10;
-          break;
-        case 9:
-          _context5.p = 9;
-          _t4 = _context5.v;
-          _iterator.e(_t4);
-        case 10:
-          _context5.p = 10;
-          _iterator.f();
-          return _context5.f(10);
-        case 11:
-          return _context5.a(2, _toConsumableArray(new Set(extractedTexts)).join('\n'));
-      }
-    }, _callee5, null, [[3, 6], [1, 9, 10, 11]]);
-  }));
-  return _ocrInstagramImages.apply(this, arguments);
-}
-function ocrAndInferInstagramImages() {
-  return _ocrAndInferInstagramImages.apply(this, arguments);
-}
-function _ocrAndInferInstagramImages() {
-  _ocrAndInferInstagramImages = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
-    var imageDataUrls,
-      results,
-      _iterator2,
-      _step2,
-      dataUrl,
-      blob,
-      text,
-      inferenceResult,
-      _args6 = arguments,
-      _t5,
-      _t6;
-    return _regenerator().w(function (_context6) {
-      while (1) switch (_context6.p = _context6.n) {
-        case 0:
-          imageDataUrls = _args6.length > 0 && _args6[0] !== undefined ? _args6[0] : [];
-          results = [];
-          _iterator2 = _createForOfIteratorHelper(imageDataUrls);
-          _context6.p = 1;
-          _iterator2.s();
-        case 2:
-          if ((_step2 = _iterator2.n()).done) {
-            _context6.n = 10;
-            break;
-          }
-          dataUrl = _step2.value;
-          _context6.p = 3;
-          _context6.n = 4;
-          return imageBlobFromDataURL(dataUrl);
-        case 4:
-          blob = _context6.v;
-          _context6.n = 5;
-          return recognizeImageWithWorker(blob);
-        case 5:
-          text = _context6.v;
           if (text) {
-            _context6.n = 6;
+            _context5.n = 6;
             break;
           }
           results.push({
@@ -297,46 +231,46 @@ function _ocrAndInferInstagramImages() {
             probs: [0, 0, 1, 0],
             topLabel: 'Normal'
           });
-          return _context6.a(3, 9);
+          return _context5.a(3, 9);
         case 6:
-          _context6.n = 7;
+          _context5.n = 7;
           return handleAnalyzeText(text);
         case 7:
-          inferenceResult = _context6.v;
+          inferenceResult = _context5.v;
           results.push(_objectSpread({
             text: text
           }, inferenceResult));
-          _context6.n = 9;
+          _context5.n = 9;
           break;
         case 8:
-          _context6.p = 8;
-          _t5 = _context6.v;
-          console.warn('[P.A.T.C.H] OCR/inference failed for image', _t5);
+          _context5.p = 8;
+          _t3 = _context5.v;
+          console.warn('[P.A.T.C.H] OCR/inference failed for image', _t3);
           results.push({
             text: '',
-            error: _t5.message || 'OCR failed',
+            error: _t3.message || 'OCR failed',
             riskLevel: 'Low',
             probs: [0, 0, 1, 0],
             topLabel: 'Normal'
           });
         case 9:
-          _context6.n = 2;
+          _context5.n = 2;
           break;
         case 10:
-          _context6.n = 12;
+          _context5.n = 12;
           break;
         case 11:
-          _context6.p = 11;
-          _t6 = _context6.v;
-          _iterator2.e(_t6);
+          _context5.p = 11;
+          _t4 = _context5.v;
+          _iterator.e(_t4);
         case 12:
-          _context6.p = 12;
-          _iterator2.f();
-          return _context6.f(12);
+          _context5.p = 12;
+          _iterator.f();
+          return _context5.f(12);
         case 13:
-          return _context6.a(2, results);
+          return _context5.a(2, results);
       }
-    }, _callee6, null, [[3, 8], [1, 11, 12, 13]]);
+    }, _callee5, null, [[3, 8], [1, 11, 12, 13]]);
   }));
   return _ocrAndInferInstagramImages.apply(this, arguments);
 }
@@ -344,19 +278,19 @@ function initSession() {
   return _initSession.apply(this, arguments);
 }
 function _initSession() {
-  _initSession = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
+  _initSession = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee6() {
     var modelUrl;
-    return _regenerator().w(function (_context7) {
-      while (1) switch (_context7.n) {
+    return _regenerator().w(function (_context6) {
+      while (1) switch (_context6.n) {
         case 0:
           if (!sessionPromise) {
-            _context7.n = 1;
+            _context6.n = 1;
             break;
           }
-          return _context7.a(2, sessionPromise);
+          return _context6.a(2, sessionPromise);
         case 1:
           if (!(!onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__ || !onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.InferenceSession || !onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.InferenceSession.create)) {
-            _context7.n = 2;
+            _context6.n = 2;
             break;
           }
           throw new Error('ONNX Runtime not fully initialized. ort.InferenceSession.create is undefined');
@@ -374,9 +308,9 @@ function _initSession() {
             console.error('[P.A.T.C.H] ONNX session init failed in offscreen document:', err);
             sessionPromise = null;
           });
-          return _context7.a(2, sessionPromise);
+          return _context6.a(2, sessionPromise);
       }
-    }, _callee7);
+    }, _callee6);
   }));
   return _initSession.apply(this, arguments);
 }
@@ -400,20 +334,20 @@ function handleAnalyzeText(_x3) {
   return _handleAnalyzeText.apply(this, arguments);
 }
 function _handleAnalyzeText() {
-  _handleAnalyzeText = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee9(text) {
-    return _regenerator().w(function (_context9) {
-      while (1) switch (_context9.n) {
+  _handleAnalyzeText = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8(text) {
+    return _regenerator().w(function (_context8) {
+      while (1) switch (_context8.n) {
         case 0:
-          return _context9.a(2, queueInference(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee8() {
-            var maxLen, _yield$encodeText, inputIds, attentionMask, tokenTypeIds, inputs, outputMap, session, _session, logitsTensor, logits, probs, suicidalProb, distressProb, normalProb, riskLevel, topIdx, topLabel, _t7;
-            return _regenerator().w(function (_context8) {
-              while (1) switch (_context8.p = _context8.n) {
+          return _context8.a(2, queueInference(/*#__PURE__*/_asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee7() {
+            var maxLen, _yield$encodeText, inputIds, attentionMask, tokenTypeIds, inputs, outputMap, session, _session, logitsTensor, logits, probs, suicidalProb, distressProb, normalProb, riskLevel, topIdx, topLabel, _t5;
+            return _regenerator().w(function (_context7) {
+              while (1) switch (_context7.p = _context7.n) {
                 case 0:
                   maxLen = 128;
-                  _context8.n = 1;
+                  _context7.n = 1;
                   return (0,_tokenizer_js__WEBPACK_IMPORTED_MODULE_1__.encodeText)(text, maxLen);
                 case 1:
-                  _yield$encodeText = _context8.v;
+                  _yield$encodeText = _context7.v;
                   inputIds = _yield$encodeText.inputIds;
                   attentionMask = _yield$encodeText.attentionMask;
                   tokenTypeIds = _yield$encodeText.tokenTypeIds;
@@ -422,38 +356,38 @@ function _handleAnalyzeText() {
                     attention_mask: new onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.Tensor('int64', attentionMask, [1, maxLen]),
                     token_type_ids: new onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.Tensor('int64', tokenTypeIds, [1, maxLen])
                   };
-                  _context8.p = 2;
-                  _context8.n = 3;
+                  _context7.p = 2;
+                  _context7.n = 3;
                   return initSession();
                 case 3:
-                  session = _context8.v;
+                  session = _context7.v;
                   console.log("[P.A.T.C.H] Inference input: ".concat(text));
-                  _context8.n = 4;
+                  _context7.n = 4;
                   return session.run(inputs);
                 case 4:
-                  outputMap = _context8.v;
+                  outputMap = _context7.v;
                   console.log("[P.A.T.C.H] Inference output:", outputMap);
-                  _context8.n = 9;
+                  _context7.n = 9;
                   break;
                 case 5:
-                  _context8.p = 5;
-                  _t7 = _context8.v;
-                  if (isRetryableSessionError(_t7)) {
-                    _context8.n = 6;
+                  _context7.p = 5;
+                  _t5 = _context7.v;
+                  if (isRetryableSessionError(_t5)) {
+                    _context7.n = 6;
                     break;
                   }
-                  throw _t7;
+                  throw _t5;
                 case 6:
-                  console.warn('[P.A.T.C.H] Retrying inference after session state error:', _t7.message);
-                  resetSession(_t7.message);
-                  _context8.n = 7;
+                  console.warn('[P.A.T.C.H] Retrying inference after session state error:', _t5.message);
+                  resetSession(_t5.message);
+                  _context7.n = 7;
                   return initSession();
                 case 7:
-                  _session = _context8.v;
-                  _context8.n = 8;
+                  _session = _context7.v;
+                  _context7.n = 8;
                   return _session.run(inputs);
                 case 8:
-                  outputMap = _context8.v;
+                  outputMap = _context7.v;
                 case 9:
                   logitsTensor = outputMap.logits || Object.values(outputMap)[0];
                   logits = Array.from(logitsTensor.data);
@@ -464,7 +398,7 @@ function _handleAnalyzeText() {
                   riskLevel = toRiskLevel(suicidalProb, distressProb, normalProb);
                   topIdx = argMax(probs);
                   topLabel = LABELS[topIdx];
-                  return _context8.a(2, {
+                  return _context7.a(2, {
                     riskLevel: riskLevel,
                     suicidalProb: suicidalProb,
                     distressProb: distressProb,
@@ -474,10 +408,10 @@ function _handleAnalyzeText() {
                     topLabel: topLabel
                   });
               }
-            }, _callee8, null, [[2, 5]]);
+            }, _callee7, null, [[2, 5]]);
           }))));
       }
-    }, _callee9);
+    }, _callee8);
   }));
   return _handleAnalyzeText.apply(this, arguments);
 }

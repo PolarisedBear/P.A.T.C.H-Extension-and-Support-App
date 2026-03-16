@@ -349,20 +349,13 @@ function injectUI() {
 
   function findActionSectionForArticle(article) {
     if (!article) return null;
-    const selectors = [
-      'div[role="toolbar"]',
-      'div[role="group"]',
-      'section',
-      'footer'
-    ];
 
-    for (const selector of selectors) { 
-      const el = article.querySelector(selector);
-      if (el) return el;
-    }
-
-    return article;
+    // Anchor ONLY to the post's <section> area (below content, above comments on IG layouts).
+    // If we can't find it, return null so we don't attach the button anywhere else.
+    const section = article.querySelector('section');
+    return section || null;
   }
+  
 
 
   // debounce/throttle helper so we don't query on every micro-mutation
@@ -393,7 +386,14 @@ function injectUI() {
         analyzeArticle(article, permalink);
       }
       
-      target.appendChild(btn);
+      // Try to insert the button above the comments section if present so it appears
+      // below the post content but above comments. Otherwise append into the target.
+      const commentsEl = article.querySelector('ul, div[role="list"], .comments, .comment-area');
+      if (commentsEl && article.contains(commentsEl)) {
+        article.insertBefore(btn, commentsEl);
+      } else {
+        target.appendChild(btn);
+      }
     })
 
   }

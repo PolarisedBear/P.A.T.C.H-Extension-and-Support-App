@@ -143,7 +143,7 @@ function imageBlobFromDataURL(_x) {
 }
 function _imageBlobFromDataURL() {
   _imageBlobFromDataURL = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee3(dataUrl) {
-    var res;
+    var res, blob;
     return _regenerator().w(function (_context3) {
       while (1) switch (_context3.n) {
         case 0:
@@ -151,7 +151,11 @@ function _imageBlobFromDataURL() {
           return fetch(dataUrl);
         case 1:
           res = _context3.v;
-          return _context3.a(2, res.blob());
+          _context3.n = 2;
+          return res.blob();
+        case 2:
+          blob = _context3.v;
+          return _context3.a(2, blob);
       }
     }, _callee3);
   }));
@@ -187,13 +191,18 @@ function ocrAndInferInstagramImages() {
 }
 function _ocrAndInferInstagramImages() {
   _ocrAndInferInstagramImages = _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee5() {
-    var imageDataUrls,
+    var imageItemsOrUrls,
       results,
+      isStringArray,
+      imageItems,
       _iterator,
       _step,
+      item,
       dataUrl,
+      captionText,
       blob,
-      text,
+      ocrText,
+      combinedText,
       inferenceResult,
       _args5 = arguments,
       _t3,
@@ -201,9 +210,18 @@ function _ocrAndInferInstagramImages() {
     return _regenerator().w(function (_context5) {
       while (1) switch (_context5.p = _context5.n) {
         case 0:
-          imageDataUrls = _args5.length > 0 && _args5[0] !== undefined ? _args5[0] : [];
+          imageItemsOrUrls = _args5.length > 0 && _args5[0] !== undefined ? _args5[0] : [];
           results = [];
-          _iterator = _createForOfIteratorHelper(imageDataUrls);
+          isStringArray = Array.isArray(imageItemsOrUrls) && imageItemsOrUrls.every(function (x) {
+            return typeof x === 'string';
+          });
+          imageItems = isStringArray ? imageItemsOrUrls.map(function (u) {
+            return {
+              imageDataUrl: u,
+              captionText: ''
+            };
+          }) : Array.isArray(imageItemsOrUrls) ? imageItemsOrUrls : [];
+          _iterator = _createForOfIteratorHelper(imageItems);
           _context5.p = 1;
           _iterator.s();
         case 2:
@@ -211,7 +229,9 @@ function _ocrAndInferInstagramImages() {
             _context5.n = 10;
             break;
           }
-          dataUrl = _step.value;
+          item = _step.value;
+          dataUrl = (item === null || item === void 0 ? void 0 : item.imageDataUrl) || '';
+          captionText = normalizeText((item === null || item === void 0 ? void 0 : item.captionText) || '');
           _context5.p = 3;
           _context5.n = 4;
           return imageBlobFromDataURL(dataUrl);
@@ -220,13 +240,16 @@ function _ocrAndInferInstagramImages() {
           _context5.n = 5;
           return recognizeImageWithWorker(blob);
         case 5:
-          text = _context5.v;
-          if (text) {
+          ocrText = _context5.v;
+          combinedText = normalizeText([captionText, ocrText].filter(Boolean).join('\n'));
+          if (combinedText) {
             _context5.n = 6;
             break;
           }
           results.push({
             text: '',
+            captionText: captionText,
+            ocrText: '',
             riskLevel: 'Low',
             probs: [0, 0, 1, 0],
             topLabel: 'Normal'
@@ -234,11 +257,11 @@ function _ocrAndInferInstagramImages() {
           return _context5.a(3, 9);
         case 6:
           _context5.n = 7;
-          return handleAnalyzeText(text);
+          return handleAnalyzeText(combinedText);
         case 7:
           inferenceResult = _context5.v;
           results.push(_objectSpread({
-            text: text
+            text: combinedText
           }, inferenceResult));
           _context5.n = 9;
           break;
@@ -452,7 +475,8 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     return true;
   }
   if (request.type === 'OCR_INSTAGRAM_IMAGES') {
-    ocrAndInferInstagramImages(request.imageDataUrls).then(function (results) {
+    var payload = request.imageItems || request.imageDataUrls || [];
+    ocrAndInferInstagramImages(payload).then(function (results) {
       return sendResponse({
         results: results
       });

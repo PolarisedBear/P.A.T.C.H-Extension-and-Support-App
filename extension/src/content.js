@@ -85,6 +85,23 @@ function extractImageDataUrl(container) {
   }
 }
 
+function extractImageCaptionText(container) {
+  const anchor = container.querySelector('a[href*="/p/"]');
+  const img = anchor ? anchor.querySelector('img') : null;
+  const target = img || container.querySelector('img');
+  if (!target) return '';
+
+  // Instagram often puts caption-like content in img.alt on explore/grid.
+  const raw =
+    target.getAttribute('alt') ||
+    target.getAttribute('aria-label') ||
+    '';
+
+  // prevent huge payloads
+  const text = cleanText(raw).slice(0, 4000);
+  return text;
+}
+
 function updateOCRBadge(badge, result) {
   const d = normalizeAnalysisResponse(result);
 
@@ -115,11 +132,17 @@ function updateOCRBadge(badge, result) {
   ].filter(Boolean).join('\n');
 }
 
-function sendAnalyzeImageBatch(imageDataUrls, timeout = 30000) {
+function sendAnalyzeImageBatch(imageItemsOrUrls, timeout = 30000) {
   return new Promise((resolve) => {
     let handled = false;
+
+    const isStringArray = Array.isArray(imageItemsOrUrls) && imageItemsOrUrls.every(item => typeof item === 'string');
+    const imageItems = isStringArray
+      ? imageItemsOrUrls.map((u) => ({ imageDataUrl: u, captionText: '', imageSrc: '' }))
+      : (Array.isArray(imageItemsOrUrls) ? imageItemsOrUrls : []);
+
     try {
-      chrome.runtime.sendMessage({ type: 'ANALYZE_IMAGE', imageDataUrls }, (response) => {
+      chrome.runtime.sendMessage({ type: 'ANALYZE_IMAGE', imageItems}, (response) => {
         handled = true;
         if (chrome.runtime.lastError) {
           console.error('[P.A.T.C.H] ANALYZE_IMAGE error:', chrome.runtime.lastError.message);
@@ -167,21 +190,27 @@ function injectUI() {
           parent.appendChild(badge);
 
           const imageDataUrl = extractImageDataUrl(parent);
-          postData.push({ badge, imageDataUrl });
+          const captionText = extractImageCaptionText(parent);
+          const imageItem = { imageDataUrl, captionText };
+          postData.push({ badge, imageItem });
         }
       });
 
       if (!postData.length) return;
 
       // Process in batches so all posts get inference, not just the first response
-      const OCR_BATCH_SIZE = 10;
+      const OCR_BATCH_SIZE = 6;
       const DELAY_BETWEEN_BATCHES = 300;
 
       for (let i = 0; i < postData.length; i += OCR_BATCH_SIZE) {
         const batch = postData.slice(i, i + OCR_BATCH_SIZE);
-        const imageDataUrls = batch.map(p => p.imageDataUrl).filter(Boolean);
 
-        if (!imageDataUrls.length) {
+        // Only send items that actually have an image payload
+        const imageItems = batch
+          .filter(p => p?.imageItem?.imageDataUrl)
+          .map(p => p.imageItem);
+
+        if (!imageItems.length) {
           batch.forEach(p => {
             p.badge.innerText = '⚪ No image';
             p.badge.style.background = '#6B7280';
@@ -189,7 +218,7 @@ function injectUI() {
           continue;
         }
 
-        const response = await sendAnalyzeImageBatch(imageDataUrls);
+        const response = await sendAnalyzeImageBatch(imageItems);
 
         if (response?.error || !response?.results) {
           console.warn('[P.A.T.C.H] ANALYZE_IMAGE batch failed:', response?.error);
@@ -202,7 +231,7 @@ function injectUI() {
           // Map results back: only posts with valid images sent data
           let resultIdx = 0;
           batch.forEach(p => {
-            if (!p.imageDataUrl) {
+            if (!p.imageItem?.imageDataUrl) {
               p.badge.innerText = '⚪ No image';
               p.badge.style.background = '#6B7280';
               return;

@@ -12,7 +12,7 @@ import {createWorker} from 'tesseract.js';
 let tesseractWorker = null;
 let tesseractWorkerIdleTimer = null;
 const OCR_LANGUAGE = 'eng';
-const timeout = 20000;
+const timeout = 60000;
 
 ort.env.wasm = ort.env.wasm || {};
 ort.env.wasm.logLevel = 'verbose';
@@ -73,7 +73,9 @@ async function ensureTesseractWorker() {
 
 async function imageBlobFromDataURL(dataUrl) {
   const res = await fetch(dataUrl);
-  return res.blob();
+  const blob = await res.blob();
+  return blob;
+
 }
 
 async function recognizeImageWithWorker(imageBlob) {
@@ -84,21 +86,42 @@ async function recognizeImageWithWorker(imageBlob) {
 }
 
 
-async function ocrAndInferInstagramImages(imageDataUrls = []) {
+async function ocrAndInferInstagramImages(imageItemsOrUrls = []) {
   const results = [];
 
-  for (const dataUrl of imageDataUrls) {
+  const isStringArray =
+    Array.isArray(imageItemsOrUrls) &&
+    imageItemsOrUrls.every((x) => typeof x === 'string');
+  
+  const imageItems = isStringArray
+    ? imageItemsOrUrls.map((u) => ({ imageDataUrl: u, captionText: ''}))
+    : (Array.isArray(imageItemsOrUrls) ? imageItemsOrUrls : []);
+
+  for (const item of imageItems) {
+    const dataUrl = item?.imageDataUrl || '';
+    const captionText = normalizeText(item?.captionText || '');
+
     try {
       const blob = await imageBlobFromDataURL(dataUrl);
-      const text = await recognizeImageWithWorker(blob);
+      const ocrText = await recognizeImageWithWorker(blob);
 
-      if (!text) {
-        results.push({ text: '', riskLevel: 'Low', probs: [0, 0, 1, 0], topLabel: 'Normal' });
+      const combinedText = normalizeText([captionText, ocrText].filter(Boolean).join('\n'));
+      console.log('[P.A.T.C.H] OCR result for image:', { captionText, ocrText, combinedText });
+
+      if (!combinedText) {
+        results.push({
+          text: '',
+          captionText,
+          ocrText: '',
+          riskLevel: 'Low',
+          probs: [0, 0, 1, 0],
+          topLabel: 'Normal'
+        });
         continue;
       }
 
-      const inferenceResult = await handleAnalyzeText(text);
-      results.push({ text, ...inferenceResult });
+      const inferenceResult = await handleAnalyzeText(combinedText);
+      results.push({ text: combinedText, ...inferenceResult });
     } catch (err) {
       console.warn('[P.A.T.C.H] OCR/inference failed for image', err);
       results.push({ text: '', error: err.message || 'OCR failed', riskLevel: 'Low', probs: [0, 0, 1, 0], topLabel: 'Normal' });
@@ -237,7 +260,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.type === 'OCR_INSTAGRAM_IMAGES') {
-    ocrAndInferInstagramImages(request.imageDataUrls)
+    const payload = request.imageItems || [];
+    ocrAndInferInstagramImages(payload)
       .then(results => sendResponse({ results }))
       .catch(err => {
         console.error('[P.A.T.C.H] OCR Instagram Images error:', err);

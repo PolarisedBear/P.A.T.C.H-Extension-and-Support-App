@@ -44,7 +44,7 @@ function _asyncToGenerator(n) { return function () { var t = this, e = arguments
 var tesseractWorker = null;
 var tesseractWorkerIdleTimer = null;
 var OCR_LANGUAGE = 'eng';
-var timeout = 20000;
+var timeout = 60000;
 onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.env.wasm = onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.env.wasm || {};
 onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.env.wasm.logLevel = 'verbose';
 onnxruntime_web__WEBPACK_IMPORTED_MODULE_0__.env.wasm.debug = true;
@@ -242,6 +242,11 @@ function _ocrAndInferInstagramImages() {
         case 5:
           ocrText = _context5.v;
           combinedText = normalizeText([captionText, ocrText].filter(Boolean).join('\n'));
+          console.log('[P.A.T.C.H] OCR result for image:', {
+            captionText: captionText,
+            ocrText: ocrText,
+            combinedText: combinedText
+          });
           if (combinedText) {
             _context5.n = 6;
             break;
@@ -475,7 +480,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     return true;
   }
   if (request.type === 'OCR_INSTAGRAM_IMAGES') {
-    var payload = request.imageItems || request.imageDataUrls || [];
+    var payload = request.imageItems || [];
     ocrAndInferInstagramImages(payload).then(function (results) {
       return sendResponse({
         results: results

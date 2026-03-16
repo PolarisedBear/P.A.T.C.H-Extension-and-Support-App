@@ -160,7 +160,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   }
   if (request.type === 'ANALYZE_IMAGE') {
     _asyncToGenerator(/*#__PURE__*/_regenerator().m(function _callee2() {
-      var imageDataUrls;
+      var imageItems;
       return _regenerator().w(function (_context2) {
         while (1) switch (_context2.n) {
           case 0:
@@ -168,9 +168,9 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             return ensureOffscreenDocument();
           case 1:
             // Accept image data URLs directly from content script (batched flow)
-            imageDataUrls = request.imageDataUrls;
-            if (!(!imageDataUrls || !imageDataUrls.length)) {
-              _context2.n = 4;
+            imageItems = request.imageItems;
+            if (!(!imageItems || !imageItems.length)) {
+              _context2.n = 2;
               break;
             }
             if (isInstagramSearchPage(sender.tab.url || '')) {
@@ -181,23 +181,18 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
               error: 'Not on Instagram search page'
             });
           case 2:
-            _context2.n = 3;
-            return getInstagramImageDataUrls(sender.tab.id);
-          case 3:
-            imageDataUrls = _context2.v;
-          case 4:
-            if (imageDataUrls.length) {
-              _context2.n = 5;
+            if (imageItems.length) {
+              _context2.n = 3;
               break;
             }
             return _context2.a(2, {
               error: 'No Instagram images found',
               results: []
             });
-          case 5:
+          case 3:
             return _context2.a(2, chrome.runtime.sendMessage({
               type: 'OCR_INSTAGRAM_IMAGES',
-              imageDataUrls: imageDataUrls
+              imageItems: imageItems
             }));
         }
       }, _callee2);
